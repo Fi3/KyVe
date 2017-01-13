@@ -1,0 +1,26 @@
+{
+  "name": "cordovalocalstorage",
+  "version": "1.0.0",
+  "description": "localStorage API without the memory limit",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fi3/cordovalocalstorage.git"
+  },
+  "keywords": [
+    "cordova",
+    "localstorage",
+    "db",
+    "key",
+    "value"
+  ],
+  "author": "fi3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fi3/cordovalocalstorage/issues"
+  },
+  "homepage": "https://github.com/fi3/cordovalocalstorage#readme"
+}

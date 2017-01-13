@@ -34,6 +34,7 @@ we would need ~10^12(tera) bytes just for the void nodes.
 
 If is lenght and lenght < 16 we have:
 
+**MOST SIGNIFICATIVE BYTE**
 * bit1 = 1
 * bit2 = 1
 * bit3 = lenght
@@ -45,6 +46,7 @@ If is lenght and lenght < 16 we have:
 
 If is lenght and lenght 15 < 16384 we have:
 
+**MOST SIGNIFICATIVE BYTE**
 * bit1 = 1
 * bit2 = 0
 * bit3 = lenght
@@ -53,7 +55,8 @@ If is lenght and lenght 15 < 16384 we have:
 * bit6 = length
 * bit7 = length
 * bit8 = length
------------------
+
+**SECOND MOST SIGNIFICATIVE BYTE**
 * bit1 = length
 * bit2 = length
 * bit3 = lenght

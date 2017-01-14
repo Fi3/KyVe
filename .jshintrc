@@ -1,0 +1,12 @@
+{
+    "esversion": 6,
+    "esnext": true,
+    "globals" : {
+        "require": false,
+        "console": false,
+        "Buffer": false,
+        "resolve": false,
+        "reject": false,
+        "exports": false
+    }
+}

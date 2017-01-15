@@ -4,7 +4,7 @@
   "description": "localStorage API without the memory limit",
   "main": "index.js",
   "scripts": {
-    "test": "node js/test.js | faucet"
+    "test": "for file in js/test/*.js \n do \n node $file | faucet  \n done"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/fi3/cordovalocalstorage#readme",
   "dependencies": {
+    "fnv1a": "^1.0.1",
     "rlp": "^2.0.0"
   },
   "devDependencies": {

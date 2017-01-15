@@ -1,6 +1,6 @@
 const test = require('tape');
-const EncodingUtils = require('./EncodingUtils.js');
-const Errors = require('./Errors.js');
+const EncodingUtils = require('../EncodingUtils.js');
+const Errors = require('../Errors.js');
 
 test('*getRLPLen returned values for input < 128', assert => {
   const actual = EncodingUtils.getRLPLen(getRandomInt(0,128)).next();

@@ -10,7 +10,6 @@ function *getRLPLen(firstByte) {
   }
   if (firstByte >= 183 && firstByte < 192) {
     const len = yield firstByte - 183 + 1;
-    console.log(len);
     return len.readIntBE(0, len.length);
   }
   if (firstByte >= 192) {

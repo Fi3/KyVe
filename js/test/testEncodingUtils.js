@@ -21,8 +21,8 @@ test('*getRLPLen returned values for 127<input>184', assert => {
   assert.end();
 });
 
-test('*getRLPLen returned values for 182<input>192', assert => {
-  const firstByte = getRandomInt(183, 192);
+test('*getRLPLen returned values for 183<input>192', assert => {
+  const firstByte = getRandomInt(184, 192);
   const actual = EncodingUtils.getRLPLen(firstByte).next();
   const expected = {value: firstByte - 183 + 1, done:false};
 

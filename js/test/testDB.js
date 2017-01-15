@@ -60,6 +60,94 @@ test('Db.inspect(key, memDb, hashFun) returned value for key not in DB', assert 
   assert.end();
 });
 
+test('Db.inspect(key, memDb, hashFun) returned value for key in DB', assert => {
+  function hashFucntion(key) {
+    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
+    return map[key];
+  }
+  const actual = Db._inspect('ciau', memoryDb, hashFucntion);
+  const expected = {
+    normalizedIndex: 4,
+    previousNodePosition: 600,
+    nextNodePosition: 700,
+    alreadyInDb: true,
+    collisions:0
+  };
+
+  assert.deepEqual(actual, expected,
+    'previousIndexPosition should be the position of the node at the index before the index of the key ' +
+    'nextNodePosition should be the position of the node at the index after the index of the key ' +
+    'alreadyInDb should be true for key  presented in db ' +
+    'collisions should be 0 for key already in db');
+  assert.end();
+});
+
+test('Db.inspect(key, memDb, hashFun) returned value when previus index contain more than one node (collision)', assert => {
+  function hashFucntion(key) {
+    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
+    return map[key];
+  }
+  const actual = Db._inspect('ciay', memoryDb, hashFucntion);
+  const expected = {
+    normalizedIndex: 3,
+    previousNodePosition: 500,
+    nextNodePosition: 600,
+    alreadyInDb: true,
+    collisions:0
+  };
+
+  assert.deepEqual(actual, expected,
+    'previousIndexPosition should be the position of the node at the index before the index of the key ' +
+    'nextNodePosition should be the position of the node at the index after the index of the key in (last element of boucket)' +
+    'alreadyInDb should be true for key presented in db ' +
+    'collisions should be 0 for key not presented in db');
+  assert.end();
+});
+
+test('Db.inspect(key, memDb, hashFun) returned value for key not in db but with a collision', assert => {
+  function hashFucntion(key) {
+    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
+    return map[key];
+  }
+  const actual = Db._inspect('tttt', memoryDb, hashFucntion);
+  const expected = {
+    normalizedIndex: 3,
+    previousNodePosition: 500,
+    nextNodePosition: 600,
+    alreadyInDb: false,
+    collisions:1
+  };
+
+  assert.deepEqual(actual, expected,
+    'previousIndexPosition should be the position of the node at the index before the index of the key ' +
+    'nextNodePosition should be the position of the node at the index after the index of the key in (last element of boucket)' +
+    'alreadyInDb should be false for key not presented in db ' +
+    'collisions should be < 0 for key that collide');
+  assert.end();
+});
+
+test('Db.inspect(key, memDb, hashFun) returned value for key  in db and with a collision', assert => {
+  function hashFucntion(key) {
+    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
+    return map[key];
+  }
+  const actual = Db._inspect('ciat', memoryDb, hashFucntion);
+  const expected = {
+    normalizedIndex: 2,
+    previousNodePosition: 300,
+    nextNodePosition: 400,
+    alreadyInDb: true,
+    collisions:2
+  };
+
+  assert.deepEqual(actual, expected,
+    'previousIndexPosition should be the position of the node at the index before the index of the key ' +
+    'nextNodePosition should be the position of the node at the index after the index of the key in (last element of boucket)' +
+    'alreadyInDb should be true for key presented in db ' +
+    'collisions should be < 0 for key that collide');
+  assert.end();
+});
+
 const memoryDb = {
   _header: {
     head: 3096844302,

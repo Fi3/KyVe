@@ -6,16 +6,36 @@ function _inspect(key, memoryDb, hashFucntion) {
   const index = hashFucntion(key);
   const node = memoryDb._nodes[index];
   const prevIndex = _getPreviousIndex(memoryDb, index);
-  const prevNode = memoryDb._nodes[prevIndex];
+  console.log('jhwde', prevIndex, index);
+  let prevNode = memoryDb._nodes[prevIndex];
+  let alreadyInDb;
+  let collisions;
   if (node === undefined) {
-    return {
-      normalizedIndex: prevNode.normalizedIndex + 1,
-      previousNodePosition: prevNode.position,
-      nextNodePosition: prevNode.nextPosition,
-      alreadyInDb: false,
-      collisions: 0,
-    };
+    alreadyInDb = false;
+    collisions = 0;
   }
+  else if (node instanceof Array) {
+    alreadyInDb = true;
+    collisions = node.length;
+  }
+  else if (node.key === key) {
+    alreadyInDb = true;
+    collisions = 0;
+  }
+  else {
+    alreadyInDb = false;
+    collisions = 1;
+  }
+  if (prevNode instanceof Array) {
+    prevNode = prevNode[prevNode.length - 1];
+  }
+  return {
+    normalizedIndex: prevNode.normalizedIndex + 1,
+    previousNodePosition: prevNode.position,
+    nextNodePosition: prevNode.nextPosition,
+    alreadyInDb: alreadyInDb,
+    collisions: collisions,
+  };
 }
 
 function _getPreviousIndex(memoryDb, indexSerched) {
@@ -23,7 +43,14 @@ function _getPreviousIndex(memoryDb, indexSerched) {
   const nodes = memoryDb._nodes;
   const header = memoryDb._header;
   for (const actualIndex in nodes) {
-    const previousIndex = nodes[actualIndex].previousIndex;
+    let node;
+    if (nodes[actualIndex] instanceof Array) { //TODO NOT TESTED!!
+      node = nodes[actualIndex][0];
+    }
+    else {
+      node = nodes[actualIndex];
+    }
+    const previousIndex = node.previousIndex;
     if (indexSerched == actualIndex) {
       return previousIndex;
     }
@@ -62,7 +89,7 @@ class memoryDb {
     this._nodes = nodes;
     this._hashFunction = hashFucntion;
   }
- 
+
  getPreviousIndex(index){
    return (_getPreviousIndex(this, index));
  }

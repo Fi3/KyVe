@@ -2,48 +2,115 @@ const test = require('tape');
 const Db = require('../DB.js');
 const Errors = require('../Errors.js');
 
-test('Db._getPreviousIndex(memDb, index) returned value for index not in db', assert => {
-  const actual = Db._getPreviousIndex(memoryDb, 3096844323);
-  const expected = 3096844322;
+test('Db._getPreviousNode returned value for key not in db', assert => {
+  const actual = Db._getPreviousNode(memoryDb, 'cani');
+  const expected = memoryDb._nodes.ciay;
 
   assert.deepEqual(actual, expected,
-    'should return the biggest index that is smaller than the one passed');
+    'should return the biggest index that is smaller than hash(key)');
   assert.end();
 });
 
-test('Db._getPreviousIndex(memDb, index) returned value for index db', assert => {
-  const actual = Db._getPreviousIndex(memoryDb, 3096844322);
-  const expected = 3096844312;
+test('Db._getPreviousNode returned value for key in db', assert => {
+  const actual = Db._getPreviousNode(memoryDb, 'ciay');
+  const expected = memoryDb._nodes.ciar;
 
   assert.deepEqual(actual, expected,
-    'should return the biggest index that is smaller than the one passed');
+    'should return the biggest index that is smaller than hash(key)');
   assert.end();
 });
 
-test('Db._getPreviousIndex(memDb, index) returned value smallest index', assert => {
-  const actual = Db._getPreviousIndex(memoryDb, 5);
-  const expected = 0;
+test('Db._getPreviousNode returned value for the  smallest hash(key)', assert => {
+  const actual = Db._getPreviousNode(memoryDb, 'rrrr');
+  const expected = 'head';
 
   assert.deepEqual(actual, expected,
     'should return 0 if the index is smaller than all the other in the db');
   assert.end();
 });
 
-test('Db._getPreviousIndex(memDb, index) returned value biggets index', assert => {
-  const actual = Db._getPreviousIndex(memoryDb, 9096844323);
-  const expected = 3096844342;
+test('Db._getPreviousNode returned value for the biggets hash(key)', assert => {
+  const actual = Db._getPreviousNode(memoryDb, 'kkkk');
+  const expected = memoryDb._nodes.cias;
 
   assert.deepEqual(actual, expected,
     'should return the last index when we pass an index thah is bigger than all the other in the db');
   assert.end();
 });
 
-test('Db.inspect(key, memDb, hashFun) returned value for key not in DB', assert => {
-  function hashFucntion(key) {
-    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
-    return map[key];
+test('Db._traverseBoucket returned value for the first element of a boucket', assert => {
+  const actual = Db._traverseBoucket(memoryDb, 'ciar');
+  const expected = [memoryDb._nodes.ciar, memoryDb._nodes.ciat];
+
+  assert.deepEqual(actual, expected,
+    'when we pass the first element of a boucket should return the whole boucket');
+  assert.end();
+});
+
+test('Db._traverseBoucket returned value for a key that is not in a boucket', assert => {
+  let actual;
+  let expected;
+  try {
+    Db._traverseBoucket(memoryDb, 'cias');
   }
-  const actual = Db._inspect('cani', memoryDb, hashFucntion);
+  catch(e) {
+    actual = e.name;
+  }
+  try {
+    throw new Errors.MemoryDbKeyNotInBoucket();
+  }
+  catch(e) {
+    expected = e.name;
+  }
+
+  assert.deepEqual(actual, expected,
+    'when we pass a key taht is not in boucket _traverseBoucket should raise NotInBoucket');
+  assert.end();
+});
+
+test('Db._traverseBoucket returned value for a key that is in a boucket but is not the first elements', assert => {
+  let actual;
+  let expected;
+  try {
+    Db._traverseBoucket(memoryDb, 'ciat');
+  }
+  catch(e) {
+    actual = e.name;
+  }
+  try {
+    throw new Errors.MemoryDbKeyNotFirstInBoucket();
+  }
+  catch(e) {
+    expected = e.name;
+  }
+
+  assert.deepEqual(actual, expected,
+    'when we pass a key that is in a boucket but is not the first element should raise NotFirstElement');
+  assert.end();
+});
+
+test('Db._traverseBoucket returned value for key not in DB', assert => {
+  let actual;
+  let expected;
+  try {
+    Db._traverseBoucket(memoryDb, 'lulliloj');
+  }
+  catch(e) {
+    actual = e.name;
+  }
+  try {
+    throw new Errors.MemoryDbKeyNotInDb();
+  }
+  catch(e) {
+    expected = e.name;
+  }
+
+  assert.deepEqual(actual, expected,
+    'when we pass a key that is not in the db should raise not in db');
+  assert.end();
+});
+test('Db.inspect returned value for key not in DB', assert => {
+  const actual = Db._inspect(memoryDb, 'cani');
   const expected = {
     normalizedIndex: 4,
     previousNodePosition: 600,
@@ -60,12 +127,8 @@ test('Db.inspect(key, memDb, hashFun) returned value for key not in DB', assert 
   assert.end();
 });
 
-test('Db.inspect(key, memDb, hashFun) returned value for key in DB', assert => {
-  function hashFucntion(key) {
-    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
-    return map[key];
-  }
-  const actual = Db._inspect('ciau', memoryDb, hashFucntion);
+test('Db.inspect returned value for key in DB', assert => {
+  const actual = Db._inspect(memoryDb, 'ciau');
   const expected = {
     normalizedIndex: 4,
     previousNodePosition: 600,
@@ -82,12 +145,8 @@ test('Db.inspect(key, memDb, hashFun) returned value for key in DB', assert => {
   assert.end();
 });
 
-test('Db.inspect(key, memDb, hashFun) returned value when previus index contain more than one node (collision)', assert => {
-  function hashFucntion(key) {
-    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
-    return map[key];
-  }
-  const actual = Db._inspect('ciay', memoryDb, hashFucntion);
+test('Db.inspect returned value when previus index contain more than one node (collision)', assert => {
+  const actual = Db._inspect(memoryDb, 'ciay');
   const expected = {
     normalizedIndex: 3,
     previousNodePosition: 500,
@@ -104,12 +163,8 @@ test('Db.inspect(key, memDb, hashFun) returned value when previus index contain 
   assert.end();
 });
 
-test('Db.inspect(key, memDb, hashFun) returned value for key not in db but with a collision', assert => {
-  function hashFucntion(key) {
-    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
-    return map[key];
-  }
-  const actual = Db._inspect('tttt', memoryDb, hashFucntion);
+test('Db.inspect returned value for key not in db but with a collision', assert => {
+  const actual = Db._inspect(memoryDb, 'tttt');
   const expected = {
     normalizedIndex: 3,
     previousNodePosition: 500,
@@ -126,12 +181,8 @@ test('Db.inspect(key, memDb, hashFun) returned value for key not in db but with 
   assert.end();
 });
 
-test('Db.inspect(key, memDb, hashFun) returned value for key  in db and with a collision', assert => {
-  function hashFucntion(key) {
-    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323};
-    return map[key];
-  }
-  const actual = Db._inspect('ciat', memoryDb, hashFucntion);
+test('Db.inspect returned value for key  in db and with a collision', assert => {
+  const actual = Db._inspect(memoryDb, 'ciat');
   const expected = {
     normalizedIndex: 2,
     previousNodePosition: 300,
@@ -150,62 +201,95 @@ test('Db.inspect(key, memDb, hashFun) returned value for key  in db and with a c
 
 const memoryDb = {
   _header: {
-    head: 3096844302,
-    tail: 3096844342,
+    head: {
+      node: {
+        collisionFlag: 0,
+        nextPosition: 400,
+        value: 'canicanibaubau',
+        position: 300,
+        normalizedIndex: 1,
+        previousKey: 0,
+        previousIndex: 0,
+      },
+      key: 'ciao'
+    },
+    tail: {
+      node: {
+        collisionFlag: 0,
+        nextPosition: 0,
+        value: 'canicanibaubau',
+        position: 100,
+        normalizedIndex: 5,
+        previousKey: 'ciau',
+        previousIndex: 3096844332,
+      },
+      key: 'cias'
+    }
   },
   _nodes: {
-    3096844302: {
+    ciao: {
       collisionFlag: 0,
       nextPosition: 400,
-      key: 'ciao',
       value: 'canicanibaubau',
       position: 300,
       normalizedIndex: 1,
+      previousKey: 'ciao',
+      nextKey: 'ciar',
       previousIndex: 0,
     },
-    3096844312: [{
+    ciar: {
       collisionFlag: 1,
       nextPosition: 500,
-      key: 'ciar',
       value: 'canicanibaubau',
       position: 400,
       normalizedIndex: 2,
+      previousKey: 'ciao',
+      nextKey: 'ciat',
       previousIndex: 3096844302,
-    },{
+    },
+    ciat :{
       collisionFlag: 0,
       nextPosition: 600,
-      key: 'ciat',
       value: 'canicanibaubau',
       position: 500,
       normalizedIndex: 2,
+      previousKey: 'ciar',
+      nextKey: 'ciay',
       previousIndex: 3096844302,
-    }],
-    3096844322: {
+    },
+    ciay : {
       collisionFlag: 0,
       nextPosition: 700,
-      key: 'ciay',
       value: 'canicanibaubau',
       position: 600,
       normalizedIndex: 3,
+      previousKey: 'ciat',
+      nextKey: 'ciau',
       previousIndex: 3096844312,
     },
-    3096844332: {
+    ciau: {
       collisionFlag: 0,
       nextPosition: 100,
-      key: 'ciau',
       value: 'canicanibaubau',
       position: 700,
       normalizedIndex: 4,
+      previousKey: 'ciay',
+      nextKey: 'cias',
       previousIndex: 3096844322,
     },
-    3096844342: {
+    cias: {
       collisionFlag: 0,
       nextPosition: 0,
-      key: 'cias',
       value: 'canicanibaubau',
       position: 100,
       normalizedIndex: 5,
+      previousKey: 'ciau',
+      nextKey: 'ciau',
       previousIndex: 3096844332,
     },
   },
+  _hashFunction: function(key) {
+    const map = {ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323,kkkk:9096844323,rrrr:5};
+    return map[key];
+  }
 };

@@ -1,12 +1,28 @@
 {
+    "maxcomplexity": 1,
     "esversion": 6,
     "esnext": true,
+    "bitwise": true,
+    "curly": true,
+    "eqeqeq": true,
+    "freeze": true,
+    "futurehostile": true,
+    "maxcomplexity": 4,
+    "maxdepth": 2,
+    "maxparams": 2,
+    "maxstatements": 10,
+    "noarg": true,
+    "nocomma": true,
+    "nonew": true,
+    "undef": true,
+    "unused": true,
     "globals" : {
         "require": false,
         "console": false,
         "Buffer": false,
         "resolve": false,
         "reject": false,
-        "exports": false
+        "exports": false,
+        "module": false
     }
 }

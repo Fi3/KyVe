@@ -1,48 +1,107 @@
 const Errors = require('./Errors.js');
 
+class Node {
+  // how is rapresented a node in memory
+  constructor(collisionFlag, nextPosition, value, position, normalizedIndex, previousKey,nextKey, previousIndex) {
+    // collisionFlag is 0 or 1
+    this.collisionFlag = collisionFlag;
+    // nextPosition is int, file byte position of the next node, 0 if tail
+    this.nextPosition = nextPosition;
+    // value is string
+    this.value = value;
+    // position is int, file byte position of this node
+    this.position = position;
+    // normalized index is int, if hash(key) is actual index normalized index is
+    //  min(hash(key1), ..., hash(keyn)) => 0 MAX(hash(key1)...) => n all the
+    //  other element accordingly
+    this.normalizedIndex = normalizedIndex;
+    // previousKey string is the node's key when head
+    this.previousKey = previousKey;
+    // nextKey string is the node's key when tai
+    this.nextKey = nextKey;
+    // previousIndex is int, is actual index of previous node, 0 if head
+    this.previousIndex = previousIndex;
+  }
+}
+
+class Header {
+  constructor(head, headKey, tail, tailKey) {
+    this.head = {
+      node: head,
+      key: headKey,
+    };
+    this.tail = {
+      node: tail,
+      key: tailKey,
+    };
+  }
+}
+
+class MemoryDb {
+  // MemoryDb is create when we load the database from the file where is saved, or from ...
+  // We need memoryDb for read the db and also for write becaouse the object that rapresent
+  // the bufferized db (the one in the file) need MemoryDb for modify the buffer.
+  // _header should an Header object
+  // _nodes should be {strinf: Node object, string: Node object, ...}
+  // _hashFunction is a function that take a string and return an int
+  constructor(header, nodes, hashFucntion) {
+    this._header = header;
+    this._nodes = nodes;
+    this._hashFunction = hashFucntion;
+  }
+  getPreviousNode(key) {
+    // Return the node with a key such that, hash(key) is the biggest of the ones that are smaller than indexSearched
+    // If this node is an element of a boucket (has collsions in the db) return the first
+    // node of the boucket
+    return _getPreviousNode(this, key);
+  }
+
+  inspect(key) {
+    // Return index and buffer's positions of the key's node if the node is in db
+    // Return index and buffer's positions for useful for insert the node in the buffer if key's node is not in the db
+    return _inspect(this, key);
+  }
+}
+
 function _inspect(memoryDb, key) {
   // key is a string, memoryDb is the object that we get from load the db in memory
-  // hashFucntion is the function that we use for hashing
-  // return {index, getPreviousIndexPosition, nextNodePosition, alreadyInDb, collisions}
+  // Return {index, prevNodePosition, nextNodePosition, alreadyInDb, collisions}
   // collisions is int, number of collisions
-  // when we inspect a key that is not in the db but that have a collision:
-  //   prevNodeCollisionFlag should be the node after the boucket
+  // When we inspect a key that is not in the db but that have a collision:
+  //   prevNodePosition should be the node after the boucket
   //   nextNodePosition should be the position of the first node of the boucket (we will insert the new node at the head of the boucket)
 
-  const hashFunction = memoryDb._hashFunction;
-  const index = hashFunction(key);
   const node = memoryDb._nodes[key];
   const prevNode = _getPreviousNode(memoryDb, key);
   let previousNodePosition;
   let nextNodePosition;
   let normalizedIndex;
 
-  // set alreadyInDb and collisions
+  // Set alreadyInDb and collisions
   const alreadyInDb = node !== undefined;
   const collisions = _collisionsNumber(memoryDb, key);
 
-  // set previous  and next position
-  // the inspected key can be in db or not, if the key is in the db we already know
-  // next and prev position.
-  // If key is not in db we have the below options:
-  // 1. the previous key belong to a boucket of keys,
-  //    we should find the last boucket's node becaouse prevKey is set to the first one
-  // 2. previous key do not belong to a boucket, we can prevKey
-  if (node !== undefined) {
-    // if key is in db ever use key's previous and next position
+  // Set buffer's previous and nex node positions
+  if (alreadyInDb) {
+    // If key is in db we can use the node's attribute for set prev next positions and index
     previousNodePosition = memoryDb._nodes[node.previousKey].position;
     nextNodePosition = node.nextPosition;
     normalizedIndex = node.normalizedIndex;
   }
   else if (prevNode.collisionFlag === 1) {
-    // if key is not in db and the previous node is in a boucket
-    const boucket = _traverseBoucket(memoryDb, prevNode);                        // jshint ignore:line
+    // If key is not in db and the previous node is in a boucket we have to find the last node of the
+    // boucket. The key will be inserted after the last boucket's node, so the key's prev position
+    // will be last boucket's node position and the key's will be last boucket's node next position,
+    // and of courese the indext will be last bouket's node index + 1.
+    const boucket = _traverseBoucket(memoryDb, prevNode);
     previousNodePosition = boucket[boucket.length - 1].position;
     nextNodePosition = boucket[boucket.length - 1].nextPosition;
     normalizedIndex = prevNode.normalizedIndex + 1;
   }
   else if (prevNode.collisionFlag !== 1) {
-    // if key is not in db and the previous node is not in a boucket
+    // If the key is not in db and the previous node is not in a boucket, the key will be inserted
+    // after prev node so we can use as key's next and prev positions the position of prevNode and
+    // prevNode next position. As index we can use prevNode index + 1.
     previousNodePosition = prevNode.position;
     nextNodePosition = prevNode.nextPosition;
     normalizedIndex = prevNode.normalizedIndex + 1;
@@ -73,9 +132,6 @@ function _collisionsNumber(memoryDb, key) {
   }, 0);
   return collisions;
 }
-
-
-
 
 function _getPreviousNode(memoryDb, key) {
   // iterate memoryDb key and when key > indexSerched return the key before
@@ -184,64 +240,10 @@ function _traverseBoucket(memoryDb, node) {
   return traverse(memoryDb, [node]);
 }
 
-class Node {
-  // how is rapresented a node in memory
-  constructor(collisionFlag, nextPosition, value, position, normalizedIndex, key, previousIndex) {
-    // collisionFlag is 0 or 1
-    this.collisionFlag = collisionFlag;
-    // nextPosition is int, file byte position of the next node, 0 if tail
-    this.nextPosition = nextPosition;
-    // value is string
-    this.value = value;
-    // position is int, file byte position of this node
-    this.position = position;
-    // normalized index is int, if hash(key) is actual index normalized index is
-    //  min(hash(key1), ..., hash(keyn)) => 0 MAX(hash(key1)...) => n all the
-    //  other element accordingly
-    this.normalizedIndex = normalizedIndex;
-    // previousKey string is the node's key when head
-    this.previousKey = previousKey;
-    // nextKey string is the node's key when tai
-    this.nextKey = nextKey;
-    // previousIndex is int, is actual index of previous node, 0 if head
-    this.previousIndex = previousIndex;
-  }
-}
-
-class Header {
-  constructor(head, headKey, tail, tailKey) {
-    this.head = {
-      node: head,
-      key: jeadKey,
-    };
-    this.tail = {
-      node: tail,
-      key: tailKey,
-    };
-  }
-}
-
-class MemoryDb {
-  // MemoryDb is create when we load the database from the file where is saved, or from ...
-  // we need memoryDb for read the db and also for write becaouse the object that rapresent
-  // the bufferized db (the one in the file) need MemoryDb for modify the buffer.
-  // _header should be new Header
-  // nodes should be {strinf: new Node, string: new Node, ...}
-  // hash function is a function that take a string and return an int
-  constructor(header, nodes, hashFucntion) {
-    this._header = header;
-    this._nodes = nodes;
-    this._hashFunction = hashFucntion;
-  }
-  getPreviousNode(key) {
-    // return the node with a key such that:
-    // hash(key) is the biggest of the ones that are smaller than indexSearched 
-    // If this node is an element of a boucket (has collsions in the db) return the first
-    // node of the boucket
-    return (_getPreviousNode(this, node));
-  }
-}
-
+module.exports.Node = Node;
+module.exports.Header = Header;
+module.exports.MemoryDb = MemoryDb;
+// ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;
 module.exports._getPreviousNode = _getPreviousNode;
 module.exports._traverseBoucket = _traverseBoucket;

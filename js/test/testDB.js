@@ -39,7 +39,7 @@ test('Db._getPreviousNode returned value for the biggets hash(key)', assert => {
 });
 
 test('Db._traverseBoucket returned value for the first element of a boucket', assert => {
-  const actual = Db._traverseBoucket(memoryDb, 'ciar');
+  const actual = Db._traverseBoucket(memoryDb, memoryDb._nodes.ciar);
   const expected = [memoryDb._nodes.ciar, memoryDb._nodes.ciat];
 
   assert.deepEqual(actual, expected,
@@ -51,7 +51,7 @@ test('Db._traverseBoucket returned value for a key that is not in a boucket', as
   let actual;
   let expected;
   try {
-    Db._traverseBoucket(memoryDb, 'cias');
+    Db._traverseBoucket(memoryDb, memoryDb._nodes.cias);
   }
   catch(e) {
     actual = e.name;
@@ -72,7 +72,7 @@ test('Db._traverseBoucket returned value for a key that is in a boucket but is n
   let actual;
   let expected;
   try {
-    Db._traverseBoucket(memoryDb, 'ciat');
+    Db._traverseBoucket(memoryDb, memoryDb._nodes.ciat);
   }
   catch(e) {
     actual = e.name;
@@ -89,26 +89,6 @@ test('Db._traverseBoucket returned value for a key that is in a boucket but is n
   assert.end();
 });
 
-test('Db._traverseBoucket returned value for key not in DB', assert => {
-  let actual;
-  let expected;
-  try {
-    Db._traverseBoucket(memoryDb, 'lulliloj');
-  }
-  catch(e) {
-    actual = e.name;
-  }
-  try {
-    throw new Errors.MemoryDbKeyNotInDb();
-  }
-  catch(e) {
-    expected = e.name;
-  }
-
-  assert.deepEqual(actual, expected,
-    'when we pass a key that is not in the db should raise not in db');
-  assert.end();
-});
 test('Db.inspect returned value for key not in DB', assert => {
   const actual = Db._inspect(memoryDb, 'cani');
   const expected = {

@@ -4,18 +4,13 @@ function _inspect(memoryDb, key) {
   // hashFucntion is the function that I use for hashing
   // return {index, getPreviousIndexPosition, nextNodePosition, alreadyInDb, collisions}
   // collisions is int, number of collisions
+
   const hashFunction = memoryDb._hashFunction;
   const index = hashFunction(key);
   const node = memoryDb._nodes[key];
   const prevNode = _getPreviousNode(memoryDb, key);
-  //const prevNodeKey = _keyFromNode(memoryDb, prevNode);
-
-  //// if prevNode is the first element of a boucket get all the boucket
-  //if (prevNode.collisionFlag === 1) {
-  //  console.log('jkhgwedgwqegd', prevNode);
-  //  console.log('jkhgwedgwqegd', prevNodeKey);
-  //  const boucket = _traverseBoucket(memoryDb, prevNodeKey);
-  //}
+  let previousNodePosition;
+  let nextNodePosition;
 
   // set alreadyInDb and collisions
   let alreadyInDb;
@@ -33,15 +28,29 @@ function _inspect(memoryDb, key) {
     collisions = 'chi lo sa??';
   }
 
-  // set prev position
-  let previousNodePosition;
-  //if (prevNode.collisionFlag === 0) {
-  //  previousNodePosition = prevNode.position;
-  //  nextNodePosition = node.position;
-  //}
-  if (prevNode instanceof Array) {
-    prevNode = prevNode[prevNode.length - 1];
+  // set previous  and next position
+  if (node !== undefined) {
+    // if key is in db ever use saved previous and next position
+    previousNodePosition = memoryDb._nodes[node.previousKey].position;
+    nextNodePosition = node.nextNodePosition;
   }
+  else if (prevNode.collisionFlag === 1) {
+    // if key is not in db and the previous node is in a boucket
+    const boucket = _traverseBoucket(memoryDb, prevNode);                        // jshint ignore:line
+    previousNodePosition = boucket[boucket.length - 1].position;
+    previousNodePosition = boucket[boucket.length - 1].nextPosition;
+  }
+  else if (prevNode.collisionFlag !== 1) {
+    // if key is not in db and the previous node is not in a boucket
+    previousNodePosition = prevNode.position;
+    previousNodePosition = prevNode.nextPosition;
+  }
+  else if (prevNode.collisionFlag === 1 && ) {
+    // if key is in db and the previous node is not in a boucket
+    previousNodePosition = prevNode.position;
+    previousNodePosition = prevNode.nextPosition;
+  }
+
   return {
     normalizedIndex: prevNode.normalizedIndex + 1,
     previousNodePosition: prevNode.position,
@@ -49,21 +58,6 @@ function _inspect(memoryDb, key) {
     alreadyInDb: alreadyInDb,
     collisions: collisions,
   };
-}
-
-function _keyFromNode(memoryDb, node) {
-  const isHead = memoryDb._nodes[node.previousKey].previousKey === node.previousKey;
-  const isTail = memoryDb._nodes[node.nextKey].nextKey === node.nextKey;
-
-  if (isHead) {
-    return node.previousKey;
-  }
-  else if (isTail) {
-    return node.nextKey;
-  }
-  else {
-    return memoryDb._nodes[node.nextKey].previousKey;
-  }
 }
 
 function _getPreviousNode(memoryDb, key) {
@@ -126,22 +120,16 @@ function _getFirstBoucketNode(memoryDb, key) {
   }
 }
 
-function _traverseBoucket(memoryDb, key) { //TODO same function that accept node insted of key
+function _traverseBoucket(memoryDb, node) {
   // take the first element of the boucket and return a list that contain the whole boucket
 
-  function checkValue(memoryDb, key) {
+  function checkValue(memoryDb, node) {
     // check if the key belong at an element the is the first element of a boucket if not
     // throw an appropiate error
-    const node = memoryDb._nodes[key];
-
-    // if key is not in db should raise an error
-    if (node === undefined) {
-      throw new Errors.MemoryDbKeyNotInDb();
-    }
 
     const nodeCollisionFlag = node.collisionFlag;
     const prevNodeCollisionFlag = memoryDb._nodes[node.previousKey].collisionFlag;
-    const isHead = node.key === node.previousKey;
+    const isHead = node.normalizedIndex === 1;
 
     // the key do not belong at a node in a boucket
     if (nodeCollisionFlag !== 1 && prevNodeCollisionFlag !== 1) {
@@ -174,8 +162,8 @@ function _traverseBoucket(memoryDb, key) { //TODO same function that accept node
     }
   }
 
-  checkValue(memoryDb, key);
-  return traverse(memoryDb, [memoryDb._nodes[key]]);
+  checkValue(memoryDb, node);
+  return traverse(memoryDb, [node]);
 }
 
 class Node {

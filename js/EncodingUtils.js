@@ -18,4 +18,5 @@ function *getRLPLen(firstByte) {
   throw new Error();
 }
 
+
 module.exports.getRLPLen = getRLPLen;

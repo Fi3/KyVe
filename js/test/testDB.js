@@ -1,5 +1,5 @@
 const test = require('tape');
-const Db = require('../DB.js');
+const Db = require('../MemoryDb.js');
 const Errors = require('../Errors.js');
 
 test('Db._getPreviousNode returned value for key not in db', assert => {

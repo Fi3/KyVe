@@ -112,7 +112,7 @@ test('Db.inspect returned value for key in DB', assert => {
   const expected = {
     normalizedIndex: 4,
     previousNodePosition: 600,
-    nextNodePosition: 700,
+    nextNodePosition: 100,
     alreadyInDb: true,
     collisions:0
   };
@@ -130,7 +130,7 @@ test('Db.inspect returned value when previus index contain more than one node (c
   const expected = {
     normalizedIndex: 3,
     previousNodePosition: 500,
-    nextNodePosition: 600,
+    nextNodePosition: 700,
     alreadyInDb: true,
     collisions:0
   };
@@ -155,9 +155,9 @@ test('Db.inspect returned value for key not in db but with a collision', assert 
 
   assert.deepEqual(actual, expected,
     'previousIndexPosition should be the position of the node at the index before the index of the key ' +
-    'nextNodePosition should be the position of the node at the index after the index of the key in (last element of boucket)' +
+    'nextNodePosition should be the position of the node at the index after the index of the key in (first element of boucket)' +
     'alreadyInDb should be false for key not presented in db ' +
-    'collisions should be < 0 for key that collide');
+    'collisions should be bigger 0 for key that collide');
   assert.end();
 });
 
@@ -165,10 +165,10 @@ test('Db.inspect returned value for key  in db and with a collision', assert => 
   const actual = Db._inspect(memoryDb, 'ciat');
   const expected = {
     normalizedIndex: 2,
-    previousNodePosition: 300,
-    nextNodePosition: 400,
+    previousNodePosition: 400,
+    nextNodePosition: 600,
     alreadyInDb: true,
-    collisions:2
+    collisions:1
   };
 
   assert.deepEqual(actual, expected,

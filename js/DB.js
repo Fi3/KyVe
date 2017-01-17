@@ -1,9 +1,13 @@
 const Errors = require('./Errors.js');
+
 function _inspect(memoryDb, key) {
   // key is a string, memoryDb is the object that we get from load the db in memory
-  // hashFucntion is the function that I use for hashing
+  // hashFucntion is the function that we use for hashing
   // return {index, getPreviousIndexPosition, nextNodePosition, alreadyInDb, collisions}
   // collisions is int, number of collisions
+  // when we inspect a key that is not in the db but that have a collision:
+  //   prevNodeCollisionFlag should be the node after the boucket
+  //   nextNodePosition should be the position of the first node of the boucket (we will insert the new node at the head of the boucket)
 
   const hashFunction = memoryDb._hashFunction;
   const index = hashFunction(key);
@@ -11,54 +15,67 @@ function _inspect(memoryDb, key) {
   const prevNode = _getPreviousNode(memoryDb, key);
   let previousNodePosition;
   let nextNodePosition;
+  let normalizedIndex;
 
   // set alreadyInDb and collisions
-  let alreadyInDb;
-  let collisions;
-  if (node === undefined) {
-    alreadyInDb = false;
-    collisions = 0;
-  }
-  else if (_getFirstBoucketNode(memoryDb, key) === node) {
-    alreadyInDb = true;
-    collisions = 0;
-  }
-  else {
-    alreadyInDb = true;
-    collisions = 'chi lo sa??';
-  }
+  const alreadyInDb = node !== undefined;
+  const collisions = _collisionsNumber(memoryDb, key);
 
   // set previous  and next position
+  // the inspected key can be in db or not, if the key is in the db we already know
+  // next and prev position.
+  // If key is not in db we have the below options:
+  // 1. the previous key belong to a boucket of keys,
+  //    we should find the last boucket's node becaouse prevKey is set to the first one
+  // 2. previous key do not belong to a boucket, we can prevKey
   if (node !== undefined) {
-    // if key is in db ever use saved previous and next position
+    // if key is in db ever use key's previous and next position
     previousNodePosition = memoryDb._nodes[node.previousKey].position;
-    nextNodePosition = node.nextNodePosition;
+    nextNodePosition = node.nextPosition;
+    normalizedIndex = node.normalizedIndex;
   }
   else if (prevNode.collisionFlag === 1) {
     // if key is not in db and the previous node is in a boucket
     const boucket = _traverseBoucket(memoryDb, prevNode);                        // jshint ignore:line
     previousNodePosition = boucket[boucket.length - 1].position;
-    previousNodePosition = boucket[boucket.length - 1].nextPosition;
+    nextNodePosition = boucket[boucket.length - 1].nextPosition;
+    normalizedIndex = prevNode.normalizedIndex + 1;
   }
   else if (prevNode.collisionFlag !== 1) {
     // if key is not in db and the previous node is not in a boucket
     previousNodePosition = prevNode.position;
-    previousNodePosition = prevNode.nextPosition;
+    nextNodePosition = prevNode.nextPosition;
+    normalizedIndex = prevNode.normalizedIndex + 1;
   }
-  else if (prevNode.collisionFlag === 1 && ) {
-    // if key is in db and the previous node is not in a boucket
-    previousNodePosition = prevNode.position;
-    previousNodePosition = prevNode.nextPosition;
+  else {
+    throw UnknownError;
   }
 
   return {
-    normalizedIndex: prevNode.normalizedIndex + 1,
-    previousNodePosition: prevNode.position,
-    nextNodePosition: prevNode.nextPosition,
+    normalizedIndex: normalizedIndex,
+    previousNodePosition: previousNodePosition,
+    nextNodePosition: nextNodePosition,
     alreadyInDb: alreadyInDb,
     collisions: collisions,
   };
 }
+
+function _collisionsNumber(memoryDb, key) {
+  const keys = Object.keys(memoryDb._nodes);
+  const hash = memoryDb._hashFunction;
+  const collisions = keys.reduce( (collisions, _key) => {
+    if (hash(key) === hash(_key) && key !== _key) {
+      return collisions + 1;
+    }
+    else {
+      return collisions;
+    }
+  }, 0);
+  return collisions;
+}
+
+
+
 
 function _getPreviousNode(memoryDb, key) {
   // iterate memoryDb key and when key > indexSerched return the key before
@@ -73,7 +90,8 @@ function _getPreviousNode(memoryDb, key) {
     // iterate nodes and return when we find a key such that hash(key) is the biggest of the ones that are smaller than indexSearched
     for (let _key in nodes) {
       const actualIndex = hashFunction(_key);
-      if (actualIndex > indexSearched && indexSearched > nodes[_key].previousIndex) {
+
+      if (actualIndex >= indexSearched && indexSearched > nodes[_key].previousIndex) {
         // return isHead if there is not in the db a key such that hash(key) < indexSearched
         if (_key === nodes[_key].previousKey) {
           return 'isHead';

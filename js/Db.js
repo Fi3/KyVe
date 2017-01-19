@@ -1,3 +1,4 @@
+const Errors = require('./Errors.js');
 class Db {
   // Db is the object that expose the localStorage API
   // _buffer is the buffer that contain the raw data that we can find in the file where the db is saved
@@ -18,7 +19,7 @@ class Db {
 
 function builder(path, environment) {
   // Take a path (string) and an environment (node, mobile, browser)
-  // Return new Db() 
+  // Return new Db()
   const buffer = bufferFromPath(path, environment);
   const memoryDb = bufferParser(buffer);
   return new Db(buffer, memoryDb, path);
@@ -33,3 +34,15 @@ function bufferFromPath(path, environment) {
 function bufferParser(buffer) {
   // take a buffer and return new MemoryDb()
 }
+
+function _parseHeader(buffer) {
+  // Return head and tail byte position of a serilized db
+  if (buffer.length < 16) {
+    throw new Errors.ParseHeaderInvalidInput();
+  }
+  const head = buffer.slice(0,8).readIntBE(0,8);
+  const tail = buffer.slice(8,16).readIntBE(0,8);
+  return {head, tail};
+}
+
+module.exports._parseHeader = _parseHeader;

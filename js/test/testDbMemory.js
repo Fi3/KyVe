@@ -54,13 +54,13 @@ test('Db._traverseBoucket returned value for a key that is not in a boucket', as
     Db._traverseBoucket(memoryDb, memoryDb._nodes.cias);
   }
   catch(e) {
-    actual = e.name;
+    actual = e.constructor.name;
   }
   try {
     throw new Errors.MemoryDbKeyNotInBoucket();
   }
   catch(e) {
-    expected = e.name;
+    expected = e.constructor.name;
   }
 
   assert.deepEqual(actual, expected,
@@ -75,13 +75,13 @@ test('Db._traverseBoucket returned value for a key that is in a boucket but is n
     Db._traverseBoucket(memoryDb, memoryDb._nodes.ciat);
   }
   catch(e) {
-    actual = e.name;
+    actual = e.constructor.name;
   }
   try {
     throw new Errors.MemoryDbKeyNotFirstInBoucket();
   }
   catch(e) {
-    expected = e.name;
+    expected = e.constructor.name;
   }
 
   assert.deepEqual(actual, expected,

@@ -28,6 +28,7 @@
     "rlp": "^2.0.0"
   },
   "devDependencies": {
+    "faucet": "0.0.1",
     "tape": "^4.6.3"
   }
 }

@@ -1,3 +1,4 @@
+![travis tag](https://travis-ci.org/Fi3/CordovaLocalStorage.svg?branch=master)
 #CordovaLocalStorage
 
 ##localStorgae API without the bother of the size.

@@ -1,4 +1,5 @@
 ![travis tag](https://travis-ci.org/Fi3/CordovaLocalStorage.svg?branch=master)
+![codecov tag](https://codecov.io/gh/Fi3/CordovaLocalStorage/coverage.svg)
 #CordovaLocalStorage
 
 ##localStorgae API without the bother of the size.

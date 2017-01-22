@@ -4,6 +4,7 @@
   "description": "localStorage API without the memory limit",
   "main": "index.js",
   "scripts": {
+    "coverage": "node_modules/.bin/istanbul cover node_modules/.bin/tape ./js/test/*.js",
     "test": "for file in js/test/*.js \n do \n node $file | faucet  \n done"
   },
   "repository": {
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "faucet": "0.0.1",
+    "istanbul": "^0.4.5",
     "tape": "^4.6.3"
   }
 }

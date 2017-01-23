@@ -1,4 +1,5 @@
 const Errors = require('./Errors.js');
+const rlp = require('rlp');
 class Db {
   // Db is the object that expose the localStorage API
   // _buffer is the buffer that contain the raw data that we can find in the file where the db is saved
@@ -28,27 +29,48 @@ function builder(path, environment) {
 
 
 function bufferFromPath(path, environment) {
-  // return a class that extends Buffer and is an abstarction of a file so it that work in several envioronment
+  // return a class that extends Buffer and is an abstarction of a file so that work in several envioronment
 }
 
 function bufferParser(buffer) {
   // take a buffer and return new MemoryDb()
 }
 
-function _parseHeader(buffer) {
+function _parseHeader(header) {
   // Return head and tail byte position of a serilized db
-  if (buffer.length < 24) {
+  if (header.length < 24) {
     // sanity check head should be 24 byte
     throw new Errors.ParseHeaderInvalidInput();
   }
-  const magic = buffer.slice(0,8).toString();
+  const magic = header.slice(0,8).toString();
   if (magic !== 'KyVeKyVe') {
     // sanity check head should start with 8 byte magic number
     throw new Errors.ParseHeaderInvalidInput();
   }
-  const head = buffer.slice(8,16).readIntBE(0,8);
-  const tail = buffer.slice(16,24).readIntBE(0,8);
+  const head = header.slice(8,16).readIntBE(0,8);
+  const tail = header.slice(16,24).readIntBE(0,8);
   return {head, tail};
 }
 
+function _parseNode(node, keyLen) {
+  // traverse and parse a buffer (data) and return an Object (dict) that encode the data
+  let collisionFlag;
+  if (node[0] === 16) {
+    // bite 0 encode the collision flag, if byte 0 is 16 bit 0 is 1
+    collisionFlag = true;
+  }
+  else if (node[0] === 0) {
+    collisionFlag = false;
+  }
+  else {
+    throw UndifinedError;
+  }
+
+  const nextNode = node.slice(1,9).readIntBE(0,8);
+  const key = rlp.decode(node.slice(9, 9 + keyLen)).toString();
+  const value = rlp.decode(node.slice(9 + keyLen, node.length)).toString();
+  return {collisionFlag, nextNode, key, value};
+}
+
 module.exports._parseHeader = _parseHeader;
+module.exports._parseNode = _parseNode;

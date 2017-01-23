@@ -1,8 +1,9 @@
 const test = require('tape');
 const Db = require('../Db.js');
 const Errors = require('../Errors.js');
+const rlp = require('rlp');
 
-function createBuffer(head,tail) {
+function createHeader(head,tail) {
   const buffer = new Buffer.from(Array.apply(null, Array(24)).map(x => 0)); //jshint ignore:line
   const byteWhereHeadStart = 8;
   const byteWhereTailStart = 16;
@@ -12,10 +13,25 @@ function createBuffer(head,tail) {
   return buffer;
 }
 
+function createNode(data) {
+  const collisionFlag = new Buffer(1);
+  if (data.collisionFlag === false) {
+    collisionFlag.write('00', 0, 'hex');
+  }
+  else {
+    collisionFlag.write('10', 0, 'hex');
+  }
+  const nextNode = new Buffer(8);
+  nextNode.write(data.nextNode, 0, 'hex');
+  const key = rlp.encode(data.key);
+  const value = rlp.encode(data.value);
+  return Buffer.concat([collisionFlag, nextNode, key, value]);
+}
+
 test('Db._parseHeader return value', assert => {
   const head = '0000000000005e67';     //24167
   const tail = '0000000005e6774a';     //98989898
-  const buffer = createBuffer(head, tail);
+  const buffer = createHeader(head, tail);
   const actual = Db._parseHeader(buffer);
   const expected = {'head': 24167, 'tail': 98989898};
 
@@ -65,6 +81,23 @@ test('Db._parseHeader error throwed for invalid buffer', assert => {
 
   assert.deepEqual(actual, expected,
     'if we pass without the magic number should thorw an ParseHaederInvalidInput error');
+  assert.end();
+});
+
+test('Db._parseNode return value', assert => {
+  const data = {
+    collisionFlag: false,
+    nextNode: '000000000004378B', // 276363
+    key: 'cane',
+    value: 'gatto',
+  };
+  const buffer = createNode(data);
+  const actual = Db._parseNode(buffer, 5);
+  data.nextNode = 276363;
+  const expected = data;
+
+  assert.deepEqual(actual, expected,
+    'should return the encoded data for the buffer, collisionFlag should be bool, nextNode int, key and value string');
   assert.end();
 });
 

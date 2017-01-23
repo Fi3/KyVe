@@ -42,7 +42,7 @@ class MemoryDb {
   // We need memoryDb for read the db and also for write becaouse the object that rapresent
   // the bufferized db (the one in the file) need MemoryDb for modify the buffer.
   // _header should an Header object
-  // _nodes should be {strinf: Node object, string: Node object, ...}
+  // _nodes should be {string: Node object, string: Node object, ...}
   // _hashFunction is a function that take a string and return an int
   constructor(header, nodes, hashFucntion) {
     this._header = header;

@@ -16,8 +16,8 @@ Each node is composed by: [collision flag ,next position, key, value].
 
 Keys and value are byte strings and are encoded with [RLP Recursive Length Prefix.](https://github.com/ethereum/wiki/wiki/RLP)
 
-The db is encoded in a bytes string where the firsts 16 bytes are reserved for save the firt and last node
-positions. All the following bytes are the nodes.
+The db is encoded in a bytes string where the firsts 24 bytes are reserved for save the first and last node
+positions and for a magic number (sanity check). All the following bytes are the nodes.
 
 The first 16 bytes are the header, the header is composed by:
 1. First 8 bytes = byte position of the head node encoded in big endian with leading 0. 00 00 00 00 00 00 00 01 is 1;

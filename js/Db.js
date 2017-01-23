@@ -37,11 +37,17 @@ function bufferParser(buffer) {
 
 function _parseHeader(buffer) {
   // Return head and tail byte position of a serilized db
-  if (buffer.length < 16) {
+  if (buffer.length < 24) {
+    // sanity check head should be 24 byte
     throw new Errors.ParseHeaderInvalidInput();
   }
-  const head = buffer.slice(0,8).readIntBE(0,8);
-  const tail = buffer.slice(8,16).readIntBE(0,8);
+  const magic = buffer.slice(0,8).toString();
+  if (magic !== 'KyVeKyVe') {
+    // sanity check head should start with 8 byte magic number
+    throw new Errors.ParseHeaderInvalidInput();
+  }
+  const head = buffer.slice(8,16).readIntBE(0,8);
+  const tail = buffer.slice(16,24).readIntBE(0,8);
   return {head, tail};
 }
 

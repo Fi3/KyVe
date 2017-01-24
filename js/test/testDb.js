@@ -4,7 +4,7 @@ const Errors = require('../Errors.js');
 const rlp = require('rlp');
 
 function createHeader(head,tail) {
-  const buffer = new Buffer.from(Array.apply(null, Array(24)).map(x => 0)); //jshint ignore:line
+  const buffer = new Buffer.from(Array.from({length: 24}, x => 0)); //jshint ignore:line
   const byteWhereHeadStart = 8;
   const byteWhereTailStart = 16;
   buffer.write('KyVeKyVe', 0, 'ascii');  //magic
@@ -101,5 +101,42 @@ test('Db._parseNode return value', assert => {
   assert.end();
 });
 
-// 1 buffer len
-// 2 buffer head and tail
+test('Db._splitData return value', assert => {
+  const data = {
+    collisionFlag: false,
+    nextNode: '000000000004378B', // 276363
+    key: 'cane',
+    value: 'gatto',
+  };
+  const nodes = [];
+  for (let x = 0; x < 100; x++) {
+    nodes.push(createNode(data));
+  }
+  const actual = Db._splitData(Buffer.concat(nodes))[54];
+  const expected = [nodes[54], 5];
+
+  assert.deepEqual(actual, expected,
+    'when we pass a buffer that rapresent x nodes should return an array, returnedArray[n] = [node n, lenght of the key of node n]');
+  assert.end();
+});
+
+test('Db._splitData return value', assert => {
+  const data = {
+    collisionFlag: false,
+    nextNode: '000000000004378B', // 276363
+    key: 'cane',
+    value: 'gatto',
+  };
+  const nodes = [];
+  for (let x = 0; x < 100; x++) {
+    nodes.push(createNode(data));
+  }
+  const actual = Db._splitData(Buffer.concat(nodes)).length;
+  const expected = 100;
+
+  assert.deepEqual(actual, expected,
+    'when we pass a buffer that rapresent 100 nodes should return an array, returnedArray.length should be 100');
+  assert.end();
+});
+
+//testa per lenght ritorno

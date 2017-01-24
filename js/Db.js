@@ -72,5 +72,35 @@ function _parseNode(node, keyLen) {
   return {collisionFlag, nextNode, key, value};
 }
 
+function _splitData(data, nodes = []) {
+  //
+  // Take the data part of the stored db, that mean the whole db without the header, and
+  // return a list of lists: [[node1, keyLen1],[node2, keyLen2], ..., [noden,keyLenn]]
+  // node is byte array that rapresent the node in the stored db:
+  //
+  //
+  //    collision flab      next node byte position    rlp encoded string (value)
+  //             ^                     ^                       ^
+  //          [1 bit,    7 bits,    8 bytes,    variable,    variable]
+  //                        v                      v
+  //                    reserved        rlp encoded string (key)
+  //
+  //
+  // keyLen is the lenght in bytes of the encoded key.
+  //
+  const keyLen = rlp.getLength(data.slice(9));
+  const valueLen = rlp.getLength(data.slice(9 + keyLen));
+  const firstNode = data.slice(0, 9 + keyLen + valueLen);
+  const bufferWithoutFirstNode = data.slice(9 + keyLen + valueLen);
+  nodes.push([firstNode, keyLen]);
+  if (bufferWithoutFirstNode.length === 0) {
+    return nodes;
+  }
+  else {
+    return _splitData(bufferWithoutFirstNode, nodes);
+  }
+}
+
 module.exports._parseHeader = _parseHeader;
 module.exports._parseNode = _parseNode;
+module.exports._splitData = _splitData;

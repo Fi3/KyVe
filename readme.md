@@ -1,4 +1,4 @@
-#KyVe ![travis tag](https://travis-ci.org/Fi3/KyVe.svg?branch=master) ![codecov tag](https://codecov.io/gh/Fi3/KyVe/coverage.svg)
+#KyVe ![travis tag](https://travis-ci.org/Fi3/KyVi.svg?branch=master) ![codecov tag](https://codecov.io/gh/Fi3/KyVe/coverage.svg)
 
 
 ###A simple in memory key-value datastore with persistence.

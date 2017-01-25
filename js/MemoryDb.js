@@ -11,9 +11,14 @@ class Node {
     this.value = value;
     // position is int, file byte position of this node
     this.position = position;
-    // normalized index is int, if hash(key) is actual index normalized index is
-    //  min(hash(key1), ..., hash(keyn)) => 0 MAX(hash(key1)...) => n all the
-    //  other element accordingly
+    // normalized index is an int: hash(key) is the actual, the
+    // normalized index is calculated as below:
+    //
+    //  min(hash(key0), ..., hash(keyn)) => 0
+    //  ...
+    //  ...
+    //  MAX(hash(key0)..., hash(keyn)) => n
+    //
     this.normalizedIndex = normalizedIndex;
     // previousKey string is the node's key when head
     this.previousKey = previousKey;
@@ -38,10 +43,7 @@ class Header {
 }
 
 class MemoryDb {
-  // MemoryDb is create when we load the database from the file where is saved, or from ...
-  // We need memoryDb for read the db and also for write becaouse the object that rapresent
-  // the bufferized db (the one in the file) need MemoryDb for modify the buffer.
-  // _header should an Header object
+  // _header should be an Header object
   // _nodes should be {string: Node object, string: Node object, ...}
   // _hashFunction is a function that take a string and return an int
   constructor(header, nodes, hashFucntion) {
@@ -60,6 +62,10 @@ class MemoryDb {
     // Return index and buffer's positions of the key's node if the node is in db
     // Return index and buffer's positions for useful for insert the node in the buffer if key's node is not in the db
     return _inspect(this, key);
+  }
+
+  get(key) {
+    return this._nodes[key];
   }
 }
 

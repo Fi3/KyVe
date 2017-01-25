@@ -1,3 +1,4 @@
+const MemoryDb = require('./MemoryDb.js').MemoryDb;
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
 class Db {
@@ -28,12 +29,18 @@ function builder(path, environment) {
 
 
 
-function bufferFromPath(path, environment) {
+function storedDbFromPath(path, environment) {
   // return a class that extends Buffer and is an abstarction of a file so that work in several envioronment
 }
 
-function bufferParser(buffer) {
+function memoryDbFromStoredDb(buffer) {
   // take a buffer and return new MemoryDb()
+  //  find position
+  //  find normalized index
+  //  find previous key
+  //  find next key
+  //  find previous actual index
+  return {get: function(key){return {value:key};}};
 }
 
 function _parseHeader(header) {
@@ -104,3 +111,4 @@ function _splitData(data, nodes = []) {
 module.exports._parseHeader = _parseHeader;
 module.exports._parseNode = _parseNode;
 module.exports._splitData = _splitData;
+module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;

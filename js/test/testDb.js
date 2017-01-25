@@ -2,6 +2,7 @@ const test = require('tape');
 const Db = require('../Db.js');
 const Errors = require('../Errors.js');
 const rlp = require('rlp');
+const hash = require('fnv1a');
 
 function createHeader(head,tail) {
   const buffer = new Buffer.from(Array.from({length: 24}, x => 0)); //jshint ignore:line
@@ -139,4 +140,48 @@ test('Db._splitData return value', assert => {
   assert.end();
 });
 
-//testa per lenght ritorno
+test('Db.memoryDbFromStoredDb return value', assert => {
+  const head = '0000000000000052';     // 82
+  const tail = '0000000000000068';     // 104
+  const bufferHeader = createHeader(head, tail);
+  const bufferData = Buffer.concat(db.map(x => createNode(x)));
+  const storedDb = Buffer.concat([bufferHeader, bufferData]);
+  const actual = Db.memoryDbFromStoredDb(storedDb).get('cane').value;
+  const expected = 'gatto';
+
+  assert.deepEqual(actual, expected,
+    'memoryDbFromStoredDb should return a MemoryDb with the same nodes that are in the passed StoredDb');
+  assert.end();
+});
+
+const db = [
+  {
+    // THIS IS THE II ELEMENT
+    collisionFlag: false,
+    nextNode: '0000000000000026', // 38
+    key: 'cane',
+    value: 'gatto',
+  },
+  {
+    // THIS IS THE III ELEMENT
+    collisionFlag: true,
+    nextNode: '000000000000003c', // 60
+    key: 'cane',
+    value: 'gatti',
+  },
+  {
+    // THIS IS THE HEAD
+    collisionFlag: false,
+    nextNode: '0000000000000052', // 82
+    key: 'pani',
+    value: 'matti',
+  },
+  {
+    // THIS IS THE TAIL
+    collisionFlag: false,
+    nextNode: '0000000000000068', // 104
+    key: 'lupi',
+    value: 'patti',
+  },
+];
+

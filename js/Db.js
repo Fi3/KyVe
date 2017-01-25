@@ -40,6 +40,8 @@ function memoryDbFromStoredDb(buffer) {
   //  find previous key
   //  find next key
   //  find previous actual index
+  const header = _parseHeader(buffer.slice(0, 16);
+  const nodes = _splitData(buffer.slice(16, buffer.length).map(node => _parseNode(node));
   return {get: function(key){return {value:key};}};
 }
 
@@ -57,26 +59,6 @@ function _parseHeader(header) {
   const head = header.slice(8,16).readIntBE(0,8);
   const tail = header.slice(16,24).readIntBE(0,8);
   return {head, tail};
-}
-
-function _parseNode(node, keyLen) {
-  // traverse and parse a buffer (data) and return an Object (dict) that encode the data
-  let collisionFlag;
-  if (node[0] === 16) {
-    // bite 0 encode the collision flag, if byte 0 is 16 bit 0 is 1
-    collisionFlag = true;
-  }
-  else if (node[0] === 0) {
-    collisionFlag = false;
-  }
-  else {
-    throw UndifinedError;
-  }
-
-  const nextNode = node.slice(1,9).readIntBE(0,8);
-  const key = rlp.decode(node.slice(9, 9 + keyLen)).toString();
-  const value = rlp.decode(node.slice(9 + keyLen, node.length)).toString();
-  return {collisionFlag, nextNode, key, value};
 }
 
 function _splitData(data, nodes = []) {
@@ -108,7 +90,49 @@ function _splitData(data, nodes = []) {
   }
 }
 
+function _parseNodes(nodes) {
+  // Take the output of _splitData [[bufferizedNode1, keyLen1], ....] and return [nodes1, nodes2, ...]
+  // The returned node has not the fileds normalizedIndex, previousKey, nextKey, previousActualIndex
+  // The work of parse the node is let to _parseNode, the dutys of this function are:
+  //   1. find the byte position of the nodes in the stroedDb
+  //   2. feed _parseNode with node and keyLen
+  //   3. put all togather in a list of nodes
+  return;
+}
+
+function _parseNode(node, keyLen) {
+  // traverse and parse a buffer (data) and return an Object (dict) that encode the data
+  let collisionFlag;
+  if (node[0] === 16) {
+    // bite 0 encode the collision flag, if byte 0 is 16 bit 0 is 1
+    collisionFlag = true;
+  }
+  else if (node[0] === 0) {
+    collisionFlag = false;
+  }
+  else {
+    throw UndifinedError;
+  }
+
+  const nextNode = node.slice(1,9).readIntBE(0,8);
+  const key = rlp.decode(node.slice(9, 9 + keyLen)).toString();
+  const value = rlp.decode(node.slice(9 + keyLen, node.length)).toString();
+  return {collisionFlag, nextNode, key, value};
+}
+
+function _setIndexes(nodes) {
+  // Take an array of nodes and return the same array but add the field index at every node
+  return;
+}
+
+function _setKeys(nodes) {
+  // Take an array of nodes and return the same array but add the fields
+  // previousKey, nextKey and previuosActualIndex at every node
+  return;
+}
+
 module.exports._parseHeader = _parseHeader;
 module.exports._parseNode = _parseNode;
 module.exports._splitData = _splitData;
+module.exports._setIndexes = _setIndexes;
 module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;

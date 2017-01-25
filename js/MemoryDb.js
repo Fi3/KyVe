@@ -25,7 +25,7 @@ class Node {
     // nextKey string is the node's key when tai
     this.nextKey = nextKey;
     // previousIndex is int, is actual index of previous node, 0 if head
-    this.previousIndex = previousIndex;
+    this.previousIndex = previousIndex;  // TODO this should be a method !!!
   }
 }
 

@@ -40,8 +40,8 @@ function memoryDbFromStoredDb(buffer) {
   //  find previous key
   //  find next key
   //  find previous actual index
-  const header = _parseHeader(buffer.slice(0, 16);
-  const nodes = _splitData(buffer.slice(16, buffer.length).map(node => _parseNode(node));
+  //const header = _parseHeader(buffer.slice(0, 16));
+  //const nodes = _splitData(buffer.slice(16, buffer.length)).map(node => _parseNode(node));
   return {get: function(key){return {value:key};}};
 }
 
@@ -93,12 +93,24 @@ function _splitData(data, nodes = []) {
 function _parseNodes(nodes) {
   // Take the output of _splitData [[bufferizedNode1, keyLen1], ....] and return [nodes1, nodes2, ...]
   // The returned node has not the fileds normalizedIndex, previousKey, nextKey, previousActualIndex
-  // The work of parse the node is let to _parseNode, the dutys of this function are:
+  // The actual parsing of the node is let to _parseNode, the dutys of this function are:
+  //
   //   1. find the byte position of the nodes in the stroedDb
   //   2. feed _parseNode with node and keyLen
-  //   3. put all togather in a list of nodes
-  return;
+  //   3. put all together in a list of nodes
+  //
+  let bytePosition = 16;
+  const parsedNodes = nodes.map( value => {
+    const node = value[0];
+    const keyLen = value[1];
+    const parsedNode = _parseNode(node, keyLen);
+    parsedNode.position = bytePosition;
+    bytePosition = bytePosition + node.length;
+    return parsedNode;
+  });
+  return parsedNodes;
 }
+
 
 function _parseNode(node, keyLen) {
   // traverse and parse a buffer (data) and return an Object (dict) that encode the data
@@ -131,8 +143,9 @@ function _setKeys(nodes) {
   return;
 }
 
+module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;
 module.exports._parseHeader = _parseHeader;
 module.exports._parseNode = _parseNode;
+module.exports._parseNodes = _parseNodes;
 module.exports._splitData = _splitData;
 module.exports._setIndexes = _setIndexes;
-module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;

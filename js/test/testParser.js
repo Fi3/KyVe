@@ -1,5 +1,5 @@
 const test = require('tape');
-const Db = require('../Db.js');
+const Parser = require('../Parser.js');
 const Errors = require('../Errors.js');
 const rlp = require('rlp');
 const hash = require('fnv1a');
@@ -29,11 +29,11 @@ function createNode(data) {
   return Buffer.concat([collisionFlag, nextNode, key, value]);
 }
 
-test('Db._parseHeader return value', assert => {
+test('Parser._parseHeader return value', assert => {
   const head = '0000000000005e67';     //24167
   const tail = '0000000005e6774a';     //98989898
   const buffer = createHeader(head, tail);
-  const actual = Db._parseHeader(buffer);
+  const actual = Parser._parseHeader(buffer);
   const expected = {'head': 24167, 'tail': 98989898};
 
   assert.deepEqual(actual, expected,
@@ -41,12 +41,12 @@ test('Db._parseHeader return value', assert => {
   assert.end();
 });
 
-test('Db._parseHeader error throwed for invalid buffer', assert => {
+test('Parser._parseHeader error throwed for invalid buffer', assert => {
   const buffer = new Buffer(11);
   let actual;
   let expected;
   try {
-    Db._parseHeader(buffer);
+    Parser._parseHeader(buffer);
   }
   catch(e) {
     actual = e.constructor.name;
@@ -63,12 +63,12 @@ test('Db._parseHeader error throwed for invalid buffer', assert => {
   assert.end();
 });
 
-test('Db._parseHeader error throwed for invalid buffer', assert => {
+test('Parser._parseHeader error throwed for invalid buffer', assert => {
   const buffer = new Buffer(24);
   let actual;
   let expected;
   try {
-    Db._parseHeader(buffer);
+    Parser._parseHeader(buffer);
   }
   catch(e) {
     actual = e.constructor.name;
@@ -85,7 +85,7 @@ test('Db._parseHeader error throwed for invalid buffer', assert => {
   assert.end();
 });
 
-test('Db._parseNode return value', assert => {
+test('Parser._parseNode return value', assert => {
   const data = {
     collisionFlag: false,
     nextNode: '000000000004378B', // 276363
@@ -93,7 +93,7 @@ test('Db._parseNode return value', assert => {
     value: 'gatto',
   };
   const buffer = createNode(data);
-  const actual = Db._parseNode(buffer, 5);
+  const actual = Parser._parseNode(buffer, 5);
   data.nextNode = 276363;
   const expected = data;
 
@@ -102,7 +102,7 @@ test('Db._parseNode return value', assert => {
   assert.end();
 });
 
-test('Db._splitData return value', assert => {
+test('Parser._splitData return value', assert => {
   const data = {
     collisionFlag: false,
     nextNode: '000000000004378B', // 276363
@@ -113,7 +113,7 @@ test('Db._splitData return value', assert => {
   for (let x = 0; x < 100; x++) {
     nodes.push(createNode(data));
   }
-  const actual = Db._splitData(Buffer.concat(nodes))[54];
+  const actual = Parser._splitData(Buffer.concat(nodes))[54];
   const expected = [nodes[54], 5];
 
   assert.deepEqual(actual, expected,
@@ -121,7 +121,7 @@ test('Db._splitData return value', assert => {
   assert.end();
 });
 
-test('Db._splitData return value', assert => {
+test('Parser._splitData return value', assert => {
   const data = {
     collisionFlag: false,
     nextNode: '000000000004378B', // 276363
@@ -132,7 +132,7 @@ test('Db._splitData return value', assert => {
   for (let x = 0; x < 100; x++) {
     nodes.push(createNode(data));
   }
-  const actual = Db._splitData(Buffer.concat(nodes)).length;
+  const actual = Parser._splitData(Buffer.concat(nodes)).length;
   const expected = 100;
 
   assert.deepEqual(actual, expected,
@@ -140,19 +140,19 @@ test('Db._splitData return value', assert => {
   assert.end();
 });
 
-test('Db._parseNodes return value', assert => {
+test('Parser._parseNodes return value', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const actual = Db._parseNodes(bufferData)[1].key;
+  const actual = Parser._parseNodes(bufferData)[1].key;
   const expected = 'cane';
 
   assert.deepEqual(actual, expected,
-    '_parseNodes should return a list with the same nodes that are in the passed data part of StoredDb');
+    '_parseNodes should return a list with the same nodes that are in the passed data part of StoredParser');
   assert.end();
 });
 
-test('Db._parseNodes return value length', assert => {
+test('Parser._parseNodes return value length', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const actual = Db._parseNodes(bufferData).length;
+  const actual = Parser._parseNodes(bufferData).length;
   const expected = bufferData.length;
 
   assert.deepEqual(actual, expected,
@@ -160,9 +160,9 @@ test('Db._parseNodes return value length', assert => {
   assert.end();
 });
 
-test('Db._parseNodes return value position', assert => {
+test('Parser._parseNodes return value position', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const actual = Db._parseNodes(bufferData)[2].position;
+  const actual = Parser._parseNodes(bufferData)[2].position;
   const expected = 16 + bufferData[0][0].length + bufferData[1][0].length;
 
   assert.deepEqual(actual, expected,
@@ -170,8 +170,8 @@ test('Db._parseNodes return value position', assert => {
   assert.end();
 });
 
-test('Db._setIndexes return value', assert => {
-  const actual = Db._setIndexes(db, fakeHash)[0].index;
+test('Parser._setIndexes return value', assert => {
+  const actual = Parser._setIndexes(db, fakeHash)[0].index;
   const expected = 2;
 
   assert.deepEqual(actual, expected,
@@ -179,8 +179,8 @@ test('Db._setIndexes return value', assert => {
   assert.end();
 });
 
-test('Db._setIndexes return value for node with collision flag true', assert => {
-  const actual = Db._setIndexes(db, fakeHash)[1].index;
+test('Parser._setIndexes return value for node with collision flag true', assert => {
+  const actual = Parser._setIndexes(db, fakeHash)[1].index;
   const expected = 3;
 
   assert.deepEqual(actual, expected,
@@ -188,17 +188,17 @@ test('Db._setIndexes return value for node with collision flag true', assert => 
   assert.end();
 });
 
-//test('Db.memoryDbFromStoredDb return value', assert => {
+//test('Parser.memoryParserFromStoredParser return value', assert => {
 //  const head = '0000000000000052';     // 82
 //  const tail = '0000000000000068';     // 104
 //  const bufferHeader = createHeader(head, tail);
 //  const bufferData = Buffer.concat(db.map(x => createNode(x)));
-//  const storedDb = Buffer.concat([bufferHeader, bufferData]);
-//  const actual = Db.memoryDbFromStoredDb(storedDb).get('cane').value;
+//  const storedParser = Buffer.concat([bufferHeader, bufferData]);
+//  const actual = Parser.memoryParserFromStoredParser(storedParser).get('cane').value;
 //  const expected = 'gatto';
 //
 //  assert.deepEqual(actual, expected,
-//    'memoryDbFromStoredDb should return a MemoryDb with the same nodes that are in the passed StoredDb');
+//    'memoryParserFromStoredParser should return a MemoryParser with the same nodes that are in the passed StoredParser');
 //  assert.end();
 //});
 function fakeHash(key) {

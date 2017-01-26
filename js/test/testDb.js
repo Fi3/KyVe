@@ -170,6 +170,24 @@ test('Db._parseNodes return value position', assert => {
   assert.end();
 });
 
+test('Db._setIndexes return value', assert => {
+  const actual = Db._setIndexes(db, fakeHash)[0].index;
+  const expected = 2;
+
+  assert.deepEqual(actual, expected,
+    '_setIndexes should return an array of nodes each node.index should be the absolute position of hash(node.key) respect to the other nodes');
+  assert.end();
+});
+
+test('Db._setIndexes return value for node with collision flag true', assert => {
+  const actual = Db._setIndexes(db, fakeHash)[1].index;
+  const expected = 3;
+
+  assert.deepEqual(actual, expected,
+    '_setIndexes should return an array of nodes each node.index should be the absolute position of hash(node.key) respect to the other nodes');
+  assert.end();
+});
+
 //test('Db.memoryDbFromStoredDb return value', assert => {
 //  const head = '0000000000000052';     // 82
 //  const tail = '0000000000000068';     // 104
@@ -183,6 +201,10 @@ test('Db._parseNodes return value position', assert => {
 //    'memoryDbFromStoredDb should return a MemoryDb with the same nodes that are in the passed StoredDb');
 //  assert.end();
 //});
+function fakeHash(key) {
+  const map = {pani: 236, cane: 543, lupi: 1000};
+  return map[key];
+}
 
 const db = [
   {

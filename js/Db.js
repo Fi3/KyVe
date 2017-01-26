@@ -1,4 +1,5 @@
 const MemoryDb = require('./MemoryDb.js').MemoryDb;
+const hash = require('fnv1a');
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
 class Db {
@@ -132,9 +133,37 @@ function _parseNode(node, keyLen) {
   return {collisionFlag, nextNode, key, value};
 }
 
-function _setIndexes(nodes) {
+function _setIndexes(nodes, hash) {
+  //
   // Take an array of nodes and return the same array but add the field index at every node
-  return;
+  // actualIndexes are hash(key) indexes are actual index normalized (13,88,98,98,100) => (0,1,2,3,4,5)
+  // When we have a collision like the 98s above the node with collision flag 0 have to come first
+  // then the nodes with collisions flag 1. When we parse the buffer we do not need to check the collisions
+  // for find the node with collision flag === 0 for put this node before the one with collision flag 1.
+  // This becaouse when we write on the stored db and we have a collision we put the new node (with flag 1) after
+  // the first one (with flag 0)
+  //
+
+  // Extract and sort all actual indexes from nodes
+  const actualIndexes = nodes.map(node => hash(node.key));
+  actualIndexes.sort();
+
+  // Map nodes and find the  norm index for every node:
+  let lastNormIndex;
+  const indexedNodes = nodes.map(node => {
+    let normIndex;
+    if (node.collisionFlag === true) {
+      normIndex = lastNormIndex + 1;
+    }
+    else {
+      const actualIndex = hash(node.key);
+      normIndex = actualIndexes.indexOf(actualIndex);
+    }
+    lastNormIndex = normIndex;
+    node.index = normIndex;
+    return node;
+  });
+  return indexedNodes;
 }
 
 function _setKeys(nodes) {
@@ -142,6 +171,7 @@ function _setKeys(nodes) {
   // previousKey, nextKey and previuosActualIndex at every node
   return;
 }
+
 
 module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;
 module.exports._parseHeader = _parseHeader;

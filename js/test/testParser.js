@@ -188,6 +188,32 @@ test('Parser._setIndexes return value for node with collision flag true', assert
   assert.end();
 });
 
+//test('Parser._setKeys returned value tail', assert => {
+//  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash)[3].nextKey;
+//  const expected = 'lupi';
+//
+//  assert.deepEqual(actual, expected,
+//    '_setKeys should return an array of nodes, the node with the biggest index (tail) should have key === nextKey');
+//  assert.end();
+//});
+//
+//test('Parser._setKeys returned value head', assert => {
+//  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash)[0].previousKey;
+//  const expected = 'pani';
+//
+//  assert.deepEqual(actual, expected,
+//    '_setKeys should return an array of nodes, the node with the smallest index (head) should have key === previousKey');
+//  assert.end();
+//});
+//
+//test('Parser._setKeys returned value head', assert => {
+//  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash)[0].previousIndex;
+//  const expected = 0;
+//
+//  assert.deepEqual(actual, expected,
+//    '_setKeys should return an array of nodes, the node with the smallest index (head) should have key === previousKey');
+//  assert.end();
+//});
 //test('Parser.memoryParserFromStoredParser return value', assert => {
 //  const head = '0000000000000052';     // 82
 //  const tail = '0000000000000068';     // 104
@@ -215,7 +241,7 @@ const db = [
     value: 'gatto',
   },
   {
-    // THIS IS THE III ELEMENT
+    // THIS IS THE III ELEMENTindex
     collisionFlag: true,
     nextNode: '000000000000003c', // 60
     key: 'cane',

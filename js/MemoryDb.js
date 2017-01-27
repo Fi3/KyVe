@@ -2,7 +2,7 @@ const Errors = require('./Errors.js');
 
 class Node {
   // how is rapresented a node in memory
-  constructor(collisionFlag, nextPosition, value, position, normalizedIndex, previousKey,nextKey, previousIndex) {
+  constructor(collisionFlag, nextPosition, value, position, normalizedIndex, previousKey,nextKey, previousActualIndex) {
     // collisionFlag is 0 or 1
     this.collisionFlag = collisionFlag;
     // nextPosition is int, file byte position of the next node, 0 if tail
@@ -22,10 +22,10 @@ class Node {
     this.normalizedIndex = normalizedIndex;
     // previousKey string is the node's key when head
     this.previousKey = previousKey;
-    // nextKey string is the node's key when tai
+    // nextKey string is the node's key when tail
     this.nextKey = nextKey;
-    // previousIndex is int, is actual index of previous node, 0 if head
-    this.previousIndex = previousIndex;  // TODO this should be a method !!!
+    // previousActualIndex is int, is actual index of previous node, 0 if head
+    this.previousActualIndex = previousActualIndex;  // TODO this should be a method !!!
   }
 }
 
@@ -153,7 +153,7 @@ function _getPreviousNode(memoryDb, key) {
     for (let _key in nodes) {
       const actualIndex = hashFunction(_key);
 
-      if (actualIndex >= indexSearched && indexSearched > nodes[_key].previousIndex) {
+      if (actualIndex >= indexSearched && indexSearched > nodes[_key].previousActualIndex) {
         // return isHead if there is not in the db a key such that hash(key) < indexSearched
         if (_key === nodes[_key].previousKey) {
           return 'isHead';

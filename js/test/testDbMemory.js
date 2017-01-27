@@ -189,7 +189,7 @@ const memoryDb = {
         position: 300,
         normalizedIndex: 1,
         previousKey: 0,
-        previousIndex: 0,
+        previousActualIndex: 0,
       },
       key: 'ciao'
     },
@@ -201,7 +201,7 @@ const memoryDb = {
         position: 100,
         normalizedIndex: 5,
         previousKey: 'ciau',
-        previousIndex: 3096844332,
+        previousActualIndex: 3096844332,
       },
       key: 'cias'
     }
@@ -215,7 +215,7 @@ const memoryDb = {
       normalizedIndex: 1,
       previousKey: 'ciao',
       nextKey: 'ciar',
-      previousIndex: 0,
+      previousActualIndex: 0,
     },
     ciar: {
       collisionFlag: 1,
@@ -225,7 +225,7 @@ const memoryDb = {
       normalizedIndex: 2,
       previousKey: 'ciao',
       nextKey: 'ciat',
-      previousIndex: 3096844302,
+      previousActualIndex: 3096844302,
     },
     ciat :{
       collisionFlag: 0,
@@ -235,7 +235,7 @@ const memoryDb = {
       normalizedIndex: 2,
       previousKey: 'ciar',
       nextKey: 'ciay',
-      previousIndex: 3096844302,
+      previousActualIndex: 3096844302,
     },
     ciay : {
       collisionFlag: 0,
@@ -245,7 +245,7 @@ const memoryDb = {
       normalizedIndex: 3,
       previousKey: 'ciat',
       nextKey: 'ciau',
-      previousIndex: 3096844312,
+      previousActualIndex: 3096844312,
     },
     ciau: {
       collisionFlag: 0,
@@ -255,7 +255,7 @@ const memoryDb = {
       normalizedIndex: 4,
       previousKey: 'ciay',
       nextKey: 'cias',
-      previousIndex: 3096844322,
+      previousActualIndex: 3096844322,
     },
     cias: {
       collisionFlag: 0,
@@ -265,7 +265,7 @@ const memoryDb = {
       normalizedIndex: 5,
       previousKey: 'ciau',
       nextKey: 'ciau',
-      previousIndex: 3096844332,
+      previousActualIndex: 3096844332,
     },
   },
   _hashFunction: function(key) {

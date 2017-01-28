@@ -1,4 +1,5 @@
 const MemoryDb = require('./MemoryDb.js').MemoryDb;
+const Node = require('./MemoryDb.js').Node;
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
 
@@ -108,17 +109,21 @@ function _parseNode(node, keyLen) {
 function _setIndexes(nodes, hash) {
   //
   // Take an array of nodes and return the same array but add the field index at every node
-  // actualIndexes are hash(key) indexes are actual index normalized (13,88,98,98,100) => (0,1,2,3,4,5)
+  // actualIndexes are hash(key) indexes are actual index normalized (13,88,98,98,100) => (1,2,3,4,5,6)
   // When we have a collision like the 98s above the node with collision flag 0 have to come first
   // then the nodes with collisions flag 1. When we parse the buffer we do not need to check the collisions
   // for find the node with collision flag === 0 for put this node before the one with collision flag 1.
   // This becaouse when we write on the stored db and we have a collision we put the new node (with flag 1) after
   // the first one (with flag 0)
   //
+  //  | -------------------------------------|
+  //  | N.B. !!! the index of first node is 1|
+  //  |--------------------------------------|
+  //
 
   // Extract and sort all actual indexes from nodes
   const actualIndexes = nodes.map(node => hash(node.key));
-  actualIndexes.sort();
+  actualIndexes.sort((a, b) => a-b);
 
   // Map nodes and find the  norm index for every node:
   let lastNormIndex;
@@ -129,7 +134,7 @@ function _setIndexes(nodes, hash) {
     }
     else {
       const actualIndex = hash(node.key);
-      normIndex = actualIndexes.indexOf(actualIndex);
+      normIndex = actualIndexes.indexOf(actualIndex) + 1;
     }
     lastNormIndex = normIndex;
     node.index = normIndex;
@@ -138,11 +143,42 @@ function _setIndexes(nodes, hash) {
   return indexedNodes;
 }
 
-function _setKeys(nodes, hash) {
-  // Take an array of nodes and return the same array but add the fields
-  // previousKey, nextKey and previuosActualIndex at every node
-  return;
-}
+//function _setKeys(nodes, hash) {
+//  // Take an array of nodes and return the same array but add the fields
+//  // previousKey, nextKey and previuosActualIndex at every node
+//  const nodesWithKeys = nodes.map(node => {
+//
+//    let previousKey;
+//    let previousActualIndex;
+//    // if node is head prevKey should be node.key and prevActualIndex should be 0
+//    return node.index;
+//    //if (node.index === 0) {
+//    //  previousKey = node.key;
+//    //  previousActualIndex = 0;
+//    //}
+//    //else {
+//    //  const prevNode = nodes.filter(pNode => pNode.index === node.index - 1)[0];
+//    //  previousKey = prevNode.key;
+//    //  previousActualIndex = hash(previousKey);
+//    //}
+//
+//    //let nextKey;
+//    //// if node is tail nextKey should be node.key
+//    //if (node.index === nodes.length - 1) {
+//    //  nextKey = node.key;
+//    //}
+//    //else {
+//    //  const nextNode = nodes.filter(nNode => nNode.index === node.index + 1)[0];
+//    //  nextKey = nextNode.key;
+//    //}
+//
+//    //node.previousKey = previousKey;
+//    //node.nextKey = nextKey;
+//    //node.previuosActualIndex = previousActualIndex;
+//    //return node;
+//  });
+//  return nodesWithKeys;
+//}
 
 
 module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;
@@ -151,3 +187,4 @@ module.exports._parseNode = _parseNode;
 module.exports._parseNodes = _parseNodes;
 module.exports._splitData = _splitData;
 module.exports._setIndexes = _setIndexes;
+//module.exports._setKeys = _setKeys;

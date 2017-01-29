@@ -3,7 +3,7 @@ const StoredDb = require('../StoredDb.js');
 const Errors = require('../Errors.js');
 
 test('StoredDb.slice returned value', assert => {
-  const db = new StoredDb.StoredDb('/home/fi3/github.com/fi3/CordovaLocaStorage/js/test/testFile', 'node');
+  const db = new StoredDb.StoredDb('./js/test/testFile', 'node');
   const actual = db.slice(3, 7);
   const expected = new Buffer('D14B1A7B11', 'hex');
 
@@ -17,7 +17,7 @@ test('StoredDb constructor enviornment not supported', assert => {
   let actual;
   let expected;
   try {
-    const db = new StoredDb.StoredDb('/home/fi3/github.com/fi3/CordovaLocaStorage/js/test/testFile', 'cordova');
+    const db = new StoredDb.StoredDb('./js/test/testFile', 'cordova');
   }
   catch(e) {
     actual = e.constructor.name;

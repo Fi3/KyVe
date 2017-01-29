@@ -1,11 +1,6 @@
 const MemoryDb = require('./MemoryDb.js').MemoryDb;
-const Node = require('./MemoryDb.js').Node;
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
-
-function storedDbFromPath(path, environment) {
-  // return a class that extends Buffer and is an abstarction of a file so that work in several envioronment
-}
 
 function memoryDbFromStoredDb(buffer, fakeHash) {
   // take a buffer and return new MemoryDb()
@@ -85,7 +80,6 @@ function _parseNodes(nodes) {
   });
   return parsedNodes;
 }
-
 
 function _parseNode(node, keyLen) {
   // traverse and parse a buffer (data) and return an Object (dict) that encode the data
@@ -180,8 +174,8 @@ function _setKeys(nodes, hash) {
   return nodesWithKeys;
 }
 
-
 module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;
+// ---------ONLY---FOR---TEST--------------------
 module.exports._parseHeader = _parseHeader;
 module.exports._parseNode = _parseNode;
 module.exports._parseNodes = _parseNodes;

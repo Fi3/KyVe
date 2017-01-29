@@ -187,6 +187,34 @@ test('Parser._setIndexes return value for node with collision flag true', assert
     '_setIndexes should return an array of nodes each node.index should be the absolute position of hash(node.key) respect to the other nodes');
   assert.end();
 });
+
+test('Parser._setKeys returned value tail', assert => {
+  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash).filter(node => node.index === 3)[0].nextKey;
+  const expected = 'lupi';
+
+  assert.deepEqual(actual, expected,
+    '_setKeys should return an array of nodes, the node with the biggest index (tail) should have key === nextKey');
+  assert.end();
+});
+
+test('Parser._setKeys returned value head', assert => {
+  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash).filter(node => node.index === 1)[0].previousKey;
+  const expected = 'pani';
+
+  assert.deepEqual(actual, expected,
+    '_setKeys should return an array of nodes, the node with the smallest index (head) should have key === previousKey');
+  assert.end();
+});
+
+test('Parser._setKeys returned value head', assert => {
+  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash).filter(node => node.index === 1)[0].previuosActualIndex;
+  const expected = 0;
+
+  assert.deepEqual(actual, expected,
+    '_setKeys should return an array of nodes, the node with the smallest index (head) should have previousActualIndex === 0');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000};
   return map[key];
@@ -223,35 +251,6 @@ const db = [
   },
 ];
 
-
-//test('Parser._setKeys returned value tail', assert => {
-//  //const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash).filter(node => node.index === 3)[0].nextKey;
-//  //const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash)
-//  const actual = Parser._setIndexes(db, fakeHash);
-//  const expected = 'lupi';
-//
-//  assert.deepEqual(actual, expected,
-//    '_setKeys should return an array of nodes, the node with the biggest index (tail) should have key === nextKey');
-//  assert.end();
-//});
-//
-//test('Parser._setKeys returned value head', assert => {
-//  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash).filter(node => node.index === 0)[0].previousKey;
-//  const expected = 'pani';
-//
-//  assert.deepEqual(actual, expected,
-//    '_setKeys should return an array of nodes, the node with the smallest index (head) should have key === previousKey');
-//  assert.end();
-//});
-//
-//test('Parser._setKeys returned value head', assert => {
-//  const actual = Parser._setKeys(Parser._setIndexes(db, fakeHash), fakeHash).filter(node => node.index === 0)[0].previousActualIndex;
-//  const expected = 0;
-//
-//  assert.deepEqual(actual, expected,
-//    '_setKeys should return an array of nodes, the node with the smallest index (head) should have previousActualIndex === 0');
-//  assert.end();
-//});
 //test('Parser.memoryParserFromStoredParser return value', assert => {
 //  const head = '0000000000000052';     // 82
 //  const tail = '0000000000000068';     // 104

@@ -143,42 +143,41 @@ function _setIndexes(nodes, hash) {
   return indexedNodes;
 }
 
-//function _setKeys(nodes, hash) {
-//  // Take an array of nodes and return the same array but add the fields
-//  // previousKey, nextKey and previuosActualIndex at every node
-//  const nodesWithKeys = nodes.map(node => {
-//
-//    let previousKey;
-//    let previousActualIndex;
-//    // if node is head prevKey should be node.key and prevActualIndex should be 0
-//    return node.index;
-//    //if (node.index === 0) {
-//    //  previousKey = node.key;
-//    //  previousActualIndex = 0;
-//    //}
-//    //else {
-//    //  const prevNode = nodes.filter(pNode => pNode.index === node.index - 1)[0];
-//    //  previousKey = prevNode.key;
-//    //  previousActualIndex = hash(previousKey);
-//    //}
-//
-//    //let nextKey;
-//    //// if node is tail nextKey should be node.key
-//    //if (node.index === nodes.length - 1) {
-//    //  nextKey = node.key;
-//    //}
-//    //else {
-//    //  const nextNode = nodes.filter(nNode => nNode.index === node.index + 1)[0];
-//    //  nextKey = nextNode.key;
-//    //}
-//
-//    //node.previousKey = previousKey;
-//    //node.nextKey = nextKey;
-//    //node.previuosActualIndex = previousActualIndex;
-//    //return node;
-//  });
-//  return nodesWithKeys;
-//}
+function _setKeys(nodes, hash) {
+  // Take an array of nodes and return the same array but add the fields
+  // previousKey, nextKey and previuosActualIndex at every node
+  const nodesWithKeys = nodes.map(node => {
+
+    let previousKey;
+    let previousActualIndex;
+    // if node is head prevKey should be node.key and prevActualIndex should be 0
+    if (node.index === 1) {
+      previousKey = node.key;
+      previousActualIndex = 0;
+    }
+    else {
+      const prevNode = nodes.filter(pNode => pNode.index === node.index - 1)[0];
+      previousKey = prevNode.key;
+      previousActualIndex = hash(previousKey);
+    }
+
+    let nextKey;
+    // if node is tail nextKey should be node.key
+    if (node.index === nodes.length) {
+      nextKey = node.key;
+    }
+    else {
+      const nextNode = nodes.filter(nNode => nNode.index === node.index + 1)[0];
+      nextKey = nextNode.key;
+    }
+
+    node.previousKey = previousKey;
+    node.nextKey = nextKey;
+    node.previuosActualIndex = previousActualIndex;
+    return node;
+  });
+  return nodesWithKeys;
+}
 
 
 module.exports.memoryDbFromStoredDb = memoryDbFromStoredDb;
@@ -187,4 +186,4 @@ module.exports._parseNode = _parseNode;
 module.exports._parseNodes = _parseNodes;
 module.exports._splitData = _splitData;
 module.exports._setIndexes = _setIndexes;
-//module.exports._setKeys = _setKeys;
+module.exports._setKeys = _setKeys;

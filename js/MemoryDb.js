@@ -51,6 +51,7 @@ class MemoryDb {
     this._nodes = nodes;
     this._hashFunction = hashFucntion;
   }
+
   getPreviousNode(key) {
     // Return the node with a key such that, hash(key) is the biggest of the ones that are smaller than indexSearched
     // If this node is an element of a boucket (has collsions in the db) return the first
@@ -58,14 +59,14 @@ class MemoryDb {
     return _getPreviousNode(this, key);
   }
 
-  inspect(key) {
+  inspectKey(key) {
     // Return index and buffer's positions of the key's node if the node is in db
     // Return index and buffer's positions for useful for insert the node in the buffer if key's node is not in the db
     return _inspect(this, key);
   }
 
   get(key) {
-    return this._nodes[key];
+    return this._nodes.filter(node => node.key === key)[0];
   }
 }
 

@@ -215,6 +215,20 @@ test('Parser._setKeys returned value head', assert => {
   assert.end();
 });
 
+test('Parser.memoryDbFromStoredDb return value', assert => {
+  const head = '0000000000000052';     // 82
+  const tail = '0000000000000068';     // 104
+  const bufferHeader = createHeader(head, tail);
+  const bufferData = Buffer.concat(db.map(x => createNode(x)));
+  const storedDb = Buffer.concat([bufferHeader, bufferData]);
+  const actual = Parser.memoryDbFromStoredDb(storedDb, fakeHash).get('cane').value;
+  const expected = 'gatto';
+
+  assert.deepEqual(actual, expected,
+    'memoryDbFromStoredDb should return a MemoryParser with the same nodes that are in the passed StoredParser');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000};
   return map[key];
@@ -251,16 +265,3 @@ const db = [
   },
 ];
 
-//test('Parser.memoryParserFromStoredParser return value', assert => {
-//  const head = '0000000000000052';     // 82
-//  const tail = '0000000000000068';     // 104
-//  const bufferHeader = createHeader(head, tail);
-//  const bufferData = Buffer.concat(db.map(x => createNode(x)));
-//  const storedParser = Buffer.concat([bufferHeader, bufferData]);
-//  const actual = Parser.memoryParserFromStoredParser(storedParser).get('cane').value;
-//  const expected = 'gatto';
-//
-//  assert.deepEqual(actual, expected,
-//    'memoryParserFromStoredParser should return a MemoryParser with the same nodes that are in the passed StoredParser');
-//  assert.end();
-//});

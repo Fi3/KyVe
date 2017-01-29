@@ -7,16 +7,17 @@ function storedDbFromPath(path, environment) {
   // return a class that extends Buffer and is an abstarction of a file so that work in several envioronment
 }
 
-function memoryDbFromStoredDb(buffer) {
+function memoryDbFromStoredDb(buffer, fakeHash) {
   // take a buffer and return new MemoryDb()
   //  find position
   //  find normalized index
   //  find previous key
   //  find next key
   //  find previous actual index
-  //const header = _parseHeader(buffer.slice(0, 16));
-  //const nodes = _splitData(buffer.slice(16, buffer.length)).map(node => _parseNode(node));
-  return {get: function(key){return {value:key};}};
+  const header = _parseHeader(buffer.slice(0, 24));
+  const nodes = _parseNodes(_splitData(buffer.slice(24, buffer.length)));
+  return new MemoryDb(header, nodes, fakeHash);
+  //return {get: function(key){return {value:key};}};
 }
 
 function _parseHeader(header) {

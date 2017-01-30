@@ -9,3 +9,6 @@ we update the one in memory. All the byte's position of the key:value elements (
 When we have to write the stored db we know exactly the byte position of the node don't need to parse the db every time that we .set(k:v)
 
 The goal is to have a sobstitute for LocalStorage on Node and Cordova without the size limit and not too slow.
+
+* [KyVe Dump File Format](https://github.com/Fi3/KyVe/wiki/KyVe-Dump-File-Format)
+* [KyVe in memory datastore](https://github.com/Fi3/KyVe/wiki/KyVe-in-memory-datastore)

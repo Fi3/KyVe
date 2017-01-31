@@ -33,3 +33,21 @@ test('StoredDb constructor enviornment not supported', assert => {
     'when we try to initialize a storedDb for a not supported enviornmet should raise not supp env');
   assert.end();
 });
+
+test('StoredDb updateNode action executed', assert => {
+  const actual = 1;
+  const expected = 1;
+
+  assert.deepEqual(actual, expected,
+    'updateNode should start to write `value` in the file at nodePosition + 24 + keyLen and finish to write at valueLen');
+  assert.end();
+});
+
+test('StoredDb updateNode error for value to big', assert => {
+  const actual = 1;
+  const expected = 1;
+
+  assert.deepEqual(actual, expected,
+    'updateNode should throw [TODO] when we pass a value that is bigger than nodeLen - 24 - keyLen');
+  assert.end();
+});

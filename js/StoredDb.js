@@ -26,4 +26,12 @@ class StoredDb {
   }
 }
 
+function _updateNode(StoredDb, bo) {
+}
+
+function _addNode(StoredDb, bo) {
+}
+
+function _deleteNode(StoredDb, bo) {
+}
 module.exports.StoredDb = StoredDb;

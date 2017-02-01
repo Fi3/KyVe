@@ -35,8 +35,22 @@ test('StoredDb constructor enviornment not supported', assert => {
 });
 
 test('StoredDb updateNode action executed', assert => {
-  const actual = 1;
-  const expected = 1;
+  const fakeDumbedDb = new FakeDumpedDb(100);
+  const node = {
+    collisionFlag: 0,
+    nextPosition: 400,
+    value: 'canicanibaubau',
+    position: 300,
+    normalizedIndex: 1,
+    previousKey: 'ciao',
+    nextKey: 'ciar',
+    previousActualIndex: 0,
+  };
+  const key = 'cani';
+  const newValue = 'ciccicicci'
+
+  const actual = StoredDb._updateNode({_hook: fakeDumbedDb}, node, key, newValue).position;
+  const expected = 300 + 24 + 5;
 
   assert.deepEqual(actual, expected,
     'updateNode should start to write `value` in the file at nodePosition + 24 + keyLen and finish to write at valueLen');
@@ -44,10 +58,46 @@ test('StoredDb updateNode action executed', assert => {
 });
 
 test('StoredDb updateNode error for value to big', assert => {
-  const actual = 1;
-  const expected = 1;
+  const fakeDumbedDb = new FakeDumpedDb(100);
+  const node = {
+    collisionFlag: 0,
+    nextPosition: 400,
+    value: 'canicanibaubau',
+    position: 300,
+    normalizedIndex: 1,
+    previousKey: 'ciao',
+    nextKey: 'ciar',
+    previousActualIndex: 0,
+  };
+  const key = 'cani';
+  const newValue = 'cicciciccicanicanibaubau'
+
+  let actual;
+  let expected;
+  try {
+    StoredDb._updateNode({_hook: fakeDumbedDb}, node, key, newValue);
+  }
+  catch(e) {
+    actual = e.constructor.name;
+  }
+  try {
+    throw new Errors.StoredDbUpdateNodeValueTooLong();
+  }
+  catch(e) {
+    expected = e.constructor.name;
+  }
 
   assert.deepEqual(actual, expected,
-    'updateNode should throw [TODO] when we pass a value that is bigger than nodeLen - 24 - keyLen');
+    'updateNode should throw StoredDbUpdateNodeValueTooLong when we pass a value that is bigger than nodeLen - 24 - keyLen');
   assert.end();
 });
+
+class FakeDumpedDb {
+  constructor(len) {
+    this.length = len;
+  }
+
+  write(data, position) {
+    return {data, position};
+  }
+}

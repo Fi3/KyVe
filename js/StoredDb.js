@@ -1,5 +1,6 @@
 const NodeHook = require('./NodeHook.js').NodeHook;
 const Errors = require('./Errors.js');
+const rlp = require('rlp');
 
 class StoredDb {
   //
@@ -26,7 +27,19 @@ class StoredDb {
   }
 }
 
-function _updateNode(StoredDb, bo) {
+function _updateNode(StoredDb, node, key, value) {
+  // Update the node in the stored db, if the new value is bigger
+  // than the value in the node throw an error
+  //
+
+  // Check if the value is too big
+  if (value.length > node.value.length) {
+    throw new Errors.StoredDbUpdateNodeValueTooLong();
+  }
+
+  const keyLen = rlp.encode(key).length;
+  const writePosition = node.position + 24 + keyLen;
+  return StoredDb._hook.write(value, writePosition);
 }
 
 function _addNode(StoredDb, bo) {
@@ -35,3 +48,4 @@ function _addNode(StoredDb, bo) {
 function _deleteNode(StoredDb, bo) {
 }
 module.exports.StoredDb = StoredDb;
+module.exports._updateNode = _updateNode;

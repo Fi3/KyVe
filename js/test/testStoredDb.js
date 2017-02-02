@@ -36,20 +36,12 @@ test('StoredDb constructor enviornment not supported', assert => {
 
 test('StoredDb updateNode action executed', assert => {
   const fakeDumbedDb = new FakeDumpedDb(100);
-  const node = {
-    collisionFlag: 0,
-    nextPosition: 400,
-    value: 'canicanibaubau',
-    position: 300,
-    normalizedIndex: 1,
-    previousKey: 'ciao',
-    nextKey: 'ciar',
-    previousActualIndex: 0,
-  };
+  const nodePosition = 300;
+  const oldValue = new Buffer('canicanibaubau');
+  const newValue = new Buffer('ciccicicci');
   const key = 'cani';
-  const newValue = 'ciccicicci'
 
-  const actual = StoredDb._updateNode({_hook: fakeDumbedDb}, node, key, newValue).position;
+  const actual = StoredDb._updateNode({_hook: fakeDumbedDb}, nodePosition, key, newValue, oldValue).position;
   const expected = 300 + 24 + 5;
 
   assert.deepEqual(actual, expected,
@@ -59,23 +51,15 @@ test('StoredDb updateNode action executed', assert => {
 
 test('StoredDb updateNode error for value to big', assert => {
   const fakeDumbedDb = new FakeDumpedDb(100);
-  const node = {
-    collisionFlag: 0,
-    nextPosition: 400,
-    value: 'canicanibaubau',
-    position: 300,
-    normalizedIndex: 1,
-    previousKey: 'ciao',
-    nextKey: 'ciar',
-    previousActualIndex: 0,
-  };
+  const nodePosition = 300;
+  const oldValue = new Buffer('canicanibaubau');
+  const newValue = new Buffer('cicciciccicanicanibaubauciccicicci');
   const key = 'cani';
-  const newValue = 'cicciciccicanicanibaubau'
 
   let actual;
   let expected;
   try {
-    StoredDb._updateNode({_hook: fakeDumbedDb}, node, key, newValue);
+    StoredDb._updateNode({_hook: fakeDumbedDb}, nodePosition, key, newValue, oldValue);
   }
   catch(e) {
     actual = e.constructor.name;
@@ -92,12 +76,69 @@ test('StoredDb updateNode error for value to big', assert => {
   assert.end();
 });
 
+test('StoredDb changeNext action executed', assert => {
+  const fakeDumbedDb = new FakeDumpedDb(100);
+  const newNextPosition = 40;
+  const nodePosition = 15;
+
+  const actual = StoredDb._changeNext({_hook: fakeDumbedDb}, nodePosition, newNextPosition);
+  const expected = {newPosition: 40, position: nodePosition + 8};
+
+  assert.deepEqual(actual, expected,
+    'changeNext should write newNextPosition at position + 8');
+  assert.end();
+});
+
+test('StoredDb appendNode action executed', assert => {
+  const fakeDumbedDb = new FakeDumpedDb(100);
+  const node = new Buffer(23);
+
+  const actual = StoredDb._append({_hook: fakeDumbedDb}, node).length;
+  const expected = 123;
+
+  assert.deepEqual(actual, expected,
+    'appendNode should append the node');
+  assert.end();
+});
+
+test('StoredDb addNode action executed', assert => {
+  const dbLength = 100;
+  const fakeDumbedDb = new FakeDumpedDb(dbLength);
+  const node = new Buffer(23);
+  const previousNodePosition = 14;
+
+  const changedNode = {newPosition: dbLength, position: previousNodePosition + 8};
+  const result = StoredDb._addNode({_hook: fakeDumbedDb}, node, previousNodePosition);
+
+  const actual = {};
+  actual.newLength = result.newLength;
+  actual.changedNode = result.changedNode;
+  const expected = {changedNode: changedNode, newLength: 100 + 23};
+
+  assert.deepEqual(actual, expected,
+    'addNode should append the node and modify the previouse node for point at the appended node');
+  assert.end();
+});
+
 class FakeDumpedDb {
   constructor(len) {
-    this.length = len;
+    this.fakeDb = new Buffer(len);
+  }
+
+  length() {
+    return this.fakeDb.length;
   }
 
   write(data, position) {
     return {data, position};
+  }
+
+  writePosition(newPosition, position) {
+    return {newPosition, position};
+  }
+
+  append(node) {
+    this.fakeDb = Buffer.concat([this.fakeDb, node]);
+    return this.fakeDb;
   }
 }

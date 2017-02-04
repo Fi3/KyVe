@@ -26,3 +26,44 @@ test('NodeHook write action executed', assert => {
     'write should write buffer at position');
   assert.end();
 });
+
+test('NodeHook length returned value', assert => {
+  const len = 100;
+  const actual = NodeHook._length({_path: './js/test/testFile'});
+  const expected = len;
+
+  assert.deepEqual(actual, expected,
+    'len should return the StoredDb\'s length in bytes');
+  assert.end();
+});
+
+test('NodeHook append action executed', assert => {
+  const path = './js/test/testFile3'
+  const file = fs.openSync(path, 'r+');
+  const initialLen = 100; // is len in byte of testFile2
+  NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}}, Buffer.allocUnsafe(10));
+  const actual = fs.statSync(path).size;
+  const expected = 100 + 10;
+  fs.truncate(path, 100);
+  fs.closeSync(file);
+
+  assert.deepEqual(actual, expected,
+    'After append the file\' size should be original file\'s size + buffer.length');
+  assert.end();
+});
+
+test('NodeHook append action executed', assert => {
+  const path = './js/test/testFile3'
+  const file = fs.openSync(path, 'r+');
+  const initialLen = 100; // is len in byte of testFile2
+  const appendedBuffer = Buffer.allocUnsafe(10);
+  NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}}, appendedBuffer);
+  const actual = NodeHook._slice ({_fileDescriptor: file}, 100, 100 + 10 - 1);
+  const expected = appendedBuffer;
+  fs.truncate(path, 100);
+  fs.closeSync(file);
+
+  assert.deepEqual(actual, expected,
+    'After append the the end of the file should contain the appended buffer');
+  assert.end();
+});

@@ -5,7 +5,7 @@ const Errors = require('../Errors.js');
 test('StoredDb.slice returned value', assert => {
   const db = new StoredDb.StoredDb('./js/test/testFile', 'node');
   const actual = db.slice(3, 7);
-  const expected = new Buffer('D14B1A7B11', 'hex');
+  const expected = Buffer.from('D14B1A7B11', 'hex');
 
   assert.deepEqual(actual, expected,
     'for start=3 end=4 should return a Buffer that start at file\'s byte 3 at end at file\'s byte 7');
@@ -37,8 +37,8 @@ test('StoredDb constructor enviornment not supported', assert => {
 test('StoredDb updateNode action executed', assert => {
   const fakeDumbedDb = new FakeDumpedDb(100);
   const nodePosition = 300;
-  const oldValue = new Buffer('canicanibaubau');
-  const newValue = new Buffer('ciccicicci');
+  const oldValue = Buffer.from('canicanibaubau');
+  const newValue = Buffer.from('ciccicicci');
   const key = 'cani';
 
   const actual = StoredDb._updateNode({_hook: fakeDumbedDb}, nodePosition, key, newValue, oldValue).position;
@@ -52,8 +52,8 @@ test('StoredDb updateNode action executed', assert => {
 test('StoredDb updateNode error for value to big', assert => {
   const fakeDumbedDb = new FakeDumpedDb(100);
   const nodePosition = 300;
-  const oldValue = new Buffer('canicanibaubau');
-  const newValue = new Buffer('cicciciccicanicanibaubauciccicicci');
+  const oldValue = Buffer.from('canicanibaubau');
+  const newValue = Buffer.from('cicciciccicanicanibaubauciccicicci');
   const key = 'cani';
 
   let actual;
@@ -82,7 +82,7 @@ test('StoredDb changeNext action executed', assert => {
   const nodePosition = 15;
 
   const actual = StoredDb._changeNext({_hook: fakeDumbedDb}, nodePosition, newNextPosition);
-  const expected = {data: new Buffer('0000000000000028', 'hex'), position: nodePosition + 8};
+  const expected = {data: Buffer.from('0000000000000028', 'hex'), position: nodePosition + 8};
 
   assert.deepEqual(actual, expected,
     'changeNext should write newNextPosition at position + 8 and should transform newNextPosition in a big endian integer');
@@ -91,7 +91,7 @@ test('StoredDb changeNext action executed', assert => {
 
 test('StoredDb appendNode action executed', assert => {
   const fakeDumbedDb = new FakeDumpedDb(100);
-  const node = new Buffer(23);
+  const node = Buffer.alloc(23);
 
   const actual = StoredDb._append({_hook: fakeDumbedDb}, node).length;
   const expected = 123;
@@ -104,7 +104,7 @@ test('StoredDb appendNode action executed', assert => {
 test('StoredDb addNode action executed', assert => {
   const dbLength = 100;
   const fakeDumbedDb = new FakeDumpedDb(dbLength);
-  const node = new Buffer(23);
+  const node = Buffer.alloc(23);
   const previousNodePosition = 14;
 
   const bufferizedNextPos = Buffer.allocUnsafe(8);
@@ -124,7 +124,7 @@ test('StoredDb addNode action executed', assert => {
 
 class FakeDumpedDb {
   constructor(len) {
-    this.fakeDb = new Buffer(len);
+    this.fakeDb = Buffer.alloc(len);
   }
 
   length() {

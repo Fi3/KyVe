@@ -20,10 +20,24 @@ class NodeHook {
 function _slice(NodeHook, start, end) {
   // return a buffer that start at file's byte start at end at file's byte end
   const length = end - start + 1;
-  const data = new Buffer(length);
+  const data = Buffer.allocUnsafe(length);
   fs.readSync(NodeHook._fileDescriptor, data, 0, length, start);
   return data;
 }
+
+//  return StoredDb._hook.write(value, writePosition);
+//  return StoredDb._hook.writePosition(newNextPosition, writePosition);
+
+//function _write(buffer, offset) {
+//  //
+//  // Write buffer at offset 
+//  return;
+//}
+//
+//function _writePosition(newNextPosition, offset) {
+//  //
+//  // Write new
+//}
 
 module.exports.NodeHook = NodeHook;
 // ---------ONLY---FOR---TEST--------------------

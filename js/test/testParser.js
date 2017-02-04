@@ -5,7 +5,7 @@ const rlp = require('rlp');
 const hash = require('fnv1a');
 
 function createHeader(head,tail) {
-  const buffer = new Buffer.from(Array.from({length: 24}, x => 0)); //jshint ignore:line
+  const buffer = Buffer.alloc(24); //jshint ignore:line
   const byteWhereHeadStart = 8;
   const byteWhereTailStart = 16;
   buffer.write('KyVeKyVe', 0, 'ascii');  //magic
@@ -15,14 +15,14 @@ function createHeader(head,tail) {
 }
 
 function createNode(data) {
-  const collisionFlag = new Buffer(1);
+  const collisionFlag = Buffer.alloc(1);
   if (data.collisionFlag === false) {
     collisionFlag.write('00', 0, 'hex');
   }
   else {
     collisionFlag.write('10', 0, 'hex');
   }
-  const nextNode = new Buffer(8);
+  const nextNode = Buffer.alloc(8);
   nextNode.write(data.nextNode, 0, 'hex');
   const key = rlp.encode(data.key);
   const value = rlp.encode(data.value);
@@ -42,7 +42,7 @@ test('Parser._parseHeader return value', assert => {
 });
 
 test('Parser._parseHeader error throwed for invalid buffer', assert => {
-  const buffer = new Buffer(11);
+  const buffer = Buffer.alloc(11);
   let actual;
   let expected;
   try {
@@ -64,7 +64,7 @@ test('Parser._parseHeader error throwed for invalid buffer', assert => {
 });
 
 test('Parser._parseHeader error throwed for invalid buffer', assert => {
-  const buffer = new Buffer(24);
+  const buffer = Buffer.alloc(24);
   let actual;
   let expected;
   try {

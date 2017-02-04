@@ -28,6 +28,7 @@ class StoredDb {
 }
 
 function _updateNode(StoredDb, nodePosition, key, value, oldValue) {
+  //
   // Update the node in the stored db, if the new value is bigger
   // than the value in the node throw an error
   //
@@ -38,16 +39,18 @@ function _updateNode(StoredDb, nodePosition, key, value, oldValue) {
   }
 
   const keyLen = rlp.encode(key).length; //TODO pass bufferized key???
-  const writePosition = nodePosition + 24 + keyLen;
-  return StoredDb._hook.write(value, writePosition);
+  const offset = nodePosition + 24 + keyLen;
+  return StoredDb._hook.write(value, offset);
 }
 
 function _changeNext(StoredDb, nodePosition, newNextPosition) {
   //
   // Change the nexPosition value of the node at nodePosition
   //
-  const writePosition = nodePosition + 8;
-  return StoredDb._hook.writePosition(newNextPosition, writePosition);
+  const offset = nodePosition + 8;
+  const newNextPositionBufferized = Buffer.allocUnsafe(8);
+  newNextPositionBufferized.writeIntBE(newNextPosition, 0, 8);
+  return StoredDb._hook.write(newNextPositionBufferized, offset);
 }
 
 function _append(StoredDb, node) {

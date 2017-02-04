@@ -82,10 +82,10 @@ test('StoredDb changeNext action executed', assert => {
   const nodePosition = 15;
 
   const actual = StoredDb._changeNext({_hook: fakeDumbedDb}, nodePosition, newNextPosition);
-  const expected = {newPosition: 40, position: nodePosition + 8};
+  const expected = {data: new Buffer('0000000000000028', 'hex'), position: nodePosition + 8};
 
   assert.deepEqual(actual, expected,
-    'changeNext should write newNextPosition at position + 8');
+    'changeNext should write newNextPosition at position + 8 and should transform newNextPosition in a big endian integer');
   assert.end();
 });
 
@@ -107,7 +107,9 @@ test('StoredDb addNode action executed', assert => {
   const node = new Buffer(23);
   const previousNodePosition = 14;
 
-  const changedNode = {newPosition: dbLength, position: previousNodePosition + 8};
+  const bufferizedNextPos = Buffer.allocUnsafe(8);
+  bufferizedNextPos.writeIntBE(dbLength,0,8);
+  const changedNode = {data: bufferizedNextPos, position: previousNodePosition + 8};
   const result = StoredDb._addNode({_hook: fakeDumbedDb}, node, previousNodePosition);
 
   const actual = {};

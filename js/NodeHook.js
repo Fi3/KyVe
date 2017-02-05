@@ -35,7 +35,8 @@ function _slice(NodeHook, start, end) {
   //
   // Return a buffer that start at file's byte position start at end at file's byte position end
   //
-  const length = end - start + 1;
+  console.log(start, end);
+  const length = end - start;
   const data = Buffer.allocUnsafe(length);
   fs.readSync(NodeHook._fileDescriptor, data, 0, length, start);
   return data;

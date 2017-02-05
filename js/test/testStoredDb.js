@@ -6,7 +6,7 @@ const initStoredDb = require('../utils/initStoredDb.js');
 
 test('StoredDb.slice returned value', assert => {
   const db = new StoredDb.StoredDb('./js/test/testFile', 'node');
-  const actual = db.slice(3, 7);
+  const actual = db.slice(3, 8);
   const expected = Buffer.from('D14B1A7B11', 'hex');
 
   assert.deepEqual(actual, expected,
@@ -128,7 +128,7 @@ test('StoredDb init enviornment not supported', assert => {
   let actual;
   let expected;
   try {
-    const db = new StoredDb.initStoredDb('./js/test/testFile', 'cordova');
+    const db = new StoredDb.createStoredDb('./js/test/testFile', 'cordova');
   }
   catch(e) {
     actual = e.constructor.name;
@@ -147,7 +147,7 @@ test('StoredDb init enviornment not supported', assert => {
 
 test('StoredDb init action executed', assert => {
   const path = './js/test/initializedFile'
-  StoredDb.initStoredDb(path, 'node');
+  StoredDb.createStoredDb(path, 'node');
   const file = fs.openSync(path, 'r');
   const data = Buffer.alloc(84);
   fs.readSync(file, data, 0, 84, 0);

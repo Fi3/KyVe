@@ -5,7 +5,7 @@ const initStoredDb = require('../utils/initStoredDb.js');
 
 test('NodeHook slice returned value', assert => {
   const file = fs.openSync('./js/test/testFile', 'r+');
-  const actual = NodeHook._slice({_fileDescriptor: file}, 3, 7);
+  const actual = NodeHook._slice({_fileDescriptor: file}, 3, 8);
   const expected = Buffer.from('D14B1A7B11', 'hex');
   fs.closeSync(file);
 
@@ -18,7 +18,7 @@ test('NodeHook write action executed', assert => {
   const file = fs.openSync('./js/test/testFile2', 'r+');
   const len = 100; // is len in byte of testFile2
   NodeHook._write({_fileDescriptor: file}, Buffer.from('canocani', 'ascii'), 7);
-  const actual = NodeHook._slice({_fileDescriptor: file}, 7, 7 + 'canocani'.length - 1);
+  const actual = NodeHook._slice({_fileDescriptor: file}, 7, 7 + 'canocani'.length);
   const expected = Buffer.from('canocani', 'ascii');
   fs.writeSync(file, new Buffer.alloc(len), 0, len, 0);
   fs.closeSync(file);
@@ -59,7 +59,7 @@ test('NodeHook append action executed', assert => {
   const initialLen = 100; // is len in byte of testFile2
   const appendedBuffer = Buffer.allocUnsafe(10);
   NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}}, appendedBuffer);
-  const actual = NodeHook._slice ({_fileDescriptor: file}, 100, 100 + 10 - 1);
+  const actual = NodeHook._slice ({_fileDescriptor: file}, 100, 100 + 10);
   const expected = appendedBuffer;
   fs.truncate(path, 100);
   fs.closeSync(file);

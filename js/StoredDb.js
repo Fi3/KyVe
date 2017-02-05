@@ -20,6 +20,7 @@ class StoredDb {
     else {
       throw new Errors.StoredDbNotSupportedEnv();
     }
+    this.length = this._hook.length();
   }
 
   slice(start, end) {
@@ -92,7 +93,7 @@ function _addNode(StoredDb, node, previousNodePosition) {
   return {changedNode, newLength: storedDbWithNewNode.length};
 }
 
-function initStoredDb(path, env) {
+function createStoredDb(path, env) {
   //
   // Initialize a new storedDb
   //
@@ -106,7 +107,7 @@ function initStoredDb(path, env) {
 }
 
 module.exports.StoredDb = StoredDb;
-module.exports.initStoredDb = initStoredDb;
+module.exports.createStoredDb = createStoredDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._updateNode = _updateNode;
 module.exports._changeNext = _changeNext;

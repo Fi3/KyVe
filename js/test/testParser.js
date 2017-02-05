@@ -6,11 +6,11 @@ const hash = require('fnv1a');
 
 function createHeader(head,tail) {
   const buffer = Buffer.alloc(24); //jshint ignore:line
-  const byteWhereHeadStart = 8;
-  const byteWhereTailStart = 16;
+  const byteWhereHeadPositonStart = 8;
+  const byteWhereTailPositonStart = 16;
   buffer.write('KyVeKyVe', 0, 'ascii');  //magic
-  buffer.write(head, byteWhereHeadStart, 'hex');
-  buffer.write(tail, byteWhereTailStart, 'hex');
+  buffer.write(head, byteWhereHeadPositonStart, 'hex');
+  buffer.write(tail, byteWhereTailPositonStart, 'hex');
   return buffer;
 }
 

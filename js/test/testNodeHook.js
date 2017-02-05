@@ -1,6 +1,7 @@
 const test = require('tape');
 const NodeHook = require('../NodeHook.js');
 const fs = require('fs');
+const initStoredDb = require('../utils/initStoredDb.js');
 
 test('NodeHook slice returned value', assert => {
   const file = fs.openSync('./js/test/testFile', 'r+');
@@ -65,5 +66,22 @@ test('NodeHook append action executed', assert => {
 
   assert.deepEqual(actual, expected,
     'After append the the end of the file should contain the appended buffer');
+  assert.end();
+});
+
+test('NodeHook init action executed', assert => {
+  const path = './js/test/initializedFile'
+  NodeHook.init(path);
+  const file = fs.openSync(path, 'r');
+  const data = Buffer.alloc(84);
+  fs.readSync(file, data, 0, 84, 0);
+
+  const actual = data.length;
+  const expected = initStoredDb.initializedDb.length;
+  fs.closeSync(file);
+  fs.unlinkSync(path);
+
+  assert.deepEqual(actual, expected,
+    'Init should create a new file that contain just the header and three nodes');
   assert.end();
 });

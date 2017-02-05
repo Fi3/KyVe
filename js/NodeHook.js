@@ -1,4 +1,5 @@
 const fs = require('fs');
+const initStoredDb = require('./utils/initStoredDb.js');
 
 class NodeHook {
   //
@@ -16,6 +17,18 @@ class NodeHook {
   close() {
     fs.closeSync(this._fileDescriptor);
   }
+
+  write(buffer, offset) {
+    return _write(this, buffer, offset);
+  }
+
+  length() {
+    return _length(this);
+  }
+
+  append(buffer) {
+    return _append(this, buffer);
+  }
 }
 
 function _slice(NodeHook, start, end) {
@@ -30,7 +43,7 @@ function _slice(NodeHook, start, end) {
 
 function _write(NodeHook, buffer, offset) {
   //
-  // Write buffer  on file at offset 
+  // Write buffer  on file at offset
   //
   fs.writeSync(NodeHook._fileDescriptor, buffer, 0, buffer.length, offset);
   return buffer;
@@ -56,7 +69,19 @@ function _append(NodeHook, buffer) {
   return buffer;
 }
 
+function init(path) {
+  //
+  // Append buffer to StroedDb
+  //
+  const newDb = fs.openSync(path, 'w');
+  const buffer = initStoredDb.initializedDb;
+  fs.writeSync(newDb, buffer, 0, buffer.length, 0);
+  fs.closeSync(newDb);
+  return path;
+}
+
 module.exports.NodeHook = NodeHook;
+module.exports.init = init;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._slice = _slice;
 module.exports._write = _write;

@@ -1,6 +1,8 @@
 const test = require('tape');
+const fs = require('fs');
 const StoredDb = require('../StoredDb.js');
 const Errors = require('../Errors.js');
+const initStoredDb = require('../utils/initStoredDb.js');
 
 test('StoredDb.slice returned value', assert => {
   const db = new StoredDb.StoredDb('./js/test/testFile', 'node');
@@ -119,6 +121,44 @@ test('StoredDb addNode action executed', assert => {
 
   assert.deepEqual(actual, expected,
     'addNode should append the node and modify the previouse node for point at the appended node');
+  assert.end();
+});
+
+test('StoredDb init enviornment not supported', assert => {
+  let actual;
+  let expected;
+  try {
+    const db = new StoredDb.initStoredDb('./js/test/testFile', 'cordova');
+  }
+  catch(e) {
+    actual = e.constructor.name;
+  }
+  try {
+    throw new Errors.StoredDbNotSupportedEnv();
+  }
+  catch(e) {
+    expected = e.constructor.name;
+  }
+
+  assert.deepEqual(actual, expected,
+    'when we try to initialize a storedDb for a not supported enviornmet should raise not supp env');
+  assert.end();
+});
+
+test('StoredDb init action executed', assert => {
+  const path = './js/test/initializedFile'
+  StoredDb.initStoredDb(path, 'node');
+  const file = fs.openSync(path, 'r');
+  const data = Buffer.alloc(84);
+  fs.readSync(file, data, 0, 84, 0);
+
+  const actual = data.length;
+  const expected = initStoredDb.initializedDb.length;
+  fs.closeSync(file);
+  fs.unlinkSync(path);
+
+  assert.deepEqual(actual, expected,
+    'Init should create a new file that contain just the header and three nodes');
   assert.end();
 });
 

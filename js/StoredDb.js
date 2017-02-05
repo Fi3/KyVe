@@ -1,4 +1,4 @@
-const NodeHook = require('./NodeHook.js').NodeHook;
+const NodeHook = require('./NodeHook.js');
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
 
@@ -15,7 +15,7 @@ class StoredDb {
   //
   constructor(path, env) {
     if (env === 'node') {
-      this._hook = new NodeHook(path);
+      this._hook = new NodeHook.NodeHook(path);
     }
     else {
       throw new Errors.StoredDbNotSupportedEnv();
@@ -25,6 +25,19 @@ class StoredDb {
   slice(start, end) {
     return this._hook.slice(start, end);
   }
+
+  updateNode(nodePosition, key, value, oldValue) {
+    return _updateNode(this, nodePosition, key, value, oldValue);
+  }
+
+  changeNext(nodePosition, newNextPosition) {
+    return _changeNext(this, nodePosition, newNextPosition);
+  }
+
+  append(node) {
+    return _append(this, node);
+  }
+
 }
 
 function _updateNode(StoredDb, nodePosition, key, value, oldValue) {
@@ -79,9 +92,22 @@ function _addNode(StoredDb, node, previousNodePosition) {
   return {changedNode, newLength: storedDbWithNewNode.length};
 }
 
-function _deleteNode(StoredDb, bo) {
+function initStoredDb(path, env) {
+  //
+  // Initialize a new storedDb
+  //
+  if (env === 'node') {
+    NodeHook.init(path);
+  }
+  else {
+    throw new Errors.StoredDbNotSupportedEnv();
+  }
+  return new StoredDb(path, env);
 }
+
 module.exports.StoredDb = StoredDb;
+module.exports.initStoredDb = initStoredDb;
+// ---------ONLY---FOR---TEST--------------------
 module.exports._updateNode = _updateNode;
 module.exports._changeNext = _changeNext;
 module.exports._append = _append;

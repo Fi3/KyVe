@@ -1,26 +1,34 @@
 class Db {
+  //
   // Db is the object that expose the localStorage API
-  // _buffer is the buffer that contain the raw data that we can find in the file where the db is saved
-  // _memoryDb is the js object that contain all the keys and values so serialize(_memoryDb) -> _buffer
   // For get(key) we just need to do memoryDb.key.
-  // For set an item we need to query memoryDb for the positions in the buffer of the neigbors of the item that we want to set
-  // than we have to serialize the item then we have to append the item to the buffer then we have to
-  // modify in the buffer the item's neighbors for point to the new item, finally we update memoryDb.
-  // _buffer should be a special object that extend Buffer and when we write something to _buffer it should write
-  // the changes to a specular file at a predefined path. Of course all work also with a simple buffer but without
-  // the persistence of the data
-  cosntructor(buffer, memoryDb, path) {
-    this._buffer = buffer;
+  // For set an item we need:
+  //       1) query memoryDb for the positions in the StoredDb of the next and previous node
+  //          of the node that we want to set
+  //       2) serialize the item then we have to append the item to the buffer then we have to
+  //       3) modify in the buffer the item's neighbors for point to the new item
+  //       4) finally we update memoryDb.
+  //
+  cosntructor(storedDb, memoryDb, path) {
+    this._storedDb = storedDb;
     this._memoryDb = memoryDb;
     this. path = path;
   }
 }
 
-function builder(path, environment) {
+function loadDb(path, environment) {
+  //
   // Take a path (string) and an environment (node, mobile, browser)
   // Return new Db()
+  //
   const buffer = bufferFromPath(path, environment);
   const memoryDb = bufferParser(buffer);
   return new Db(buffer, memoryDb, path);
 }
 
+function creatNewDb(path, environment) {
+  //
+  // Take a path (string) and an environment create a newStroedDb
+  // and return new Db()
+  //
+}

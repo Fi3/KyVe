@@ -66,17 +66,26 @@ class MemoryDb {
   }
 
   get(key) {
-    return this._nodes.filter(node => node.key === key)[0];
+    //return this._nodes.filter(node => node.key === key)[0];
+    return this._nodes[key];
+  }
+
+  updateNode(key, value) {
+    return _updateNode(this, key, value);
   }
 }
 
 function _inspect(memoryDb, key) {
-  // key is a string, memoryDb is the object that we get from load the db in memory
+  //
+  // key is a string
   // Return {index, prevNodePosition, nextNodePosition, alreadyInDb, collisions}
   // collisions is int, number of collisions
+  //
   // When we inspect a key that is not in the db but that have a collision:
-  //   prevNodePosition should be the node after the boucket
-  //   nextNodePosition should be the position of the first node of the boucket (we will insert the new node at the head of the boucket)
+  //     prevNodePosition should be the node after the boucket
+  //     nextNodePosition should be the position of the first node of the boucket
+  //     we insert the new node at the head of the boucket
+  //
 
   const node = memoryDb._nodes[key];
   const prevNode = _getPreviousNode(memoryDb, key);
@@ -247,6 +256,14 @@ function _traverseBoucket(memoryDb, node) {
   return traverse(memoryDb, [node]);
 }
 
+function _updateNode(memoryDb, key, value) {
+  //
+  // Change the value for the key
+  // Raise an error if key is not in db or if new value is bigger thanm the old one
+  //
+  return memoryDb;
+}
+
 module.exports.Node = Node;
 module.exports.Header = Header;
 module.exports.MemoryDb = MemoryDb;
@@ -254,3 +271,4 @@ module.exports.MemoryDb = MemoryDb;
 module.exports._inspect = _inspect;
 module.exports._getPreviousNode = _getPreviousNode;
 module.exports._traverseBoucket = _traverseBoucket;
+module.exports._updateNode = _updateNode;

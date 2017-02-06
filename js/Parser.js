@@ -2,17 +2,13 @@ const MemoryDb = require('./MemoryDb.js').MemoryDb;
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
 
-function memoryDbFromStoredDb(buffer, fakeHash) {
-  // take a buffer and return new MemoryDb()
-  //  find position
-  //  find normalized index
-  //  find previous key
-  //  find next key
-  //  find previous actual index
-  const header = _parseHeader(buffer.slice(0, 24));
-  const nodes = _parseNodes(_splitData(buffer.slice(24, buffer.length)));
-  return new MemoryDb(header, nodes, fakeHash);
-  //return {get: function(key){return {value:key};}};
+function memoryDbFromStoredDb(storedDb, hashFunction) {
+  //
+  // Take a storedDb and return new MemoryDb()
+  //
+  const header = _parseHeader(storedDb.slice(0, 24));
+  const nodes = _toDict(_parseNodes(_splitData(storedDb.slice(24, storedDb.length))));
+  return new MemoryDb(header, nodes, hashFunction);
 }
 
 function _parseHeader(header) {
@@ -60,7 +56,21 @@ function _splitData(data, nodes = []) {
   }
 }
 
+function _toDict(nodes) {
+  //
+  // Convert an array of nodes in a dict of nodes
+  //
+  const dictNodes = {};
+  nodes.forEach( node => {
+    const key = node.key;
+    delete node.key;
+    dictNodes[key] = node;
+  });
+  return dictNodes;
+}
+
 function _parseNodes(nodes) {
+  //
   // Take the output of _splitData [[bufferizedNode1, keyLen1], ....] and return [nodes1, nodes2, ...]
   // The returned node has not the fileds normalizedIndex, previousKey, nextKey, previousActualIndex
   // The actual parsing of the node is let to _parseNode, the dutys of this function are:
@@ -182,3 +192,4 @@ module.exports._parseNodes = _parseNodes;
 module.exports._splitData = _splitData;
 module.exports._setIndexes = _setIndexes;
 module.exports._setKeys = _setKeys;
+module.exports._toDict = _toDict;

@@ -170,8 +170,19 @@ test('Parser._parseNodes return value position', assert => {
   assert.end();
 });
 
+test('Parser._toDict return value', assert => {
+  const bufferData = db.map(x => [createNode(x), 5]);
+  const nodeArray = Parser._parseNodes(bufferData);
+  const actual = Parser._toDict(nodeArray).lupi.value;
+  const expected = 'patti';
+
+  assert.deepEqual(actual, expected,
+    '_toDict should return a dict with the same nodes that are in the passed array of nodes');
+  assert.end();
+});
+
 test('Parser._setIndexes return value', assert => {
-  const actual = Parser._setIndexes(db, fakeHash).filter(node => node.key === 'cane' && node.collisionFlag === false)[0].index;
+  const actual = Parser._setIndexes(db, fakeHash).filter(node => node.key === 'cant' && node.collisionFlag === false)[0].index;
   const expected = 2;
 
   assert.deepEqual(actual, expected,
@@ -222,7 +233,7 @@ test('Parser.memoryDbFromStoredDb return value', assert => {
   const bufferData = Buffer.concat(db.map(x => createNode(x)));
   const storedDb = Buffer.concat([bufferHeader, bufferData]);
   const actual = Parser.memoryDbFromStoredDb(storedDb, fakeHash).get('cane').value;
-  const expected = 'gatto';
+  const expected = 'gatti';
 
   assert.deepEqual(actual, expected,
     'memoryDbFromStoredDb should return a MemoryParser with the same nodes that are in the passed StoredParser');
@@ -230,7 +241,7 @@ test('Parser.memoryDbFromStoredDb return value', assert => {
 });
 
 function fakeHash(key) {
-  const map = {pani: 236, cane: 543, lupi: 1000};
+  const map = {pani: 236, cane: 543, lupi: 1000, cant: 543};
   return map[key];
 }
 
@@ -239,7 +250,7 @@ const db = [
     // THIS IS THE II ELEMENT
     collisionFlag: false,
     nextNode: '0000000000000026', // 38
-    key: 'cane',
+    key: 'cant',
     value: 'gatto',
   },
   {

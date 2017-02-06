@@ -88,8 +88,8 @@ function _addNode(StoredDb, node, previousNodePosition) {
   //  2) append the new node
   //
   const newNodePosition = StoredDb._hook.length();
-  const changedNode = _changeNext(StoredDb, previousNodePosition, newNodePosition);
   const storedDbWithNewNode = _append(StoredDb, node);
+  const changedNode = _changeNext(StoredDb, previousNodePosition, newNodePosition);
   return {changedNode, newLength: storedDbWithNewNode.length};
 }
 

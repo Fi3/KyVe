@@ -179,6 +179,59 @@ test('Db.inspect returned value for key  in db and with a collision', assert => 
   assert.end();
 });
 
+//test('Db updateNode returned value', assert => {
+//  const mDb = new Db.MemoryDb(memoryDb._header, memoryDb._nodes, memoryDb._hashFunction);
+//  const actual = Db._updateNode(mDb, 'ciay', 'cane')//.get('ciay');
+//  const expected = 'cane';
+//
+//  assert.deepEqual(actual, expected,
+//    'should change the old value with the new one');
+//  assert.end();
+//});
+
+//test('Db updateNode raise for key not in db', assert => {
+//  const mDb = new Db.MemoryDb(memoryDb._header, memoryDb._nodes, memoryDb._hashFunction);
+//  let actual;
+//  let expected;
+//  try {
+//    Db._updateNode(mDb, 'grulli', 'mangia');
+//  }
+//  catch(e) {
+//    actual = e.constructor.name;
+//  }
+//  try {
+//    throw new Errors.MemoryDbKeyNotInDb();
+//  }
+//  catch(e) {
+//    expected = e.constructor.name;
+//  }
+//
+//  assert.deepEqual(actual, expected,
+//    'when we pass a key taht is not in the db should rais keyNotInDb');
+//  assert.end();
+//});
+//
+//test('Db updateNode raise for value too long', assert => {
+//  const mDb = new Db.MemoryDb(memoryDb._header, memoryDb._nodes, memoryDb._hashFunction);
+//  let actual;
+//  let expected;
+//  try {
+//    Db._updateNode(mDb, 'ciay', 'mangiamangiamangiamangiamangia');
+//  }
+//  catch(e) {
+//    actual = e.constructor.name;
+//  }
+//  try {
+//    throw new Errors.MemoryDbValueTooLong();
+//  }
+//  catch(e) {
+//    expected = e.constructor.name;
+//  }
+//
+//  assert.deepEqual(actual, expected,
+//    'when we try to update a node with a value that is bigger than the old one should raise valueTooLong');
+//  assert.end();
+//});
 const memoryDb = {
   _header: {
     head: {

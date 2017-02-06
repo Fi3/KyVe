@@ -232,7 +232,7 @@ test('Parser.memoryDbFromStoredDb return value', assert => {
   const bufferHeader = createHeader(head, tail);
   const bufferData = Buffer.concat(db.map(x => createNode(x)));
   const storedDb = Buffer.concat([bufferHeader, bufferData]);
-  const actual = Parser.memoryDbFromStoredDb(storedDb, fakeHash).get('cane').value;
+  const actual = Parser.memoryDbFromStoredDb(storedDb, fakeHash).get('cane');
   const expected = 'gatti';
 
   assert.deepEqual(actual, expected,

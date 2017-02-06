@@ -67,7 +67,7 @@ class MemoryDb {
 
   get(key) {
     //return this._nodes.filter(node => node.key === key)[0];
-    return this._nodes[key];
+    return this._nodes[key].value;
   }
 
   updateNode(key, value) {
@@ -261,6 +261,14 @@ function _updateNode(memoryDb, key, value) {
   // Change the value for the key
   // Raise an error if key is not in db or if new value is bigger thanm the old one
   //
+  const nodes = memoryDb._nodes;
+  if (!(key in nodes)) {
+    throw new Errors.MemoryDbKeyNotInDb();
+  }
+  if (nodes[key].value.length < value.length) {
+    throw new Errors.MemoryDbValueTooLong();
+  }
+  nodes[key].value = value;
   return memoryDb;
 }
 

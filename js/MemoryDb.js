@@ -1,47 +1,5 @@
 const Errors = require('./Errors.js');
 
-class Node {
-  // how is rapresented a node in memory
-  constructor(collisionFlag, nextPosition, value, position, normalizedIndex, previousKey,nextKey, previousActualIndex) {
-    // collisionFlag is 0 or 1
-    this.collisionFlag = collisionFlag;
-    // nextPosition is int, file byte position of the next node, 0 if tail
-    this.nextPosition = nextPosition;
-    // value is string
-    this.value = value;
-    // position is int, file byte position of this node
-    this.position = position;
-    // normalized index is an int: hash(key) is the actual, the
-    // normalized index is calculated as below:
-    //
-    //  min(hash(key0), ..., hash(keyn)) => 0
-    //  ...
-    //  ...
-    //  MAX(hash(key0)..., hash(keyn)) => n
-    //
-    this.normalizedIndex = normalizedIndex;
-    // previousKey string is the node's key when head
-    this.previousKey = previousKey;
-    // nextKey string is the node's key when tail
-    this.nextKey = nextKey;
-    // previousActualIndex is int, is actual index of previous node, 0 if head
-    this.previousActualIndex = previousActualIndex;  // TODO this maybe should be a method
-  }
-}
-
-class Header {
-  constructor(head, headKey, tail, tailKey) {
-    this.head = {
-      node: head,
-      key: headKey,
-    };
-    this.tail = {
-      node: tail,
-      key: tailKey,
-    };
-  }
-}
-
 class MemoryDb {
   // _header should be an Header object
   // _nodes should be {string: Node object, string: Node object, ...}
@@ -52,13 +10,6 @@ class MemoryDb {
     this._hashFunction = hashFucntion;
   }
 
-  getPreviousNode(key) {
-    // Return the node with a key such that, hash(key) is the biggest of the ones that are smaller than indexSearched
-    // If this node is an element of a boucket (has collsions in the db) return the first
-    // node of the boucket
-    return _getPreviousNode(this, key);
-  }
-
   inspectKey(key) {
     // Return index and buffer's positions of the key's node if the node is in db
     // Return index and buffer's positions for useful for insert the node in the buffer if key's node is not in the db
@@ -66,8 +17,11 @@ class MemoryDb {
   }
 
   get(key) {
-    //return this._nodes.filter(node => node.key === key)[0];
     return this._nodes[key].value;
+  }
+
+  getPosition(key) {
+    return this._nodes[key].position;
   }
 
   updateNode(key, value) {
@@ -272,8 +226,6 @@ function _updateNode(memoryDb, key, value) {
   return memoryDb;
 }
 
-module.exports.Node = Node;
-module.exports.Header = Header;
 module.exports.MemoryDb = MemoryDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;

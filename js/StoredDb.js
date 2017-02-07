@@ -31,12 +31,8 @@ class StoredDb {
     return _updateNode(this, nodePosition, key, value, oldValue);
   }
 
-  changeNext(nodePosition, newNextPosition) {
-    return _changeNext(this, nodePosition, newNextPosition);
-  }
-
-  append(node) {
-    return _append(this, node);
+  addNode(node, previousNodePosition) {
+    return _addNode(this, node, previousNodePosition);
   }
 
 }

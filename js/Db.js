@@ -1,6 +1,7 @@
 const StoredDb = require('./StoredDb.js');
 const Parser = require('./Parser.js');
 const hash = require('fnv1a');
+const encodeNode = require('./utils/initStoredDb.js').createNode;
 
 class Db {
   //
@@ -46,7 +47,7 @@ function createNewDb(path, environment) {
   StoredDb.createStoredDb(path, environment);
   return loadDb(path, environment);
 }
-  // Return {index, prevNodePosition, nextNodePosition, alreadyInDb, collisions}
+
 function _setItem(Db, key, value) {
   //
   // If the key is already in the db update the node.
@@ -54,24 +55,30 @@ function _setItem(Db, key, value) {
   //
   const keyData = MemoryDb.inspectKey(key);
   if (keyData.alreadyInDb) {
-    Db._updateNode(Db, key, value);
+    _updateNode(Db, key, value, keyData);
   }
   else {
-    Db._addNode(Db, key, value, keyData);
+    _addNode(Db, key, value, keyData);
   }
 }
 
-function _updateNode(Db, key, value) {
+function _updateNode(Db, key, value, keyData) {
   //
   // If the new value is bigger than the old one add the node
   // Else update the node
   //
   const oldValue = Db.getItem(key);
+  const position = Db.getItem(key);
   if (rlp.encode(value).lenght > rlp.encode(oldValue).lenght) {
-    Db._addNode(Db, key, value);
+    _addNode(Db, key, value, keyData);
   }
-
+  else {
+    Db._storedDb.updateNode(position, key, value, oldValue)
+    Db._memoryDb.updateNode(key, value)
+  }
+}
 
 module.exports.Db = Db;
 module.exports.loadDb = loadDb;
 module.exports.createNewDb = createNewDb;
+

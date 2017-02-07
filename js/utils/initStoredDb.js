@@ -54,3 +54,4 @@ const node3 = createNode(dataNode3);
 const storedDb = Buffer.concat([header, node1, node2, node3]);
 
 module.exports.initializedDb = storedDb;
+module.exports.createNode = createNode;

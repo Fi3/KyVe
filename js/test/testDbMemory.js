@@ -235,21 +235,29 @@ test('Db updateNode raise for value too long', assert => {
 
 test('Db addNode returned value', assert => {
   const newNode = {
-    collisionFlag: 0,
-    nextPosition: 700,
-    value: 'canicanibaubau',
-    position: 600,
-    normalizedIndex: 3,
+    value: 'new value',
     previousKey: 'ciat',
-    nextKey: 'ciau',
   }
-     
-
-  const actual = Db._addNode(mDb, 'ciay', 'cane').get('ciay');
-  const expected = 'cane';
+  const newNodePosition = 1000;
+  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)._nodes.ciat.nextPosition;
+  const expected = 1000;
 
   assert.deepEqual(actual, expected,
-    'should change the old value with the new one');
+    'should change nextPosition in the previousNode');
+  assert.end();
+});
+
+test('Db addNode returned value', assert => {
+  const newNode = {
+    value: 'new value',
+    previousKey: 'ciat',
+  }
+  const newNodePosition = 1000;
+  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)._nodes.grulli;
+  const expected = newNode;
+
+  assert.deepEqual(actual, expected,
+    'should add newNode to MemoryDb._nodes');
   assert.end();
 });
 

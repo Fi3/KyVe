@@ -226,9 +226,20 @@ function _updateNode(memoryDb, key, value) {
   return memoryDb;
 }
 
+function _addNode(memoryDb, key, node, nodePosition) {
+  //
+  // add node to memoryDb._nodes
+  // change nextPosition in previousNode with nodePosition
+  //
+  memoryDb._nodes[node.previousKey].nextPosition = nodePosition;
+  memoryDb._nodes[key] = node;
+  return memoryDb;
+}
+
 module.exports.MemoryDb = MemoryDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;
 module.exports._getPreviousNode = _getPreviousNode;
 module.exports._traverseBoucket = _traverseBoucket;
 module.exports._updateNode = _updateNode;
+module.exports._addNode = _addNode;

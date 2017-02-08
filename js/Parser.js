@@ -96,10 +96,10 @@ function _parseNode(node, keyLen) {
   let collisionFlag;
   if (node[0] === 16) {
     // bite 0 encode the collision flag, if byte 0 is 16 bit 0 is 1
-    collisionFlag = true;
+    collisionFlag = 1;
   }
   else if (node[0] === 0) {
-    collisionFlag = false;
+    collisionFlag = 0;
   }
   else {
     throw UndifinedError;
@@ -134,7 +134,7 @@ function _setIndexes(nodes, hash) {
   let lastNormIndex;
   const indexedNodes = nodes.map(node => {
     let normIndex;
-    if (node.collisionFlag === true) {
+    if (node.collisionFlag === 1) {
       normIndex = lastNormIndex + 1;
     }
     else {

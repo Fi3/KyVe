@@ -12,11 +12,14 @@ function createHeader(head,tail) {
 
 function createNode(data) {
   const collisionFlag = Buffer.alloc(1);
-  if (data.collisionFlag === false) {
+  if (data.collisionFlag === 0) {
     collisionFlag.write('00', 0, 'hex');
   }
-  else {
+  else if (data.collisionFlag === 1) {
     collisionFlag.write('10', 0, 'hex');
+  }
+  else {
+    throw UnimplementedError;
   }
   const nextNode = Buffer.alloc(8);
   nextNode.write(data.nextNode, 0, 'hex');
@@ -25,19 +28,19 @@ function createNode(data) {
   return Buffer.concat([collisionFlag, nextNode, key, value]);
 }
 const dataNode1 = {
-  collisionFlag: false,
+  collisionFlag: 0,
   nextNode: '000000000000002C', // 24 + node1Len
   key: 'cane', // rlp encoded is 5 bytes
   value: 'gatto', // rlp encoded is 6 bytes
 };
 const dataNode2 = {
-  collisionFlag: false,
+  collisionFlag: 0,
   nextNode: '0000000000000040', // 24 + node1Len + node2Len
   key: 'cana', // rlp encoded is 5 bytes
   value: 'gatto', // rlp encoded is 6 bytes
 };
 const dataNode3 = {
-  collisionFlag: false,
+  collisionFlag: 0,
   nextNode: '0000000000000000', // 0 becaouse is tail
   key: 'cani', // rlp encoded is 5 bytes
   value: 'gatto', // rlp encoded is 6 bytes

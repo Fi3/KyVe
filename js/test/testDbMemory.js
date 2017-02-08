@@ -232,6 +232,27 @@ test('Db updateNode raise for value too long', assert => {
     'when we try to update a node with a value that is bigger than the old one should raise valueTooLong');
   assert.end();
 });
+
+test('Db addNode returned value', assert => {
+  const newNode = {
+    collisionFlag: 0,
+    nextPosition: 700,
+    value: 'canicanibaubau',
+    position: 600,
+    normalizedIndex: 3,
+    previousKey: 'ciat',
+    nextKey: 'ciau',
+  }
+     
+
+  const actual = Db._addNode(mDb, 'ciay', 'cane').get('ciay');
+  const expected = 'cane';
+
+  assert.deepEqual(actual, expected,
+    'should change the old value with the new one');
+  assert.end();
+});
+
 const memoryDb = {
   _header: {
     head: {

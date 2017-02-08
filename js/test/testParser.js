@@ -16,11 +16,14 @@ function createHeader(head,tail) {
 
 function createNode(data) {
   const collisionFlag = Buffer.alloc(1);
-  if (data.collisionFlag === false) {
+  if (data.collisionFlag === 0) {
     collisionFlag.write('00', 0, 'hex');
   }
-  else {
+  else if (data.collisionFlag === 1) {
     collisionFlag.write('10', 0, 'hex');
+  }
+  else {
+    throw UnimplementedError;
   }
   const nextNode = Buffer.alloc(8);
   nextNode.write(data.nextNode, 0, 'hex');
@@ -87,7 +90,7 @@ test('Parser._parseHeader error throwed for invalid buffer', assert => {
 
 test('Parser._parseNode return value', assert => {
   const data = {
-    collisionFlag: false,
+    collisionFlag: 0,
     nextNode: '000000000004378B', // 276363
     key: 'cane',
     value: 'gatto',
@@ -104,7 +107,7 @@ test('Parser._parseNode return value', assert => {
 
 test('Parser._splitData return value', assert => {
   const data = {
-    collisionFlag: false,
+    collisionFlag: 0,
     nextNode: '000000000004378B', // 276363
     key: 'cane',
     value: 'gatto',
@@ -123,7 +126,7 @@ test('Parser._splitData return value', assert => {
 
 test('Parser._splitData return value', assert => {
   const data = {
-    collisionFlag: false,
+    collisionFlag: 0,
     nextNode: '000000000004378B', // 276363
     key: 'cane',
     value: 'gatto',
@@ -182,7 +185,7 @@ test('Parser._toDict return value', assert => {
 });
 
 test('Parser._setIndexes return value', assert => {
-  const actual = Parser._setIndexes(db, fakeHash).filter(node => node.key === 'cant' && node.collisionFlag === false)[0].index;
+  const actual = Parser._setIndexes(db, fakeHash).filter(node => node.key === 'cant' && node.collisionFlag === 0)[0].index;
   const expected = 2;
 
   assert.deepEqual(actual, expected,
@@ -191,7 +194,7 @@ test('Parser._setIndexes return value', assert => {
 });
 
 test('Parser._setIndexes return value for node with collision flag true', assert => {
-  const actual = Parser._setIndexes(db, fakeHash).filter(node => node.collisionFlag === true)[0].index;
+  const actual = Parser._setIndexes(db, fakeHash).filter(node => node.collisionFlag === 1)[0].index;
   const expected = 3;
 
   assert.deepEqual(actual, expected,
@@ -248,28 +251,28 @@ function fakeHash(key) {
 const db = [
   {
     // THIS IS THE II ELEMENT
-    collisionFlag: false,
+    collisionFlag: 0,
     nextNode: '0000000000000026', // 38
     key: 'cant',
     value: 'gatto',
   },
   {
     // THIS IS THE III ELEMENTindex
-    collisionFlag: true,
+    collisionFlag: 1,
     nextNode: '000000000000003c', // 60
     key: 'cane',
     value: 'gatti',
   },
   {
     // THIS IS THE HEAD
-    collisionFlag: false,
+    collisionFlag: 0,
     nextNode: '0000000000000052', // 82
     key: 'pani',
     value: 'matti',
   },
   {
     // THIS IS THE TAIL
-    collisionFlag: false,
+    collisionFlag: 0,
     nextNode: '0000000000000068', // 104
     key: 'lupi',
     value: 'patti',

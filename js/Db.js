@@ -78,7 +78,7 @@ function _updateNode(Db, key, value, keyData) {
   }
 }
 
-function _addNode(Db, key, value
+function _addNode(Db, key, value, keyData) {
 
 module.exports.Db = Db;
 module.exports.loadDb = loadDb;

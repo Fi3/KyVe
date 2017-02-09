@@ -68,13 +68,18 @@ function _inspect(memoryDb, key) {
     nextNodePosition = boucket[boucket.length - 1].nextPosition;
     normalizedIndex = prevNode.normalizedIndex + 1;
   }
-  else if (prevNode.collisionFlag !== 1) {
+  else if (prevNode.collisionFlag === 0) {
     // If the key is not in db and the previous node is not in a boucket, the key will be inserted
     // after prev node so we can use as key's next and prev positions the position of prevNode and
     // prevNode next position. As index we can use prevNode index + 1.
     previousNodePosition = prevNode.position;
     nextNodePosition = prevNode.nextPosition;
     normalizedIndex = prevNode.normalizedIndex + 1;
+  }
+  else if (prevNode === 'head') {
+    previousNodePosition = 'head';
+    nextNodePosition = 'head';
+    normalizedIndex = 1;
   }
   else {
     throw UnknownError;

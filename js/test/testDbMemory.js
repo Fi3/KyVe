@@ -290,6 +290,78 @@ test('Db addNode returned value', assert => {
   assert.end();
 });
 
+test('Db keyIsBiggerThanTail returned value for bigger key', assert => {
+  const actual = Db._keyIsBiggerThanTail(memoryDb, 'kkkk');
+  const expected = 'yes';
+
+  assert.deepEqual(actual, expected,
+    'should return yes if the key is bigger');
+  assert.end();
+});
+
+test('Db keyIsBiggerThanTail returned value for smaller key', assert => {
+  const actual = Db._keyIsBiggerThanTail(memoryDb, 'cini');
+  const expected = 'no';
+
+  assert.deepEqual(actual, expected,
+    'should return no if the key is smaller');
+  assert.end();
+});
+
+test('Db keyIsBiggerThanTail returned value for same key', assert => {
+  const actual = Db._keyIsBiggerThanTail(memoryDb, 'cias');
+  const expected = 'isTail';
+
+  assert.deepEqual(actual, expected,
+    'should return isTail if the key is the same key');
+  assert.end();
+});
+
+test('Db keyIsBiggerThanTail returned value for key that collide', assert => {
+  const actual = Db._keyIsBiggerThanTail(memoryDb, 'yhj');
+  const expected = 'collide';
+
+  assert.deepEqual(actual, expected,
+    'should return collide if the key is the same key');
+  assert.end();
+});
+
+test('Db keyIsSmallerThanHead returned value for smaller key', assert => {
+  const actual = Db._keyIsSmallerThanHead(memoryDb, 'cini');
+  const expected = 'yes';
+
+  assert.deepEqual(actual, expected,
+    'should return yes if the key is smaller');
+  assert.end();
+});
+
+test('Db keyIsSmallerThanHead returned value for bigger key', assert => {
+  const actual = Db._keyIsSmallerThanHead(memoryDb, 'cani');
+  const expected = 'no';
+
+  assert.deepEqual(actual, expected,
+    'should return no if the key is bigger');
+  assert.end();
+});
+
+test('Db keyIsSmallerThanHead returned value for the same key', assert => {
+  const actual = Db._keyIsSmallerThanHead(memoryDb, 'ciao');
+  const expected = 'isHead';
+
+  assert.deepEqual(actual, expected,
+    'should return isHead if the key is the same');
+  assert.end();
+});
+
+test('Db keyIsSmallerThanHead returned value for a key that collide', assert => {
+  const actual = Db._keyIsSmallerThanHead(memoryDb, 'ffff');
+  const expected = 'collide';
+
+  assert.deepEqual(actual, expected,
+    'should return collid if the key collide if the one in the head');
+  assert.end();
+});
+
 const memoryDb = {
   _header: {
     head: {
@@ -380,7 +452,10 @@ const memoryDb = {
     },
   },
   _hashFunction: function(key) {
-    const map = {cini: 33,ciao:3096844302,ciar:3096844312,ciat:3096844312,ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,cani:3096844323,kkkk:9096844323,rrrr:5};
+    const map = {cini: 33,ciao:3096844302,ciar:3096844312,ciat:3096844312,
+                 ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,
+                 cani:3096844323,kkkk:9096844323,rrrr:5,yhj:3096844342,
+                 ffff:3096844302};
     return map[key];
   }
 };

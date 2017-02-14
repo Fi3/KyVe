@@ -136,18 +136,12 @@ function _prevPositionForKeyNotInDb(memoryDb, key) {
   //
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
-    // If key is not in db and the previous node is in a boucket we have to find the last
-    // node of the boucket. The key will be inserted after the last boucket's node, so the
-    // key's prev position will be last boucket's node position and the key's will be last
-    // boucket's node next position, and of courese the indext will be last bouket's node 
-    // index + 1.
+
+    // the previousNode should be the last node of the boucket
     const boucket = _traverseBoucket(memoryDb, prevNode);
     previousNodePosition = boucket[boucket.length - 1].position;
   }
   else if (prevNode.collisionFlag === 0) {
-    // If the key is not in db and the previous node is not in a boucket, the key will be
-    // inserted after prev node so we can use as key's next and prev positions the position
-    // of prevNode and prevNode next position. As index we can use prevNode index + 1.
     previousNodePosition = prevNode.position;
   }
   else if (prevNode === 'head') {// TODO check if head has collision flag
@@ -165,18 +159,12 @@ function _nextPositionForKeyNotInDb(memoryDb, key) {
   //
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
-    // If key is not in db and the previous node is in a boucket we have to find the last
-    // node of the boucket. The key will be inserted after the last boucket's node, so the
-    // key's prev position will be last boucket's node position and the key's will be last
-    // boucket's node next position, and of courese the indext will be last bouket's node 
-    // index + 1.
+
+    // the nextNode should be the node after the last node of the boucket
     const boucket = _traverseBoucket(memoryDb, prevNode);
     nextNodePosition = boucket[boucket.length - 1].nextPosition;
   }
   else if (prevNode.collisionFlag === 0) {
-    // If the key is not in db and the previous node is not in a boucket, the key will be
-    // inserted after prev node so we can use as key's next and prev positions the position
-    // of prevNode and prevNode next position. As index we can use prevNode index + 1.
     nextNodePosition = prevNode.nextPosition;
   }
   else if (prevNode === 'head') {// TODO check if head has collision flag
@@ -188,20 +176,54 @@ function _nextPositionForKeyNotInDb(memoryDb, key) {
   return nextNodePosition;
 }
 
-function _isBiggerThanTail(memoryDb, key) {
+function _keyIsBiggerThanTail(memoryDb, key) {
   //
   // key -> yes | no | collide | isTail
   // if the key is == heade.tail return isTail
   //
-  return;
+  const tailKey = memoryDb._header.tail.key;
+  const keyIndex = memoryDb._hashFunction(key);
+  const tailIndex =  memoryDb._hashFunction(tailKey);
+  if (tailKey === key) {
+    return 'isTail';
+  }
+  else if (tailIndex === keyIndex) {
+    return 'collide';
+  }
+  else if (tailIndex < keyIndex) {
+    return 'yes';
+  }
+  else if (tailIndex > keyIndex) {
+    return 'no';
+  }
+  else {
+    throw UnknownError;
+  }
 }
 
-function _isSmallerThanHead(memoryDb, key) {
+function _keyIsSmallerThanHead(memoryDb, key) {
   //
   // key -> yes | no | collide | isHead
   // if key == head.key return isHead
   //
-  return;
+  const headKey = memoryDb._header.head.key;
+  const keyIndex = memoryDb._hashFunction(key);
+  const headIndex = memoryDb._hashFunction(headKey);
+  if (headKey === key) {
+    return 'isHead';
+  }
+  else if (headIndex === keyIndex) {
+    return 'collide';
+  }
+  else if (headIndex > keyIndex) {
+    return 'yes';
+  }
+  else if (headIndex < keyIndex) {
+    return 'no'
+  }
+  else {
+    throw UnimplementedError;
+  }
 }
 
 function _collisionsNumber(memoryDb, key) {
@@ -358,3 +380,5 @@ module.exports._getPreviousNode = _getPreviousNode;
 module.exports._traverseBoucket = _traverseBoucket;
 module.exports._updateNode = _updateNode;
 module.exports._addNode = _addNode;
+module.exports._keyIsBiggerThanTail = _keyIsBiggerThanTail;
+module.exports._keyIsSmallerThanHead = _keyIsSmallerThanHead;

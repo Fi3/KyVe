@@ -50,40 +50,10 @@ function _inspect(memoryDb, key) {
   // Set alreadyInDb and collisions
   const alreadyInDb = node !== undefined;
   const collisions = _collisionsNumber(memoryDb, key);
-
-  // Set buffer's previous and nex node positions
-  if (alreadyInDb) {
-    // If key is in db we can use the node's attribute for set prev next positions and index
-    previousNodePosition = memoryDb._nodes[node.previousKey].position;
-    nextNodePosition = node.nextPosition;
-    normalizedIndex = node.normalizedIndex;
-  }
-  else if (prevNode.collisionFlag === 1) {
-    // If key is not in db and the previous node is in a boucket we have to find the last node of the
-    // boucket. The key will be inserted after the last boucket's node, so the key's prev position
-    // will be last boucket's node position and the key's will be last boucket's node next position,
-    // and of courese the indext will be last bouket's node index + 1.
-    const boucket = _traverseBoucket(memoryDb, prevNode);
-    previousNodePosition = boucket[boucket.length - 1].position;
-    nextNodePosition = boucket[boucket.length - 1].nextPosition;
-    normalizedIndex = prevNode.normalizedIndex + 1;
-  }
-  else if (prevNode.collisionFlag === 0) {
-    // If the key is not in db and the previous node is not in a boucket, the key will be inserted
-    // after prev node so we can use as key's next and prev positions the position of prevNode and
-    // prevNode next position. As index we can use prevNode index + 1.
-    previousNodePosition = prevNode.position;
-    nextNodePosition = prevNode.nextPosition;
-    normalizedIndex = prevNode.normalizedIndex + 1;
-  }
-  else if (prevNode === 'head') {
-    previousNodePosition = 'head';
-    nextNodePosition = 'head';
-    normalizedIndex = 1;
-  }
-  else {
-    throw UnknownError;
-  }
+  
+  previousNodePosition = _findPrevPosition(memoryDb, key);
+  nextNodePosition = _findNextPosition(memoryDb, key);
+  normalizedIndex = _keyToNormalizedIndex(memoryDb, key);
 
   return {
     normalizedIndex: normalizedIndex,
@@ -92,6 +62,145 @@ function _inspect(memoryDb, key) {
     alreadyInDb: alreadyInDb,
     collisions: collisions,
   };
+}
+
+function _keyToNormalizedIndex(memoryDb, key) {
+  //
+  // ....
+  //
+  const node = memoryDb._nodes[key];
+  const alreadyInDb = node !== undefined;
+  if (alreadyInDb) {
+    return node.normalizedIndex;
+  }
+  else {
+    const prevNode = _getPreviousNode(memoryDb, key);
+    if (prevNode === 'head') {
+      return 1;
+    }
+    else {
+      return prevNode.normalizedIndex + 1;
+    }
+  }
+}
+
+function _findPrevPosition(memoryDb, key) {
+  //
+  // ...
+  //
+  const node = memoryDb._nodes[key];
+  const alreadyInDb = node !== undefined;
+  if (alreadyInDb) {
+    return _prevPositionForKeyAlreadyInDb(memoryDb, key);
+  }
+  else {
+    return _prevPositionForKeyNotInDb(memoryDb, key);
+  }
+}
+
+function _findNextPosition(memoryDb, key) {
+  //
+  // ...
+  //
+  const node = memoryDb._nodes[key];
+  const alreadyInDb = node !== undefined;
+  if (alreadyInDb) {
+    return _nextPositionForKeyAlreadyInDb(memoryDb, key);
+  }
+  else {
+    return _nextPositionForKeyNotInDb(memoryDb, key);
+  }
+}
+
+function _prevPositionForKeyAlreadyInDb(memoryDb, key) {
+  //
+  // ...
+  //
+  const node = memoryDb._nodes[key];
+  return memoryDb._nodes[node.previousKey].position;
+}
+
+function _nextPositionForKeyAlreadyInDb(memoryDb, key) {
+  //
+  // ...
+  //
+  const node = memoryDb._nodes[key];
+  return node.nextPosition;
+  return;
+}
+
+function _prevPositionForKeyNotInDb(memoryDb, key) {
+  //
+  // ...
+  //
+  const prevNode = _getPreviousNode(memoryDb, key);
+  if (prevNode.collisionFlag === 1) {
+    // If key is not in db and the previous node is in a boucket we have to find the last
+    // node of the boucket. The key will be inserted after the last boucket's node, so the
+    // key's prev position will be last boucket's node position and the key's will be last
+    // boucket's node next position, and of courese the indext will be last bouket's node 
+    // index + 1.
+    const boucket = _traverseBoucket(memoryDb, prevNode);
+    previousNodePosition = boucket[boucket.length - 1].position;
+  }
+  else if (prevNode.collisionFlag === 0) {
+    // If the key is not in db and the previous node is not in a boucket, the key will be
+    // inserted after prev node so we can use as key's next and prev positions the position
+    // of prevNode and prevNode next position. As index we can use prevNode index + 1.
+    previousNodePosition = prevNode.position;
+  }
+  else if (prevNode === 'head') {// TODO check if head has collision flag
+    previousNodePosition = 'head';
+  }//TODO check also for tail with and without collision flag
+  else {
+    throw UnknownError;
+  }
+  return previousNodePosition;
+}
+
+function _nextPositionForKeyNotInDb(memoryDb, key) {
+  //
+  // ...
+  //
+  const prevNode = _getPreviousNode(memoryDb, key);
+  if (prevNode.collisionFlag === 1) {
+    // If key is not in db and the previous node is in a boucket we have to find the last
+    // node of the boucket. The key will be inserted after the last boucket's node, so the
+    // key's prev position will be last boucket's node position and the key's will be last
+    // boucket's node next position, and of courese the indext will be last bouket's node 
+    // index + 1.
+    const boucket = _traverseBoucket(memoryDb, prevNode);
+    nextNodePosition = boucket[boucket.length - 1].nextPosition;
+  }
+  else if (prevNode.collisionFlag === 0) {
+    // If the key is not in db and the previous node is not in a boucket, the key will be
+    // inserted after prev node so we can use as key's next and prev positions the position
+    // of prevNode and prevNode next position. As index we can use prevNode index + 1.
+    nextNodePosition = prevNode.nextPosition;
+  }
+  else if (prevNode === 'head') {// TODO check if head has collision flag
+    nextNodePosition = 'head';//TODO return actual head position
+  }//TODO check also for tail with and without collision flag
+  else {
+    throw UnknownError;
+  }
+  return nextNodePosition;
+}
+
+function _isBiggerThanTail(memoryDb, key) {
+  //
+  // key -> yes | no | collide | isTail
+  // if the key is == heade.tail return isTail
+  //
+  return;
+}
+
+function _isSmallerThanHead(memoryDb, key) {
+  //
+  // key -> yes | no | collide | isHead
+  // if key == head.key return isHead
+  //
+  return;
 }
 
 function _collisionsNumber(memoryDb, key) {
@@ -235,7 +344,7 @@ function _addNode(memoryDb, key, node, nodePosition) {
   //
   // add node to memoryDb._nodes
   // change nextPosition in previousNode with nodePosition
-  //
+  //TODO special beavior for tail and head
   memoryDb._nodes[node.previousKey].nextPosition = nodePosition;
   memoryDb._nodes[key] = node;
   return memoryDb;

@@ -41,19 +41,11 @@ function _inspect(memoryDb, key) {
   //     we insert the new node at the head of the boucket
   //
 
-  const node = memoryDb._nodes[key];
-  const prevNode = _getPreviousNode(memoryDb, key);
-  let previousNodePosition;
-  let nextNodePosition;
-  let normalizedIndex;
-
-  // Set alreadyInDb and collisions
-  const alreadyInDb = node !== undefined;
+  const alreadyInDb = _keyAlreadyInDb(memoryDb, key);
   const collisions = _collisionsNumber(memoryDb, key);
-  
-  previousNodePosition = _findPrevPosition(memoryDb, key);
-  nextNodePosition = _findNextPosition(memoryDb, key);
-  normalizedIndex = _keyToNormalizedIndex(memoryDb, key);
+  const previousNodePosition = _findPrevPosition(memoryDb, key);
+  const nextNodePosition = _findNextPosition(memoryDb, key);
+  const normalizedIndex = _keyToNormalizedIndex(memoryDb, key);
 
   return {
     normalizedIndex: normalizedIndex,
@@ -62,6 +54,15 @@ function _inspect(memoryDb, key) {
     alreadyInDb: alreadyInDb,
     collisions: collisions,
   };
+}
+
+function _keyAlreadyInDb(memoryDb, key) {
+  //
+  // Return true if the key is in db
+  //
+  const node = memoryDb._nodes[key];
+  const alreadyInDb = node !== undefined;
+  return alreadyInDb;
 }
 
 function _keyToNormalizedIndex(memoryDb, key) {

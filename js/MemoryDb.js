@@ -144,9 +144,9 @@ function _prevPositionForKeyNotInDb(memoryDb, key) {
   else if (prevNode.collisionFlag === 0) {
     previousNodePosition = prevNode.position;
   }
-  else if (prevNode === 'head') {// TODO check if head has collision flag
+  else if (prevNode === 'head') {
     previousNodePosition = 'head';
-  }//TODO check also for tail with and without collision flag
+  }
   else {
     throw UnknownError;
   }
@@ -160,15 +160,15 @@ function _nextPositionForKeyNotInDb(memoryDb, key) {
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
 
-    // the nextNode should be the node after the last node of the boucket
+    // the nextNode should be the node after the last bucket's node
     const boucket = _traverseBoucket(memoryDb, prevNode);
     nextNodePosition = boucket[boucket.length - 1].nextPosition;
   }
   else if (prevNode.collisionFlag === 0) {
     nextNodePosition = prevNode.nextPosition;
   }
-  else if (prevNode === 'head') {// TODO check if head has collision flag
-    nextNodePosition = 'head';//TODO return actual head position
+  else if (prevNode === 'head') {//
+    nextNodePosition = memoryDb._header.head.node.position;
   }//TODO check also for tail with and without collision flag
   else {
     throw UnknownError;

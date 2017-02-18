@@ -184,13 +184,13 @@ test('Db.inspect returned value for key that is not db that is head', assert => 
   const expected = {
     normalizedIndex: 1,
     previousNodePosition: 'head',
-    nextNodePosition: 'head',
+    nextNodePosition: 300,
     alreadyInDb: false,
     collisions: 0
   };
 
   assert.deepEqual(actual, expected,
-    'when whe inpect a key that is not in the db and that when added will be the head nextNodePosition and previousNodePosition should be equal to `head`');
+    'when whe inpect a key that is not in the db and that when added will be the head nextNodePosition should be the head position and previousNodePosition should be `head`');
   assert.end();
 });
 test('Db.inspect returned value for key that is in db that is head', assert => {
@@ -212,13 +212,13 @@ test('Db.inspect returned value for key that is not db that is head and collide'
   const expected = {
     normalizedIndex: 1,
     previousNodePosition: 'head',
-    nextNodePosition: 'head',
+    nextNodePosition: 300,
     alreadyInDb: false,
     collisions: 1
   };
 
   assert.deepEqual(actual, expected,
-    'when whe inpect a key that is not in the db that collide with head nextNodePosition and previousNodePosition should be equal to `head` and collisions should be 1');
+    'when whe inpect a key that is not in the db that collide with head nextNodePosition should be the head position, previousNodePosition should be `head` and collisions should be 1');
   assert.end();
 });
 

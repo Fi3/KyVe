@@ -126,6 +126,12 @@ function _nextPositionForKeyAlreadyInDb(memoryDb, key) {
   // ...
   //
   const node = memoryDb._nodes[key];
+
+  //when nextNodePosition is 0 the key is a tail
+  if (node.nextPosition === 0){
+    return 'tail'
+  }
+
   return node.nextPosition;
   return;
 }
@@ -167,11 +173,16 @@ function _nextPositionForKeyNotInDb(memoryDb, key) {
   else if (prevNode.collisionFlag === 0) {
     nextNodePosition = prevNode.nextPosition;
   }
-  else if (prevNode === 'head') {//
+  else if (prevNode === 'head') {
     nextNodePosition = memoryDb._header.head.node.position;
   }//TODO check also for tail with and without collision flag
   else {
     throw UnknownError;
+  }
+
+  //when nextNodePosition is 0 the key is a tail
+  if (nextNodePosition === 0){
+    return 'tail'
   }
   return nextNodePosition;
 }

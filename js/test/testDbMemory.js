@@ -207,6 +207,20 @@ test('Db.inspect returned value for key that is in db that is head', assert => {
     'when we inspect a key that is the head perviousNodePosition should be equal to position');
   assert.end();
 });
+test('Db.inspect returned value for key that is not db that is head and collide', assert => {
+  const actual = Db._inspect(memoryDb, 'pini');
+  const expected = {
+    normalizedIndex: 1,
+    previousNodePosition: 'head',
+    nextNodePosition: 'head',
+    alreadyInDb: false,
+    collisions: 1
+  };
+
+  assert.deepEqual(actual, expected,
+    'when whe inpect a key that is not in the db that collide with head nextNodePosition and previousNodePosition should be equal to `head` and collisions should be 1');
+  assert.end();
+});
 
 test('Db updateNode returned value', assert => {
   const mDb = new Db.MemoryDb(memoryDb._header, memoryDb._nodes, memoryDb._hashFunction);
@@ -455,7 +469,7 @@ const memoryDb = {
     const map = {cini: 33,ciao:3096844302,ciar:3096844312,ciat:3096844312,
                  ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,
                  cani:3096844323,kkkk:9096844323,rrrr:5,yhj:3096844342,
-                 ffff:3096844302};
+                 ffff:3096844302, pini:3096844302};
     return map[key];
   }
 };

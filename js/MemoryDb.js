@@ -1,3 +1,4 @@
+const R = require('ramda');
 const Errors = require('./Errors.js');
 
 class MemoryDb {
@@ -379,9 +380,32 @@ function _addNode(memoryDb, key, node, nodePosition) {
   // add node to memoryDb._nodes
   // change nextPosition in previousNode with nodePosition
   //TODO special beavior for tail and head
-  memoryDb._nodes[node.previousKey].nextPosition = nodePosition;
-  memoryDb._nodes[key] = node;
+  nodes = memoryDb._nodes;
+  // add 1 to indexes bigger than node.index - 1 
+  nodes = getBiggerOfAndAddX(node.normalizedIndex - 1, 1, nodes, 'normalizedIndex');
+  nodes[node.previousKey].nextPosition = nodePosition;
+  nodes[key] = node;
+  memoryDb._nodes = nodes;
   return memoryDb;
+}
+
+function getBiggerOfAndAddX(minumum, x, object, inspectedElement) {
+  //
+  // TODO move in utils
+  // take an object filter for inspectedElement > minumumValue
+  // add x at the filtered elements
+  // return object - filtered elements + added filtered elements
+  //
+  function addXIfBigger(value, key, obj) {
+    if (value[inspectedElement] > minumum) {
+      value[inspectedElement] = value[inspectedElement] + x;
+      return value;
+    }
+    else{
+      return value;
+    }
+  }
+  return R.mapObjIndexed(addXIfBigger, object);
 }
 
 module.exports.MemoryDb = MemoryDb;

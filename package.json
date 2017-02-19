@@ -26,6 +26,7 @@
   "homepage": "https://github.com/fi3/cordovalocalstorage#readme",
   "dependencies": {
     "fnv1a": "^1.0.1",
+    "ramda": "^0.23.0",
     "rlp": "^2.0.0"
   },
   "devDependencies": {

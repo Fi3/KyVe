@@ -346,6 +346,22 @@ test('Db addNode returned value', assert => {
   assert.end();
 });
 
+test('Db addNode returned value', assert => {
+  const newNode = {
+    value: 'new value',
+    previousKey: 'ciat',
+    normalizedIndex: 3
+  }
+  const newNodePosition = 1000;
+  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)
+    ._nodes.ciay.normalizedIndex;
+  const expected = 4;
+
+  assert.deepEqual(actual, expected,
+    'should add 1 to the indexes of the nodes that come after the added node');
+  assert.end();
+});
+
 test('Db keyIsBiggerThanTail returned value for bigger key', assert => {
   const actual = Db._keyIsBiggerThanTail(memoryDb, 'kkkk');
   const expected = 'yes';

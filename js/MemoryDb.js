@@ -381,8 +381,9 @@ function _addNode(memoryDb, key, node, nodePosition) {
   // change nextPosition in previousNode with nodePosition
   //TODO special beavior for tail and head
   nodes = memoryDb._nodes;
+  nextIndex = nodes[node.nextKey].normalizedIndex;
   // add 1 to indexes bigger than node.index - 1 
-  nodes = getBiggerOfAndAddX(node.normalizedIndex - 1, 1, nodes, 'normalizedIndex');
+  nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
   nodes[node.previousKey].nextPosition = nodePosition;
   nodes[key] = node;
   memoryDb._nodes = nodes;

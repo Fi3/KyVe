@@ -1,3 +1,4 @@
+const R = require('ramda');
 const test = require('tape');
 const Db = require('../MemoryDb.js');
 const Errors = require('../Errors.js');
@@ -319,12 +320,14 @@ test('Db updateNode raise for value too long', assert => {
 });
 
 test('Db addNode returned value', assert => {
+  const db = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
+    nextKey: 'ciay'
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)._nodes.ciat.nextPosition;
+  const actual = Db._addNode(db, 'grulli', newNode, newNodePosition)._nodes.ciat.nextPosition;
   const expected = 1000;
 
   assert.deepEqual(actual, expected,
@@ -333,12 +336,14 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value', assert => {
+  const db= R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
+    nextKey: 'ciay'
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)._nodes.grulli;
+  const actual = Db._addNode(db, 'grulli', newNode, newNodePosition)._nodes.grulli;
   const expected = newNode;
 
   assert.deepEqual(actual, expected,
@@ -347,13 +352,14 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value', assert => {
+  const db = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
-    normalizedIndex: 3
+    nextKey: 'ciay'
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)
+  const actual = Db._addNode(db, 'grulli', newNode, newNodePosition)
     ._nodes.ciay.normalizedIndex;
   const expected = 4;
 

@@ -380,14 +380,36 @@ function _addNode(memoryDb, key, node, nodePosition) {
   // add node to memoryDb._nodes
   // change nextPosition in previousNode with nodePosition
   //TODO special beavior for tail and head
+  //
   nodes = memoryDb._nodes;
-  nextIndex = nodes[node.nextKey].normalizedIndex;
-  // add 1 to indexes bigger than node.index - 1 
-  nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
-  nodes[node.previousKey].nextPosition = nodePosition;
-  nodes[key] = node;
-  memoryDb._nodes = nodes;
-  return memoryDb;
+
+  // When node is heade
+  if (node.previousKey === key) {
+    memoryDb._header.head = {key:key, node:node};
+    nextIndex = nodes[node.nextKey].normalizedIndex;
+    // add 1 to indexes bigger than node.index - 1 
+    nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
+    nodes[key] = node;
+    nodes[node.previousKey].nextPosition = nodePosition;
+    memoryDb._nodes = nodes;
+    return memoryDb;
+  }
+  else if (node.nextKey === 'tail') {
+    memoryDb._header.tail = {key:key, node:node};
+    nodes[key] = node;
+    nodes[node.previousKey].nextPosition = nodePosition;
+    memoryDb._nodes = nodes;
+    return memoryDb;
+  }
+  else {
+    nextIndex = nodes[node.nextKey].normalizedIndex;
+    // add 1 to indexes bigger than node.index - 1 
+    nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
+    nodes[key] = node;
+    nodes[node.previousKey].nextPosition = nodePosition;
+    memoryDb._nodes = nodes;
+    return memoryDb;
+  }
 }
 
 function getBiggerOfAndAddX(minumum, x, object, inspectedElement) {

@@ -368,6 +368,40 @@ test('Db addNode returned value', assert => {
   assert.end();
 });
 
+test('Db addNode returned value for head', assert => {
+  const db = R.clone(memoryDb);
+  const newNode = {
+    value: 'new value',
+    previousKey: 'grulli',
+    nextKey: 'ciao',
+  }
+  const newNodePosition = 1000;
+  const actual = Db._addNode(db, 'grulli', newNode, newNodePosition)
+    ._header.head;
+  const expected = {key: 'grulli', node:newNode};
+
+  assert.deepEqual(actual, expected,
+    'should add change memoryDb._header.head');
+  assert.end();
+});
+
+test('Db addNode returned value for tail', assert => {
+  const db = R.clone(memoryDb);
+  const newNode = {
+    value: 'new value',
+    previousKey: 'cias',
+    nextKey: 'tail',
+  }
+  const newNodePosition = 1000;
+  const actual = Db._addNode(db, 'grulli', newNode, newNodePosition)
+    ._header.tail;
+  const expected = {key: 'grulli', node:newNode};
+
+  assert.deepEqual(actual, expected,
+    'should add change memoryDb._header.tail');
+  assert.end();
+});
+
 test('Db keyIsBiggerThanTail returned value for bigger key', assert => {
   const actual = Db._keyIsBiggerThanTail(memoryDb, 'kkkk');
   const expected = 'yes';
@@ -457,7 +491,7 @@ const memoryDb = {
     tail: {
       node: {
         collisionFlag: 0,
-        nextPosition: 0,
+        nextPosition: 'tail',
         value: 'canicanibaubau',
         position: 100,
         normalizedIndex: 5,
@@ -520,7 +554,7 @@ const memoryDb = {
     },
     cias: {
       collisionFlag: 0,
-      nextPosition: 0,
+      nextPosition: 'tail',
       value: 'canicanibaubau',
       position: 100,
       normalizedIndex: 5,

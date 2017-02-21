@@ -28,6 +28,13 @@ class MemoryDb {
   updateNode(key, value) {
     return _updateNode(this, key, value);
   }
+
+  addNode(key, node, nodePosition) {
+    updatedObject = _addNode(this, node, nodePosition);
+    this.header = updatedObject.header;
+    this.nodes = updatedObject.nodes;
+    return this;
+  }
 }
 
 function _inspect(memoryDb, key) {
@@ -381,6 +388,8 @@ function _addNode(memoryDb, key, node, nodePosition) {
   // change nextPosition in previousNode with nodePosition
   //TODO special beavior for tail and head
   //
+  const db = R.clone(memoryDb);
+  memoryDb = db;
   nodes = memoryDb._nodes;
 
   // When node is heade

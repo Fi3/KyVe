@@ -124,6 +124,23 @@ test('StoredDb addNode action executed', assert => {
   assert.end();
 });
 
+test('StoredDb updateHead action executed', assert => {
+  const dbLength = 100;
+  const fakeDumbedDb = new FakeDumpedDb(dbLength);
+  const newHeadPosition = Buffer.alloc(8);
+
+  const result = StoredDb._updateHead({_hook: fakeDumbedDb}, newHeadPosition);
+
+  const actual = {};
+  actual.newHeadPosition = result.newHeadPosition;
+  actual.writePosition = result.writePosition;
+  const expected = {newHeadPosition: newHeadPosition, writePosition: 8};
+
+  assert.deepEqual(actual, expected,
+    'updateHead should write in the StoredDb the new heade position starting at byte numeber 8');
+  assert.end();
+});
+
 test('StoredDb init enviornment not supported', assert => {
   let actual;
   let expected;
@@ -173,10 +190,6 @@ class FakeDumpedDb {
 
   write(data, position) {
     return {data, position};
-  }
-
-  writePosition(newPosition, position) {
-    return {newPosition, position};
   }
 
   append(node) {

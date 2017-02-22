@@ -34,7 +34,7 @@ function _splitData(data, nodes = []) {
   // node is byte array that rapresent the node in the stored db:
   //
   //
-  //    collision flab      next node byte position    rlp encoded string (value)
+  //    collision flag      next node byte position    rlp encoded string (value)
   //             ^                     ^                       ^
   //          [1 bit,    7 bits,    8 bytes,    variable,    variable]
   //                        v                      v

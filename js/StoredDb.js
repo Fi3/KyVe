@@ -35,6 +35,10 @@ class StoredDb {
     return _addNode(this, node, previousNodePosition);
   }
 
+  updateHead(newHead) {
+    return _updateHead(this, newHead);
+  }
+
 }
 
 function _updateNode(StoredDb, nodePosition, key, value, oldValue) {
@@ -89,6 +93,14 @@ function _addNode(StoredDb, node, previousNodePosition) {
   return {changedNode, newLength: storedDbWithNewNode.length};
 }
 
+function _updateHead(StoredDb, newHead) {
+  //
+  // Write in the stored at byte 8 to byte 16 the new head position
+  //
+  const write = StoredDb._hook.write(newHead, 8);
+  return {newHeadPosition: write.data, writePosition: write.position};
+}
+
 function createStoredDb(path, env) {
   //
   // Initialize a new storedDb
@@ -109,3 +121,4 @@ module.exports._updateNode = _updateNode;
 module.exports._changeNext = _changeNext;
 module.exports._append = _append;
 module.exports._addNode = _addNode;
+module.exports._updateHead = _updateHead;

@@ -141,6 +141,23 @@ test('StoredDb updateHead action executed', assert => {
   assert.end();
 });
 
+test('StoredDb updateTail action executed', assert => {
+  const dbLength = 100;
+  const fakeDumbedDb = new FakeDumpedDb(dbLength);
+  const newTailPosition = Buffer.alloc(8);
+
+  const result = StoredDb._updateTail({_hook: fakeDumbedDb}, newTailPosition);
+
+  const actual = {};
+  actual.newTailPosition = result.newTailPosition;
+  actual.writePosition = result.writePosition;
+  const expected = {newTailPosition: newTailPosition, writePosition: 16};
+
+  assert.deepEqual(actual, expected,
+    'updateTail should write in the StoredDb the new tail position starting at byte numeber 16');
+  assert.end();
+});
+
 test('StoredDb init enviornment not supported', assert => {
   let actual;
   let expected;

@@ -80,11 +80,32 @@ function _updateNode(Db, key, value, keyData) {
 
 function _addNode(Db, key, value, keyData) {
   //
+  // Crate the node
   // Append the node to the end of the stored db, if the node is 
   // head or tail update the head or tail position in storedDb.
   // Update MemoryDb with the node.
   //
+  const newNode = encodeNode({
+                     key: key, 
+                     value:value,
+                     nextNode:keyData.nextNodePosition,
+                     collisionFlag: _getFlag(keyData.collisions)
+                   });
+  Db._storedDb.addNode(nextNode, keyData.prevNodePosition);
+  // If head
+  ====
+  // If tail
+  ====
+  Db._memoryDb.addNode(key, 
 
+function _getFlag(collisions) {
+  if (collisions === 0) {
+    return 0;
+  }
+  else {
+    return 1;
+  }
+}
 module.exports.Db = Db;
 module.exports.loadDb = loadDb;
 module.exports.createNewDb = createNewDb;

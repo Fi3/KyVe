@@ -101,7 +101,11 @@ function _addNode(StoredDb, node, previousNodePosition) {
   else {
     changedNode = 'head';
   }
-  return {changedNode, newLength: storedDbWithNewNode.length};
+  return {
+           changedNode,
+           newLength: storedDbWithNewNode.length,
+           newPosition: newNodePosition
+         };
 }
 
 function _updateHead(StoredDb, newHead) {

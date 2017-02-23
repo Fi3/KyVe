@@ -117,10 +117,11 @@ test('StoredDb addNode action executed', assert => {
   const actual = {};
   actual.newLength = result.newLength;
   actual.changedNode = result.changedNode;
-  const expected = {changedNode: changedNode, newLength: 100 + 23};
+  actual.newPosition = result.newPosition;
+  const expected = {changedNode: changedNode, newLength: 100 + 23, newPosition: 100};
 
   assert.deepEqual(actual, expected,
-    'addNode should append the node and modify the previouse node for point at the appended node');
+    'addNode should append the node and modify the previouse node for point at the appended node newPosition should be the db length before than we add the node');
   assert.end();
 });
 test('StoredDb addNode action executed for head', assert => {
@@ -135,10 +136,11 @@ test('StoredDb addNode action executed for head', assert => {
   const actual = {};
   actual.newLength = result.newLength;
   actual.changedNode = result.changedNode;
-  const expected = {changedNode: changedNode, newLength: 100 + 23};
+  actual.newPosition = result.newPosition;
+  const expected = {changedNode: changedNode, newLength: 100 + 23, newPosition: 100};
 
   assert.deepEqual(actual, expected,
-    'addNode should append the node and do not modify the previouse node if we add the head');
+    'addNode should append the node and do not modify the previouse node if we add the head newPosition should be the db length before than we add the node');
   assert.end();
 });
 

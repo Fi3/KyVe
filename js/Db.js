@@ -79,6 +79,11 @@ function _updateNode(Db, key, value, keyData) {
 }
 
 function _addNode(Db, key, value, keyData) {
+  //
+  // Append the node to the end of the stored db, if the node is 
+  // head or tail update the head or tail position in storedDb.
+  // Update MemoryDb with the node.
+  //
 
 module.exports.Db = Db;
 module.exports.loadDb = loadDb;

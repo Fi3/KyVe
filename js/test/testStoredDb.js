@@ -123,6 +123,24 @@ test('StoredDb addNode action executed', assert => {
     'addNode should append the node and modify the previouse node for point at the appended node');
   assert.end();
 });
+test('StoredDb addNode action executed for head', assert => {
+  const dbLength = 100;
+  const fakeDumbedDb = new FakeDumpedDb(dbLength);
+  const node = Buffer.alloc(23);
+  const previousNodePosition = 0;// if prev position is 0 we are appending the head
+
+  const changedNode = 'head';
+  const result = StoredDb._addNode({_hook: fakeDumbedDb}, node, previousNodePosition);
+
+  const actual = {};
+  actual.newLength = result.newLength;
+  actual.changedNode = result.changedNode;
+  const expected = {changedNode: changedNode, newLength: 100 + 23};
+
+  assert.deepEqual(actual, expected,
+    'addNode should append the node and do not modify the previouse node if we add the head');
+  assert.end();
+});
 
 test('StoredDb updateHead action executed', assert => {
   const dbLength = 100;

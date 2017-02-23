@@ -93,7 +93,14 @@ function _addNode(StoredDb, node, previousNodePosition) {
   //
   const newNodePosition = StoredDb._hook.length();
   const storedDbWithNewNode = _append(StoredDb, node);
-  const changedNode = _changeNext(StoredDb, previousNodePosition, newNodePosition);
+  let changedNode;
+  // If node is not head
+  if (previousNodePosition !== 0) {
+    changedNode = _changeNext(StoredDb, previousNodePosition, newNodePosition);
+  }
+  else {
+    changedNode = 'head';
+  }
   return {changedNode, newLength: storedDbWithNewNode.length};
 }
 

@@ -412,8 +412,8 @@ function _addNode(memoryDb, key, node, nodePosition) {
   }
   else {
     nextIndex = nodes[node.nextKey].normalizedIndex;
-    // add 1 to indexes bigger than node.index 
-    nodes = getBiggerOfAndAddX(nextIndex, 1, nodes, 'normalizedIndex');
+    // add 1 to indexes bigger than node.index - 1 
+    nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
     memoryDb._nodes = nodes;

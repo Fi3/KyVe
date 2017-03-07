@@ -93,7 +93,7 @@ test('Db._traverseBoucket returned value for a key that is in a boucket but is n
 test('Db.inspect returned value for key not in DB', assert => {
   const actual = Db._inspect(memoryDb, 'cani');
   const expected = {
-    normalizedIndex: memoryDb._nodes.ciay.normalizedIndex + 1,
+    normalizedIndex: 4,
     previousNodePosition: 600,
     nextNodePosition: 700,
     alreadyInDb: false,
@@ -111,7 +111,7 @@ test('Db.inspect returned value for key not in DB', assert => {
 test('Db.inspect returned value for key in DB', assert => {
   const actual = Db._inspect(memoryDb, 'ciau');
   const expected = {
-    normalizedIndex: memoryDb._nodes.ciau.normalizedIndex,
+    normalizedIndex: 4,
     previousNodePosition: 600,
     nextNodePosition: 100,
     alreadyInDb: true,
@@ -129,7 +129,7 @@ test('Db.inspect returned value for key in DB', assert => {
 test('Db.inspect returned value when previus index contain more than one node (collision)', assert => {
   const actual = Db._inspect(memoryDb, 'ciay');
   const expected = {
-    normalizedIndex: memoryDb._nodes.ciay.normalizedIndex,
+    normalizedIndex: 3,
     previousNodePosition: 500,
     nextNodePosition: 700,
     alreadyInDb: true,
@@ -162,10 +162,10 @@ test('Db.inspect returned value for key not in db but with a collision', assert 
   assert.end();
 });
 
-test('Db.inspect returned value for key in db and with a collision', assert => {
+test('Db.inspect returned value for key  in db and with a collision', assert => {
   const actual = Db._inspect(memoryDb, 'ciat');
   const expected = {
-    normalizedIndex: memoryDb._nodes.ciat.normalizedIndex,
+    normalizedIndex: 2,
     previousNodePosition: 400,
     nextNodePosition: 600,
     alreadyInDb: true,
@@ -225,7 +225,7 @@ test('Db.inspect returned value for key that is not db that is head and collide'
 test('Db.inspect returned value for key that is not db that is tail', assert => {
   const actual = Db._inspect(memoryDb, 'kkkk');
   const expected = {
-    normalizedIndex: memoryDb._nodes.cias.normalizedIndex + 1,
+    normalizedIndex: 6,
     previousNodePosition: 100,
     nextNodePosition: 'tail',
     alreadyInDb: false,
@@ -239,7 +239,7 @@ test('Db.inspect returned value for key that is not db that is tail', assert => 
 test('Db.inspect returned value for key that is in db that is tail', assert => {
   const actual = Db._inspect(memoryDb, 'cias');
   const expected = {
-    normalizedIndex: memoryDb._nodes.cias.normalizedIndex,
+    normalizedIndex: 5,
     previousNodePosition: 700,
     nextNodePosition: 'tail',
     alreadyInDb: true,
@@ -253,7 +253,7 @@ test('Db.inspect returned value for key that is in db that is tail', assert => {
 test('Db.inspect returned value for key that is not db that is tail and collide', assert => {
   const actual = Db._inspect(memoryDb, 'tias');
   const expected = {
-    normalizedIndex: memoryDb._nodes.cias.normalizedIndex,
+    normalizedIndex: 5,
     previousNodePosition: 700,
     nextNodePosition: 100,
     alreadyInDb: false,
@@ -478,7 +478,7 @@ const memoryDb = {
         value: 'canicanibaubau',
         position: 300,
         normalizedIndex: 1,
-        previousKey: 'ciao',
+        previousKey: 0,
         previousActualIndex: 0,
       },
       key: 'ciao'
@@ -522,7 +522,7 @@ const memoryDb = {
       nextPosition: 600,
       value: 'canicanibaubau',
       position: 500,
-      normalizedIndex: 3,
+      normalizedIndex: 2,
       previousKey: 'ciar',
       nextKey: 'ciay',
       previousActualIndex: 3096844302,
@@ -532,7 +532,7 @@ const memoryDb = {
       nextPosition: 700,
       value: 'canicanibaubau',
       position: 600,
-      normalizedIndex: 4,
+      normalizedIndex: 3,
       previousKey: 'ciat',
       nextKey: 'ciau',
       previousActualIndex: 3096844312,
@@ -542,7 +542,7 @@ const memoryDb = {
       nextPosition: 100,
       value: 'canicanibaubau',
       position: 700,
-      normalizedIndex: 5,
+      normalizedIndex: 4,
       previousKey: 'ciay',
       nextKey: 'cias',
       previousActualIndex: 3096844322,
@@ -552,28 +552,17 @@ const memoryDb = {
       nextPosition: 'tail',
       value: 'canicanibaubau',
       position: 100,
-      normalizedIndex: 6,
+      normalizedIndex: 5,
       previousKey: 'ciau',
       nextKey: 'ciau',
       previousActualIndex: 3096844332,
     },
   },
   _hashFunction: function(key) {
-    const map = {cini: 33,
-                 ciao:3096844302,
-                 ciar:3096844312,
-                 ciat:3096844312,
-                 ciay:3096844322,
-                 tttt:3096844322,
-                 ciau:3096844332,
-                 cias:3096844342,
-                 cani:3096844323,
-                 kkkk:9096844323,
-                 rrrr:5,
-                 yhj:3096844342,
-                 ffff:3096844302,
-                 pini:3096844302,
-                 tias:3096844342};
+    const map = {cini: 33,ciao:3096844302,ciar:3096844312,ciat:3096844312,
+                 ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,
+                 cani:3096844323,kkkk:9096844323,rrrr:5,yhj:3096844342,
+                 ffff:3096844302, pini:3096844302,tias:3096844342};
     return map[key];
   }
 };

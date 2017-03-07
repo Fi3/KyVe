@@ -392,7 +392,7 @@ function _addNode(memoryDb, key, node, nodePosition) {
   memoryDb = db;
   nodes = memoryDb._nodes;
 
-  // When node is head
+  // When node is heade
   if (node.previousKey === key) {
     memoryDb._header.head = {key:key, node:node};
     nextIndex = nodes[node.nextKey].normalizedIndex;
@@ -403,7 +403,6 @@ function _addNode(memoryDb, key, node, nodePosition) {
     memoryDb._nodes = nodes;
     return memoryDb;
   }
-  // When node is tail
   else if (node.nextKey === 'tail') {
     memoryDb._header.tail = {key:key, node:node};
     nodes[key] = node;
@@ -441,28 +440,6 @@ function getBiggerOfAndAddX(minumum, x, object, inspectedElement) {
   return R.mapObjIndexed(addXIfBigger, object);
 }
 
-function _updateIndexesAfter(memoryDb, index) {
-  //
-  // add 1 at all the node.index bigger or equal to index
-  //
-
-  const db = R.clone(memoryDb);
-  // value key obj
-  function add1IfBiggerThan(value, controlValue) {
-    if (value > controlValue) {
-      return value + 1;
-    }
-    return value;
-  }
-  function changeIndex(node, key, nodes) {
-    node.normalizedIndex = add1IfBiggerThan(node.normalizedIndex, index -1);
-    return node;
-  }
-  db._nodes = R.mapObjIndexed(changeIndex, db._nodes); 
-  return db;
-}
-
-
 module.exports.MemoryDb = MemoryDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;
@@ -472,4 +449,3 @@ module.exports._updateNode = _updateNode;
 module.exports._addNode = _addNode;
 module.exports._keyIsBiggerThanTail = _keyIsBiggerThanTail;
 module.exports._keyIsSmallerThanHead = _keyIsSmallerThanHead;
-module.exports._updateIndexesAfter = _updateIndexesAfter;

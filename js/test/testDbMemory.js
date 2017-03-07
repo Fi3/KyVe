@@ -469,15 +469,6 @@ test('Db keyIsSmallerThanHead returned value for a key that collide', assert => 
   assert.end();
 });
 
-test('Db updateIdexesAfter returned value', assert => {
-  const actual = Db._updateIndexesAfter(memoryDb, 2)._nodes.ciar.normalizedIndex;
-  const expected = 3;
-
-  assert.deepEqual(actual, expected,
-    'should return a memoryDb with all the indexes bigger or equal to 2 incremented to one');
-  assert.end();
-});
-
 const memoryDb = {
   _header: {
     head: {

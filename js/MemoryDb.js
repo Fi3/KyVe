@@ -440,6 +440,22 @@ function getBiggerOfAndAddX(minumum, x, object, inspectedElement) {
   return R.mapObjIndexed(addXIfBigger, object);
 }
 
+// memoryDb -> {string:node, ..., string:node}
+function _nodeFromIndex(memoryDb, index) {
+  //
+  // retrun an array of nodes with normalizedIndex === index
+  // raise an error if index is out of range
+  //
+  const hasSameIndex = node => node.normalizedIndex === index;
+  const nodes = R.filter(hasSameIndex, memoryDb._nodes);
+  if (Object.keys(nodes).length > 0) {
+    return nodes;
+  }
+  else {
+    throw new Errors.MemoryDbIndexOutOfRange();
+  }
+}
+
 module.exports.MemoryDb = MemoryDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;
@@ -449,3 +465,4 @@ module.exports._updateNode = _updateNode;
 module.exports._addNode = _addNode;
 module.exports._keyIsBiggerThanTail = _keyIsBiggerThanTail;
 module.exports._keyIsSmallerThanHead = _keyIsSmallerThanHead;
+module.exports._nodeFromIndex = _nodeFromIndex;

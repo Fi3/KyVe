@@ -469,6 +469,39 @@ test('Db keyIsSmallerThanHead returned value for a key that collide', assert => 
   assert.end();
 });
 
+test('Db nodeFromIndex returned value', assert => {
+  const actual = Db._nodeFromIndex(memoryDb, 2);
+  const expected = {
+    ciar: memoryDb._nodes.ciar,
+    ciat: memoryDb._nodes.ciat
+  };
+
+  assert.deepEqual(actual, expected,
+    'should return the an dict of nodes with normalizedIndex === index');
+  assert.end();
+});
+
+test('Db nodeFromIndex error raised for index out of range', assert => {
+  let actual;
+  let expected;
+  try {
+    Db._nodeFromIndex(memoryDb, 67);;
+  }
+  catch(e) {
+    actual = e.constructor.name;
+  }
+  try {
+    throw new Errors.MemoryDbIndexOutOfRange();
+  }
+  catch(e) {
+    expected = e.constructor.name;
+  }
+
+  assert.deepEqual(actual, expected,
+    'when we pass an index out of range should raise MemoryDbIndexOutOfRange');
+  assert.end();
+});
+
 const memoryDb = {
   _header: {
     head: {
@@ -559,10 +592,22 @@ const memoryDb = {
     },
   },
   _hashFunction: function(key) {
-    const map = {cini: 33,ciao:3096844302,ciar:3096844312,ciat:3096844312,
-                 ciay:3096844322,tttt:3096844322,ciau:3096844332,cias:3096844342,
-                 cani:3096844323,kkkk:9096844323,rrrr:5,yhj:3096844342,
-                 ffff:3096844302, pini:3096844302,tias:3096844342};
+    const map = {cini: 33,
+      ciao:3096844302,
+      ciar:3096844312,
+      ciat:3096844312,
+      ciay:3096844322,
+      tttt:3096844322,
+      ciau:3096844332,
+      cias:3096844342,
+      cani:3096844323,
+      kkkk:9096844323,
+      rrrr:5,
+      yhj:3096844342,
+      ffff:3096844302,
+      pini:3096844302,
+      tias:3096844342
+    };
     return map[key];
   }
 };

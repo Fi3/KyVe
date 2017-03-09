@@ -29,6 +29,10 @@ class MemoryDb {
     return _updateNode(this, key, value);
   }
 
+  prevNodesFromIndex(index) {
+    return _prevNodeFromIndex(this, index);
+  }
+
   addNode(key, node, nodePosition) {
     updatedObject = _addNode(this, node, nodePosition);
     this.header = updatedObject.header;
@@ -456,6 +460,16 @@ function _nodeFromIndex(memoryDb, index) {
   }
 }
 
+// memoryDb, normalizedIndex -> {string: node}
+function _prevNodeFromIndex(memoryDb, index) {
+  //
+  // Returne the last node of the bucket of index - 1
+  //
+  const prevNodes = _nodeFromIndex(memoryDb, index - 1);
+  const collisionFlagIs0 = node => node.collisionFlag === 0;
+  return R.filter(collisionFlagIs0, prevNodes);
+}
+
 module.exports.MemoryDb = MemoryDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;
@@ -466,3 +480,4 @@ module.exports._addNode = _addNode;
 module.exports._keyIsBiggerThanTail = _keyIsBiggerThanTail;
 module.exports._keyIsSmallerThanHead = _keyIsSmallerThanHead;
 module.exports._nodeFromIndex = _nodeFromIndex;
+module.exports._prevNodeFromIndex = _prevNodeFromIndex;

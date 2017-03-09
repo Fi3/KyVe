@@ -97,7 +97,7 @@ function _addNode(Db, key, value, keyData) {
     value: value,
     position:???,
     normalizedIndex: keyData.normalizedIndex,
-    previousKey: ???,
+    previousKey: collisionFlag === 1 ? kkk
     nextKey: ???,
     previousActualIndex: ???
   };

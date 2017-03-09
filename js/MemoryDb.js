@@ -29,8 +29,12 @@ class MemoryDb {
     return _updateNode(this, key, value);
   }
 
-  prevNodesFromIndex(index) {
-    return _prevNodeFromIndex(this, index);
+  prevKeyFromIndex(index) {
+    return _prevKeyFromIndex(this, index);
+  }
+
+  nextKeyFromIndex(index) {
+    return _nextKeyFromIndex(this, index);
   }
 
   addNode(key, node, nodePosition) {
@@ -470,6 +474,21 @@ function _prevNodeFromIndex(memoryDb, index) {
   return R.filter(collisionFlagIs0, prevNodes);
 }
 
+function _prevKeyFromIndex(memoryDb, index) {
+  //
+  // Returne the of the last element of the bucket of index - 1
+  //
+  return Object.keys(_prevNodeFromIndex(memoryDb, index))[0];
+}
+
+function _nextKeyFromIndex(memoryDb, index) {
+  //
+  // Returne the key of the first element of the bucket with index 1
+  //
+  const prevKey = _prevKeyFromIndex(memoryDb, index);
+  return _prevNodeFromIndex(memoryDb, index)[prevKey].nextKey;
+}
+
 module.exports.MemoryDb = MemoryDb;
 // ---------ONLY---FOR---TEST--------------------
 module.exports._inspect = _inspect;
@@ -481,3 +500,5 @@ module.exports._keyIsBiggerThanTail = _keyIsBiggerThanTail;
 module.exports._keyIsSmallerThanHead = _keyIsSmallerThanHead;
 module.exports._nodeFromIndex = _nodeFromIndex;
 module.exports._prevNodeFromIndex = _prevNodeFromIndex;
+module.exports._prevKeyFromIndex = _prevKeyFromIndex;
+module.exports._nextKeyFromIndex = _nextKeyFromIndex;

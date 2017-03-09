@@ -97,9 +97,9 @@ function _addNode(Db, key, value, keyData) {
     value: value,
     position:???,
     normalizedIndex: keyData.normalizedIndex,
-    previousKey: collisionFlag === 1 ? kkk
-    nextKey: ???,
-    previousActualIndex: ???
+    previousKey: Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex),
+    nextKey: Db._memoryDb.nextKeyFromIndex(keyData.normalizedIndex),
+    previousActualIndex: Db.hash(previousKey),
   };
   Db._storedDb.addNode(nextNode, keyData.prevNodePosition);
   // If head

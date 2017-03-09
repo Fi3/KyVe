@@ -502,7 +502,7 @@ test('Db nodeFromIndex error raised for index out of range', assert => {
   assert.end();
 });
 
-test('Db nodeFromIndex returned value', assert => {
+test('Db prevNodeFromIndex returned value', assert => {
   const actual = Db._prevNodeFromIndex(memoryDb,3);
   const expected = {ciat: memoryDb._nodes.ciat};
 
@@ -510,6 +510,25 @@ test('Db nodeFromIndex returned value', assert => {
     'should return the node that come before the passed index');
   assert.end();
 });
+
+test('Db prevKeyFromIndex returned value', assert => {
+  const actual = Db._prevKeyFromIndex(memoryDb,3);
+  const expected = 'ciat';
+
+  assert.deepEqual(actual, expected,
+    'should return the key that come before the passed index');
+  assert.end();
+});
+
+test('Db nextKeyFromIndex returned value', assert => {
+  const actual = Db._nextKeyFromIndex(memoryDb,3);
+  const expected = 'ciay';
+
+  assert.deepEqual(actual, expected,
+    'should return the key that come after the passed index');
+  assert.end();
+});
+
 
 const memoryDb = {
   _header: {

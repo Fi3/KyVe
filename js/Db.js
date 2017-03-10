@@ -101,9 +101,10 @@ function _addNode(Db, key, value, keyData) {
     nextKey: Db._memoryDb.nextKeyFromIndex(keyData.normalizedIndex),
     previousActualIndex: Db.hash(previousKey),
   };
-  Db._storedDb.addNode(nextNode, keyData.prevNodePosition);
+  const nodePosition = Db._storedDb.addNode(nextNode, keyData.prevNodePosition).newPosition;
   // If head
   if (1 === keyData.normalizedIndex) {
+
   ====
   }
   // If tail

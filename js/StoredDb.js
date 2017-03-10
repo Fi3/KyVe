@@ -108,11 +108,13 @@ function _addNode(StoredDb, node, previousNodePosition) {
          };
 }
 
-function _updateHead(StoredDb, newHead) {
+function _updateHead(StoredDb, newHeadPosition) {
   //
   // Write in the stored at byte 8 to byte 16 the new head position
+  // newHeadPosition is 
   //
-  const write = StoredDb._hook.write(newHead, 8);
+  //const bufferizedPosition = intToBuffer8(newHeadPosition);
+  const write = StoredDb._hook.write(newHeadPosition, 8);
   return {newHeadPosition: write.data, writePosition: write.position};
 }
 

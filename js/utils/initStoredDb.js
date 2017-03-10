@@ -10,6 +10,16 @@ function createHeader(head,tail) {
   return buffer;
 }
 
+function intToBuffer8(integer) {
+  //
+  // Int ecoded as a BE 8 byte hex buffer with following 0s
+  //
+  const head = header.slice(8,16).readIntBE(0,8)
+  const encoded = Buffer.alloc(8);
+  encoded.writeIntBE(integer, 0, 8);
+  return encoded;
+}
+
 function createNode(data) {
   const collisionFlag = Buffer.alloc(1);
   if (data.collisionFlag === 0) {
@@ -58,3 +68,4 @@ const storedDb = Buffer.concat([header, node1, node2, node3]);
 
 module.exports.initializedDb = storedDb;
 module.exports.createNode = createNode;
+module.exports.intToBuffer8 = intToBuffer8;

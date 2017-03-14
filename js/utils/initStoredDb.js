@@ -31,8 +31,17 @@ function createNode(data) {
   else {
     throw UnimplementedError;
   }
-  const nextNode = Buffer.alloc(8);
-  nextNode.write(data.nextNode, 0, 'hex');
+  let nextNode;
+  if (typeof data.nextNode === 'string') {
+    nextNode = Buffer.alloc(8);
+    nextNode.write(data.nextNode, 0, 'hex');
+  }
+  else if (typeof data.nextNode === 'int') {
+    nextNode = intToBuffer8(data.nextNode);
+  }
+  else {
+    throw UnimplementedError;
+  }
   const key = rlp.encode(data.key);
   const value = rlp.encode(data.value);
   return Buffer.concat([collisionFlag, nextNode, key, value]);

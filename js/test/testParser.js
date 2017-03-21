@@ -243,6 +243,20 @@ test('Parser.memoryDbFromStoredDb return value', assert => {
   assert.end();
 });
 
+test('Parser._addNormalizedIndexes return value', assert => {
+  const actual = Parser._addNormalizedIndexes([{},{},{}]);
+  const expected = 
+    [
+      {normalizedIndex: 1}
+    , {normalizedIndex: 2}
+    , {normalizedIndex: 3}
+    ];
+
+  assert.deepEqual(actual, expected,
+    '_addNormalizedIndexes should return a list with a field added in each element the filed name should be normalizedIndex and the filed value should be the element index in the list + 1');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000, cant: 543};
   return map[key];

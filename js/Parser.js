@@ -104,7 +104,7 @@ function _addNormalizedIndexes(nodes) {
   //
   // take an array of nodes and the normalizedIndex
   //
-  return nodes;
+  return nodes.map((node, index) => {node.normalizedIndex = index + 1; return node});
 }
 
 function _addPreviosKeys(nodes) {
@@ -233,3 +233,4 @@ module.exports._splitData = _splitData;
 module.exports._setIndexes = _setIndexes;
 module.exports._setKeys = _setKeys;
 module.exports._toDict = _toDict;
+module.exports._addNormalizedIndexes = _addNormalizedIndexes;

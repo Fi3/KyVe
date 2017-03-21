@@ -271,6 +271,20 @@ test('Parser._addPreviousKeys return value', assert => {
   assert.end();
 });
 
+test('Parser._addNextKeys return value', assert => {
+  const actual = Parser._addNextKeys([{key:'cane'},{key:'cani'},{key:'cana'}]);
+  const expected = 
+    [
+      {nextKey: 'cani', key: 'cane'}
+    , {nextKey: 'cana', key: 'cani'}
+    , {nextKey: 'tail', key: 'cana'}
+    ];
+
+  assert.deepEqual(actual, expected,
+    '_addNextKeys should return a list with a field added in each element the filed name should be nextKey the filed value should be the key fild at arr[index + 1] if index is arr.len should be "tail"');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000, cant: 543};
   return map[key];

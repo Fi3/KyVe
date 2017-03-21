@@ -126,7 +126,15 @@ function _addNextKeys(nodes) {
   //
   // take an array of node and add the next keys
   //
-  return nodes;
+  return nodes.map((node, index) => {
+    if (index === nodes.length - 1) {
+      node.nextKey = 'tail';
+    }
+    else {
+      node.nextKey = nodes[index + 1].key;
+    }
+    return node;
+  });
 }
 
 function _addPrevActIndexes(nodes, hashFunction) {
@@ -243,3 +251,4 @@ module.exports._setKeys = _setKeys;
 module.exports._toDict = _toDict;
 module.exports._addNormalizedIndexes = _addNormalizedIndexes;
 module.exports._addPreviousKeys = _addPreviousKeys;
+module.exports._addNextKeys = _addNextKeys;

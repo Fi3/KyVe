@@ -71,8 +71,11 @@ function _toDict(nodes) {
 
 function _parseNodes(nodes) {
   //
-  // Take the output of _splitData [[bufferizedNode1, keyLen1], ....] and return [nodes1, nodes2, ...]
-  // The returned node has not the fileds normalizedIndex, previousKey, nextKey, previousActualIndex
+  // Take the output of _splitData [[bufferizedNode1, keyLen1], ....]
+  // and return [nodes1, nodes2, ...]
+  // The returned node has not the fileds normalizedIndex, previousKey, nextKey,
+  // previousActualIndex
+  //
   // The actual parsing of the node is let to _parseNode, the dutys of this function are:
   //
   //   1. find the byte position of the nodes in the stroedDb
@@ -92,7 +95,9 @@ function _parseNodes(nodes) {
 }
 
 function _parseNode(node, keyLen) {
+  //
   // traverse and parse a buffer (data) and return an Object (dict) that encode the data
+  //
   let collisionFlag;
   if (node[0] === 16) {
     // bite 0 encode the collision flag, if byte 0 is 16 bit 0 is 1
@@ -105,10 +110,15 @@ function _parseNode(node, keyLen) {
     throw UndifinedError;
   }
 
-  const nextNode = node.slice(1,9).readIntBE(0,8);
+  const nextPosition = node.slice(1,9).readIntBE(0,8);
   const key = rlp.decode(node.slice(9, 9 + keyLen)).toString();
   const value = rlp.decode(node.slice(9 + keyLen, node.length)).toString();
-  return {collisionFlag, nextNode, key, value};
+  // TODO
+  // NOMRALIZEDINDEX = ??
+  // PREVIOUSKEY = ??
+  // NEXTKEY = ??
+  // PREVIOUSACTUALINDEX = ??
+  return {collisionFlag, nextPosition, key, value};
 }
 
 function _setIndexes(nodes, hash) {

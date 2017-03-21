@@ -390,11 +390,11 @@ function _updateNode(memoryDb, key, value) {
   return memoryDb;
 }
 
+// TODO nodePosition and node.position are equals refactor this function!
 function _addNode(memoryDb, key, node, nodePosition) {
   //
   // add node to memoryDb._nodes
   // change nextPosition in previousNode with nodePosition
-  //TODO special beavior for tail and head
   //
   const db = R.clone(memoryDb);
   memoryDb = db;

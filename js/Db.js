@@ -1,3 +1,4 @@
+"use strict"
 const StoredDb = require('./StoredDb.js');
 const Parser = require('./Parser.js');
 const hash = require('fnv1a');
@@ -25,6 +26,7 @@ class Db {
   }
 
   setItem(key, value) {
+    return _setItem(this, key, value);
   }
 }
 
@@ -53,7 +55,7 @@ function _setItem(Db, key, value) {
   // If the key is already in the db update the node.
   // If is not in the db add the node
   //
-  const keyData = MemoryDb.inspectKey(key);
+  const keyData = Db._memoryDb.inspectKey(key);
   if (keyData.alreadyInDb) {
     _updateNode(Db, key, value, keyData);
   }
@@ -78,6 +80,7 @@ function _updateNode(Db, key, value, keyData) {
   }
 }
 
+//TODO this function should be atomic (use log for restore state)
 function _addNode(Db, key, value, keyData) {
   //
   // Crate the node
@@ -91,27 +94,18 @@ function _addNode(Db, key, value, keyData) {
     nextNode: keyData.nextNodePosition,
     collisionFlag: _getFlag(keyData.collisions)
   });
-  const newMemoryNode = {
-    collisionFlag: _getFlag(keyData.collisions),
-    nextPosition: keyData.nextNodePosition,
-    value: value,
-    position:???,
-    normalizedIndex: keyData.normalizedIndex,
-    previousKey: Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex),
-    nextKey: Db._memoryDb.nextKeyFromIndex(keyData.normalizedIndex),
-    previousActualIndex: Db.hash(previousKey),
-  };
   const nodePosition = Db._storedDb.addNode(nextNode, keyData.prevNodePosition).newPosition;
   // If head
   if (1 === keyData.normalizedIndex) {
-
-  ====
+    Db._storedDb.updateHead(nodePosition);
   }
   // If tail
   if ('tail' === keyData.nextPosition) {
-  ====
+    Db._storedDb.updateTail(nodePosition);
   }
-  Db._memoryDb.addNode(key,
+  const newMemoryNode = _newMemoryNode(Db, keyData, nodePosition);
+  Db._memoryDb.addNode(key, newMemoryNode, nodePosition);
+}
 
 function _getFlag(collisions) {
   if (collisions === 0) {
@@ -121,14 +115,20 @@ function _getFlag(collisions) {
     return 1;
   }
 }
+
+function _newMemoryNode(Db, keyData, newPosition) {
+  const newMemoryNode = {
+    collisionFlag: _getFlag(keyData.collisions),
+    nextPosition: keyData.nextNodePosition,
+    value: value,
+    position: newPosition,
+    normalizedIndex: keyData.normalizedIndex,
+    previousKey: Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex),
+    nextKey: Db._memoryDb.nextKeyFromIndex(keyData.normalizedIndex),
+    previousActualIndex: Db.hash(previousKey),
+  };
+  return newMemoryNode;
+};
 module.exports.Db = Db;
 module.exports.loadDb = loadDb;
 module.exports.createNewDb = createNewDb;
-
-  return {
-    normalizedIndex: normalizedIndex,
-    previousNodePosition: previousNodePosition,
-    nextNodePosition: nextNodePosition,
-    alreadyInDb: alreadyInDb,
-    collisions: collisions,
-  };

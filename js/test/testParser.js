@@ -25,11 +25,11 @@ function createNode(data) {
   else {
     throw UnimplementedError;
   }
-  const nextNode = Buffer.alloc(8);
-  nextNode.write(data.nextNode, 0, 'hex');
+  const nextPosition = Buffer.alloc(8);
+  nextPosition.write(data.nextPosition, 0, 'hex');
   const key = rlp.encode(data.key);
   const value = rlp.encode(data.value);
-  return Buffer.concat([collisionFlag, nextNode, key, value]);
+  return Buffer.concat([collisionFlag, nextPosition, key, value]);
 }
 
 test('Parser._parseHeader return value', assert => {
@@ -91,24 +91,24 @@ test('Parser._parseHeader error throwed for invalid buffer', assert => {
 test('Parser._parseNode return value', assert => {
   const data = {
     collisionFlag: 0,
-    nextNode: '000000000004378B', // 276363
+    nextPosition: '000000000004378B', // 276363
     key: 'cane',
     value: 'gatto',
   };
   const buffer = createNode(data);
   const actual = Parser._parseNode(buffer, 5);
-  data.nextNode = 276363;
+  data.nextPosition = 276363;
   const expected = data;
 
   assert.deepEqual(actual, expected,
-    'should return the encoded data for the buffer, collisionFlag should be bool, nextNode int, key and value string');
+    'should return the encoded data for the buffer, collisionFlag should be bool, nextPosition int, key and value string');
   assert.end();
 });
 
 test('Parser._splitData return value', assert => {
   const data = {
     collisionFlag: 0,
-    nextNode: '000000000004378B', // 276363
+    nextPosition: '000000000004378B', // 276363
     key: 'cane',
     value: 'gatto',
   };
@@ -127,7 +127,7 @@ test('Parser._splitData return value', assert => {
 test('Parser._splitData return value', assert => {
   const data = {
     collisionFlag: 0,
-    nextNode: '000000000004378B', // 276363
+    nextPosition: '000000000004378B', // 276363
     key: 'cane',
     value: 'gatto',
   };
@@ -252,28 +252,28 @@ const db = [
   {
     // THIS IS THE II ELEMENT
     collisionFlag: 0,
-    nextNode: '0000000000000026', // 38
+    nextPosition: '0000000000000026', // 38
     key: 'cant',
     value: 'gatto',
   },
   {
     // THIS IS THE III ELEMENTindex
     collisionFlag: 1,
-    nextNode: '000000000000003c', // 60
+    nextPosition: '000000000000003c', // 60
     key: 'cane',
     value: 'gatti',
   },
   {
     // THIS IS THE HEAD
     collisionFlag: 0,
-    nextNode: '0000000000000052', // 82
+    nextPosition: '0000000000000052', // 82
     key: 'pani',
     value: 'matti',
   },
   {
     // THIS IS THE TAIL
     collisionFlag: 0,
-    nextNode: '0000000000000068', // 104
+    nextPosition: '0000000000000068', // 104
     key: 'lupi',
     value: 'patti',
   },

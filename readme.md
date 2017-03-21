@@ -1,7 +1,9 @@
-#KyVe ![travis tag](https://travis-ci.org/Fi3/KyVe.svg?branch=master) ![codecov tag](https://codecov.io/gh/Fi3/KyVe/coverage.svg)
+<img src="https://cdn.rawgit.com/Fi3/KyVe/9d38df69/KyVe_logo.svg" width="500">
+
+# KyVe ![travis tag](https://travis-ci.org/Fi3/KyVe.svg?branch=master) ![codecov tag](https://codecov.io/gh/Fi3/KyVe/coverage.svg)
 
 
-###A simple in memory key-value datastore with persistence.
+### A simple in memory key-value datastore with persistence.
 
 KyVe is as really simple hybrid key-value storage. Hybrid because maintain 2 db, one in memory, a symple JS Object, the other one is
 stored. Get a value is the same thing that get a value from a JS Object. When we have to set a value we write on the stored db and than 

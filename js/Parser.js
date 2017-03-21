@@ -69,7 +69,7 @@ function _toDict(nodes) {
   return dictNodes;
 }
 
-function _parseNodes(nodes) {
+function _parseNodes(nodes, hashFunction) {
   //
   // Take the output of _splitData [[bufferizedNode1, keyLen1], ....]
   // and return [nodes1, nodes2, ...]
@@ -91,7 +91,42 @@ function _parseNodes(nodes) {
     bytePosition = bytePosition + node.length;
     return parsedNode;
   });
+  //return _addPrevActIndexes(_addNormalizedIndexes(_addNextKeys(_addPreviosKeys(parsedNodes))), hashFucntion);
+  // TODO
+  // NOMRALIZEDINDEX = ?? should be index + 1
+  // PREVIOUSKEY = ?? should be prevK
+  // NEXTKEY = ?? it s a fkig prob
+  // PREVIOUSACTUALINDEX = ?? a prob
   return parsedNodes;
+}
+
+function _addNormalizedIndexes(nodes) {
+  //
+  // take an array of nodes and the normalizedIndex
+  //
+  return nodes;
+}
+
+function _addPreviosKeys(nodes) {
+  //
+  // take an array of nodes and add the previous keys
+  //
+  return nodes;
+}
+
+function _addNextKeys(nodes) {
+  //
+  // take an array of node and add the next keys
+  //
+  return nodes;
+}
+
+function _addPrevActIndexes(nodes, hashFunction) {
+  //
+  // take an array of nodes and an hash fucntion and add the previous
+  // actual indexes
+  //
+  return nodes;
 }
 
 function _parseNode(node, keyLen) {
@@ -113,11 +148,6 @@ function _parseNode(node, keyLen) {
   const nextPosition = node.slice(1,9).readIntBE(0,8);
   const key = rlp.decode(node.slice(9, 9 + keyLen)).toString();
   const value = rlp.decode(node.slice(9 + keyLen, node.length)).toString();
-  // TODO
-  // NOMRALIZEDINDEX = ??
-  // PREVIOUSKEY = ??
-  // NEXTKEY = ??
-  // PREVIOUSACTUALINDEX = ??
   return {collisionFlag, nextPosition, key, value};
 }
 

@@ -257,6 +257,20 @@ test('Parser._addNormalizedIndexes return value', assert => {
   assert.end();
 });
 
+test('Parser._addPreviousKeys return value', assert => {
+  const actual = Parser._addPreviousKeys([{key:'cane'},{key:'cani'},{key:'cana'}]);
+  const expected = 
+    [
+      {previousKey: 'cane', key: 'cane'}
+    , {previousKey: 'cane', key: 'cani'}
+    , {previousKey: 'cani', key: 'cana'}
+    ];
+
+  assert.deepEqual(actual, expected,
+    '_addPreviousKeys should return a list with a field added in each element the filed name should be PreviousKey the filed value should be the key filed at arr[index - 1] if index is 0 should be arr[index].key');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000, cant: 543};
   return map[key];

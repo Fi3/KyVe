@@ -107,11 +107,19 @@ function _addNormalizedIndexes(nodes) {
   return nodes.map((node, index) => {node.normalizedIndex = index + 1; return node});
 }
 
-function _addPreviosKeys(nodes) {
+function _addPreviousKeys(nodes) {
   //
   // take an array of nodes and add the previous keys
   //
-  return nodes;
+  return nodes.map((node, index) => {
+    if (index === 0) {
+      node.previousKey = node.key;
+    }
+    else {
+      node.previousKey = nodes[index - 1].key;
+    }
+    return node;
+  });
 }
 
 function _addNextKeys(nodes) {
@@ -234,3 +242,4 @@ module.exports._setIndexes = _setIndexes;
 module.exports._setKeys = _setKeys;
 module.exports._toDict = _toDict;
 module.exports._addNormalizedIndexes = _addNormalizedIndexes;
+module.exports._addPreviousKeys = _addPreviousKeys;

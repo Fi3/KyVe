@@ -92,12 +92,6 @@ function _parseNodes(nodes, hashFunction) {
     return parsedNode;
   });
   return _addPrevActIndexes(_addNormalizedIndexes(_addNextKeys(_addPreviousKeys(parsedNodes))), hashFunction);
-  // TODO
-  // NOMRALIZEDINDEX = ?? should be index + 1
-  // PREVIOUSKEY = ?? should be prevK
-  // NEXTKEY = ?? it s a fkig prob
-  // PREVIOUSACTUALINDEX = ?? a prob
-	//return parsedNodes;
 }
 
 function _addNormalizedIndexes(nodes) {

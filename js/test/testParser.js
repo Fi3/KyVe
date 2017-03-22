@@ -285,6 +285,23 @@ test('Parser._addNextKeys return value', assert => {
   assert.end();
 });
 
+test('Parser._prevActIndexes return value', assert => {
+	const actual = Parser._addPrevActIndexes([ 
+		  {previousKey:'pani'}
+		, {previousKey:'cane'}
+		, {previousKey:'lupi'}], fakeHash);
+  const expected = 
+    [
+      {previousActualIndex: 236, previousKey: 'pani'}
+    , {previousActualIndex: 543, previousKey: 'cane'}
+    , {previousActualIndex: 1000, previousKey: 'lupi'}
+    ];
+
+  assert.deepEqual(actual, expected,
+    '_addPrevActIndexes should return a list with a field added in each element the filed name should be previousActualIndex the filed value should hash(prevKey)');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000, cant: 543};
   return map[key];

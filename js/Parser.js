@@ -142,7 +142,10 @@ function _addPrevActIndexes(nodes, hashFunction) {
   // take an array of nodes and an hash fucntion and add the previous
   // actual indexes
   //
-  return nodes;
+	return nodes.map(node => {
+		node.previousActualIndex = hashFunction(node.previousKey);
+		return node;
+	});
 }
 
 function _parseNode(node, keyLen) {
@@ -252,3 +255,4 @@ module.exports._toDict = _toDict;
 module.exports._addNormalizedIndexes = _addNormalizedIndexes;
 module.exports._addPreviousKeys = _addPreviousKeys;
 module.exports._addNextKeys = _addNextKeys;
+module.exports._addPrevActIndexes = _addPrevActIndexes;

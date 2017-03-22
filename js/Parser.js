@@ -7,7 +7,7 @@ function memoryDbFromStoredDb(storedDb, hashFunction) {
   // Take a storedDb and return new MemoryDb()
   //
   const header = _parseHeader(storedDb.slice(0, 24));
-  const nodes = _toDict(_parseNodes(_splitData(storedDb.slice(24, storedDb.length))));
+  const nodes = _toDict(_parseNodes(_splitData(storedDb.slice(24, storedDb.length)), hashFunction));
   return new MemoryDb(header, nodes, hashFunction);
 }
 
@@ -91,13 +91,13 @@ function _parseNodes(nodes, hashFunction) {
     bytePosition = bytePosition + node.length;
     return parsedNode;
   });
-  //return _addPrevActIndexes(_addNormalizedIndexes(_addNextKeys(_addPreviosKeys(parsedNodes))), hashFucntion);
+  return _addPrevActIndexes(_addNormalizedIndexes(_addNextKeys(_addPreviousKeys(parsedNodes))), hashFunction);
   // TODO
   // NOMRALIZEDINDEX = ?? should be index + 1
   // PREVIOUSKEY = ?? should be prevK
   // NEXTKEY = ?? it s a fkig prob
   // PREVIOUSACTUALINDEX = ?? a prob
-  return parsedNodes;
+	//return parsedNodes;
 }
 
 function _addNormalizedIndexes(nodes) {

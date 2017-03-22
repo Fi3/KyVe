@@ -145,7 +145,7 @@ test('Parser._splitData return value', assert => {
 
 test('Parser._parseNodes return value', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const actual = Parser._parseNodes(bufferData)[1].key;
+  const actual = Parser._parseNodes(bufferData, fakeHash)[1].key;
   const expected = 'cane';
 
   assert.deepEqual(actual, expected,
@@ -155,7 +155,7 @@ test('Parser._parseNodes return value', assert => {
 
 test('Parser._parseNodes return value length', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const actual = Parser._parseNodes(bufferData).length;
+  const actual = Parser._parseNodes(bufferData, fakeHash).length;
   const expected = bufferData.length;
 
   assert.deepEqual(actual, expected,
@@ -165,7 +165,7 @@ test('Parser._parseNodes return value length', assert => {
 
 test('Parser._parseNodes return value position', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const actual = Parser._parseNodes(bufferData)[2].position;
+  const actual = Parser._parseNodes(bufferData, fakeHash)[2].position;
   const expected = 16 + bufferData[0][0].length + bufferData[1][0].length;
 
   assert.deepEqual(actual, expected,
@@ -175,7 +175,7 @@ test('Parser._parseNodes return value position', assert => {
 
 test('Parser._toDict return value', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
-  const nodeArray = Parser._parseNodes(bufferData);
+  const nodeArray = Parser._parseNodes(bufferData, fakeHash);
   const actual = Parser._toDict(nodeArray).lupi.value;
   const expected = 'patti';
 

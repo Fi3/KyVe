@@ -9,7 +9,8 @@ function memoryDbFromStoredDb(storedDb, hashFunction) {
   //
 	const header = _parseHeader(storedDb.slice(0, 24));//TODO should return header how defined ins the specs!!!!!!!!!!!!!
   const nodes = _toDict(_parseNodes(_splitData(storedDb.slice(24, storedDb.length)), hashFunction));
-  return new MemoryDb(header, nodes, hashFunction);
+	const wellFormattedHeader = _getHeader(header, nodes);
+  return new MemoryDb(wellFormattedHeader, nodes, hashFunction);
 }
 
 function _parseHeader(header) {

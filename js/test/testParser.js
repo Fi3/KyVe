@@ -302,6 +302,24 @@ test('Parser._prevActIndexes return value', assert => {
   assert.end();
 });
 
+test('Parser._getHeader return value', assert => {
+	const header = {head: 24, tail: 32};
+	const nodes =
+		{ cane : {position: 24, value: 'value1'}
+	  , cani : {position: 87, value: 'value2'}
+		, cana : {position: 32, value: 'value3'}
+		}
+	const actual = Parser._getHeader(header, nodes);
+	const expected = 
+		{ head: {node: nodes.cane, key: 'cane'}
+		, tail: {node: nodes.cana, key: 'cana'}
+		}
+
+  assert.deepEqual(actual, expected,
+		'getHeader should return an object {head: {node, key}, tail{node, key}');
+  assert.end();
+});
+
 function fakeHash(key) {
   const map = {pani: 236, cane: 543, lupi: 1000, cant: 543};
   return map[key];

@@ -1,6 +1,7 @@
 const MemoryDb = require('./MemoryDb.js').MemoryDb;
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
+const R = require('ramda');
 
 function memoryDbFromStoredDb(storedDb, hashFunction) {
   //
@@ -25,6 +26,19 @@ function _parseHeader(header) {
   const head = header.slice(8,16).readIntBE(0,8);
   const tail = header.slice(16,24).readIntBE(0,8);
   return {head, tail};
+}
+
+function _getHeader(header, nodes) {
+	//
+	// Take the byte position of head and tail and return a well formatted header
+	//
+	const head = R.filter( node => node.position === header.head, nodes);
+	const tail = R.filter( node => node.position === header.tail, nodes);
+	const wellFormattedHeader =
+		{ head: {node: head[Object.keys(head)[0]], key: Object.keys(head)[0]}
+		, tail: {node: tail[Object.keys(tail)[0]], key: Object.keys(tail)[0]}
+		}
+	return wellFormattedHeader;
 }
 
 function _splitData(data, nodes = []) {
@@ -250,3 +264,4 @@ module.exports._addNormalizedIndexes = _addNormalizedIndexes;
 module.exports._addPreviousKeys = _addPreviousKeys;
 module.exports._addNextKeys = _addNextKeys;
 module.exports._addPrevActIndexes = _addPrevActIndexes;
+module.exports._getHeader = _getHeader;

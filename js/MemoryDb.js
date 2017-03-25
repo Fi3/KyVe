@@ -277,7 +277,10 @@ function _getPreviousNode(memoryDb, key) {
   let prevNode;
 
   function _findPreviouNodeForKeyNotInDb(nodes, indexSearched) {
-    // iterate nodes and return when we find a key such that hash(key) is the biggest of the ones that are smaller than indexSearched
+		//
+		// iterate nodes and return when we find a key such that hash(key) is the biggest 
+		// of the ones that are smaller than indexSearched
+		//
     for (let _key in nodes) {
       const actualIndex = hashFunction(_key);
 

@@ -166,10 +166,10 @@ test('Parser._parseNodes return value length', assert => {
 test('Parser._parseNodes return value position', assert => {
   const bufferData = db.map(x => [createNode(x), 5]);
   const actual = Parser._parseNodes(bufferData, fakeHash)[2].position;
-  const expected = 16 + bufferData[0][0].length + bufferData[1][0].length;
+  const expected = 24 + bufferData[0][0].length + bufferData[1][0].length;
 
   assert.deepEqual(actual, expected,
-    '_parseNodes should set the right bytes positions here we have 16 byte of header and 2 nodes of 20 bytes total 58');
+    '_parseNodes should set the right bytes positions here we have 24 byte of header and 2 nodes of 20 bytes total 64');
   assert.end();
 });
 

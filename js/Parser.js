@@ -6,7 +6,7 @@ function memoryDbFromStoredDb(storedDb, hashFunction) {
   //
   // Take a storedDb and return new MemoryDb()
   //
-  const header = _parseHeader(storedDb.slice(0, 24));
+	const header = _parseHeader(storedDb.slice(0, 24));//TODO should return header how defined ins the specs!!!!!!!!!!!!!
   const nodes = _toDict(_parseNodes(_splitData(storedDb.slice(24, storedDb.length)), hashFunction));
   return new MemoryDb(header, nodes, hashFunction);
 }
@@ -82,7 +82,7 @@ function _parseNodes(nodes, hashFunction) {
   //   2. feed _parseNode with node and keyLen
   //   3. put all together in a list of nodes
   //
-  let bytePosition = 16;
+  let bytePosition = 24;
   const parsedNodes = nodes.map( value => {
     const node = value[0];
     const keyLen = value[1];

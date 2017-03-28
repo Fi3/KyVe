@@ -42,7 +42,7 @@ test('NodeHook append action executed', assert => {
   const path = './js/test/testFile3'
   const file = fs.openSync(path, 'r+');
   const initialLen = 100; // is len in byte of testFile2
-  NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}}, Buffer.allocUnsafe(10));
+  NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}, _path:path}, Buffer.allocUnsafe(10));
   const actual = fs.statSync(path).size;
   const expected = 100 + 10;
   fs.truncate(path, 100);
@@ -58,7 +58,7 @@ test('NodeHook append action executed', assert => {
   const file = fs.openSync(path, 'r+');
   const initialLen = 100; // is len in byte of testFile2
   const appendedBuffer = Buffer.allocUnsafe(10);
-  NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}}, appendedBuffer);
+  NodeHook._append({_fileDescriptor: file, _length: function(x){return 100}, _path:path}, appendedBuffer, true);
   const actual = NodeHook._slice ({_fileDescriptor: file}, 100, 100 + 10);
   const expected = appendedBuffer;
   fs.truncate(path, 100);

@@ -36,7 +36,7 @@ function createNode(data) {
     nextNode = Buffer.alloc(8);
     nextNode.write(data.nextNode, 0, 'hex');
   }
-  else if (typeof data.nextNode === 'int') {
+  else if (typeof data.nextNode === 'number') {
     nextNode = intToBuffer8(data.nextNode);
   }
   else {

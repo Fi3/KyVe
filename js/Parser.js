@@ -1,3 +1,4 @@
+'use strict'
 const MemoryDb = require('./MemoryDb.js').MemoryDb;
 const Errors = require('./Errors.js');
 const rlp = require('rlp');

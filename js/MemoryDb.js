@@ -1,14 +1,16 @@
+'use strict'
 const R = require('ramda');
 const Errors = require('./Errors.js');
+const rlp = require('rlp');
 
 class MemoryDb {
   // _header should be an Header object
   // _nodes should be {string: Node object, string: Node object, ...}
   // _hashFunction is a function that take a string and return an int
-  constructor(header, nodes, hashFucntion) {
+  constructor(header, nodes, hashFunction) {
     this._header = header;
     this._nodes = nodes;
-    this._hashFunction = hashFucntion;
+    this._hashFunction = hashFunction;
   }
 
   inspectKey(key) {
@@ -26,7 +28,8 @@ class MemoryDb {
   }
 
   updateNode(key, value) {
-    return _updateNode(this, key, value);
+    _updateNode(this, key, value);
+		return this;
   }
 
   prevKeyFromIndex(index) {
@@ -38,10 +41,8 @@ class MemoryDb {
   }
 
   addNode(key, node, nodePosition) {
-    updatedObject = _addNode(this, node, nodePosition);
-    this.header = updatedObject.header;
-    this.nodes = updatedObject.nodes;
-    return this;
+    const updatedObject = _addNode(this, key, node, nodePosition);
+    return new MemoryDb(updatedObject._header, updatedObject._nodes, updatedObject._hashFunction);
   }
 }
 
@@ -156,6 +157,7 @@ function _prevPositionForKeyNotInDb(memoryDb, key) {
   //
   // ...
   //
+	let previousNodePosition;
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
 
@@ -179,6 +181,7 @@ function _nextPositionForKeyNotInDb(memoryDb, key) {
   //
   // ...
   //
+	let nextNodePosition;
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
 
@@ -386,7 +389,7 @@ function _updateNode(memoryDb, key, value) {
   if (!(key in nodes)) {
     throw new Errors.MemoryDbKeyNotInDb();
   }
-  if (nodes[key].value.length < value.length) {
+  if (rlp.encode(nodes[key].value).length < rlp.encode(value).length) {
     throw new Errors.MemoryDbValueTooLong();
   }
   nodes[key].value = value;
@@ -401,7 +404,8 @@ function _addNode(memoryDb, key, node, nodePosition) {
   //
   const db = R.clone(memoryDb);
   memoryDb = db;
-  nodes = memoryDb._nodes;
+  let nodes = memoryDb._nodes;
+	let nextIndex;
 
   // When node is heade
   if (node.previousKey === key) {
@@ -412,14 +416,12 @@ function _addNode(memoryDb, key, node, nodePosition) {
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
     memoryDb._nodes = nodes;
-    return memoryDb;
   }
   else if (node.nextKey === 'tail') {
     memoryDb._header.tail = {key:key, node:node};
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
     memoryDb._nodes = nodes;
-    return memoryDb;
   }
   else {
     nextIndex = nodes[node.nextKey].normalizedIndex;
@@ -428,8 +430,8 @@ function _addNode(memoryDb, key, node, nodePosition) {
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
     memoryDb._nodes = nodes;
-    return memoryDb;
   }
+	return memoryDb;
 }
 
 function getBiggerOfAndAddX(minumum, x, object, inspectedElement) {

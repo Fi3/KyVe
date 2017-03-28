@@ -3,6 +3,7 @@ const StoredDb = require('./StoredDb.js');
 const Parser = require('./Parser.js');
 const hash = require('fnv1a');
 const encodeNode = require('./utils/initStoredDb.js').createNode;
+const rlp = require('rlp');
 
 class Db {
   //
@@ -26,7 +27,8 @@ class Db {
   }
 
   setItem(key, value) {
-    return _setItem(this, key, value);
+		this._memoryDb = _setItem(this, key, value);
+    return this;
   }
 }
 
@@ -57,10 +59,10 @@ function _setItem(Db, key, value) {
   //
   const keyData = Db._memoryDb.inspectKey(key);
   if (keyData.alreadyInDb) {
-    _updateNode(Db, key, value, keyData);
+    return _updateNode(Db, key, value, keyData);
   }
   else {
-    _addNode(Db, key, value, keyData);
+    return _addNode(Db, key, value, keyData);
   }
 }
 
@@ -71,12 +73,13 @@ function _updateNode(Db, key, value, keyData) {
   //
   const oldValue = Db.getItem(key);
   const position = Db.getItem(key);
-  if (rlp.encode(value).lenght > rlp.encode(oldValue).lenght) {
-    _addNode(Db, key, value, keyData);
+  if (rlp.encode(value).length > rlp.encode(oldValue).length) {
+    return _addNode(Db, key, value, keyData);
   }
   else {
-    Db._storedDb.updateNode(position, key, value, oldValue)
-    Db._memoryDb.updateNode(key, value)
+		console.log('minore');
+    Db._storedDb.updateNode(position, key, rlp.encode(value), rlp.encode(oldValue))
+    return Db._memoryDb.updateNode(key, value)
   }
 }
 
@@ -94,7 +97,7 @@ function _addNode(Db, key, value, keyData) {
     nextNode: keyData.nextNodePosition,
     collisionFlag: _getFlag(keyData.collisions)
   });
-  const nodePosition = Db._storedDb.addNode(nextNode, keyData.prevNodePosition).newPosition;
+  const nodePosition = Db._storedDb.addNode(newNode, keyData.previousNodePosition).newPosition;
   // If head
   if (1 === keyData.normalizedIndex) {
     Db._storedDb.updateHead(nodePosition);
@@ -103,8 +106,8 @@ function _addNode(Db, key, value, keyData) {
   if ('tail' === keyData.nextPosition) {
     Db._storedDb.updateTail(nodePosition);
   }
-  const newMemoryNode = _newMemoryNode(Db, keyData, nodePosition);
-  Db._memoryDb.addNode(key, newMemoryNode, nodePosition);
+  const newMemoryNode = _newMemoryNode(Db, keyData, nodePosition, value);
+  return Db._memoryDb.addNode(key, newMemoryNode, newMemoryNode, nodePosition);
 }
 
 function _getFlag(collisions) {
@@ -116,16 +119,17 @@ function _getFlag(collisions) {
   }
 }
 
-function _newMemoryNode(Db, keyData, newPosition) {
+function _newMemoryNode(Db, keyData, newPosition, value) {
+	const previousKey = Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex);
   const newMemoryNode = {
     collisionFlag: _getFlag(keyData.collisions),
     nextPosition: keyData.nextNodePosition,
     value: value,
     position: newPosition,
     normalizedIndex: keyData.normalizedIndex,
-    previousKey: Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex),
+    previousKey: previousKey,
     nextKey: Db._memoryDb.nextKeyFromIndex(keyData.normalizedIndex),
-    previousActualIndex: Db.hash(previousKey),
+    previousActualIndex: Db._memoryDb._hashFunction(previousKey),
   };
   return newMemoryNode;
 };

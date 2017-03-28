@@ -1,3 +1,4 @@
+'use strict'
 const NodeHook = require('./NodeHook.js');
 const Errors = require('./Errors.js');
 const rlp = require('rlp');
@@ -65,7 +66,7 @@ function _changeNext(StoredDb, nodePosition, newNextPosition) {
   //
   // Change the nexPosition value of the node at nodePosition
   //
-  const offset = nodePosition + 8;
+  const offset = nodePosition + 1;
   const newNextPositionBufferized = Buffer.allocUnsafe(8);
   newNextPositionBufferized.writeIntBE(newNextPosition, 0, 8);
   return StoredDb._hook.write(newNextPositionBufferized, offset);

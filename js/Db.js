@@ -107,7 +107,7 @@ function _addNode(Db, key, value, keyData) {
     Db._storedDb.updateTail(nodePosition);
   }
   const newMemoryNode = _newMemoryNode(Db, keyData, nodePosition, value);
-  return Db._memoryDb.addNode(key, newMemoryNode, newMemoryNode, nodePosition);
+  return Db._memoryDb.addNode(key, newMemoryNode, nodePosition);
 }
 
 function _getFlag(collisions) {

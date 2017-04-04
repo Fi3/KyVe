@@ -39,7 +39,6 @@ function loadDb(path, environment) {
   //
   const storedDb = new StoredDb.StoredDb(path, environment);
   const memoryDb = Parser.memoryDbFromStoredDb(storedDb, hash);
-  //return [storedDb, memoryDb, path];
   return new Db(storedDb, memoryDb, path);
 }
 

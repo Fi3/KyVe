@@ -402,12 +402,7 @@ function _addNode(memoryDb, key, node, nodePosition) {
   // add node to memoryDb._nodes
   // change nextPosition in previousNode with nodePosition
   //
-	//TODO
-	const start0 = process.hrtime();
-  const db = R.clone(memoryDb);
-	console.log('memoryDb line 408 R.clone is very slow for "big" db it could take 1 seconds for db of 250K change with immutable', process.hrtime(start0));
-  memoryDb = db;
-  let nodes = memoryDb._nodes;
+	let nodes = memoryDb._nodes;
 	let nextIndex;
 
   // When node is heade
@@ -418,14 +413,14 @@ function _addNode(memoryDb, key, node, nodePosition) {
     nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
-    memoryDb._nodes = nodes;
+		memoryDb._nodes = nodes;
   }
   // When node is tail
   else if (node.nextKey === 'tail') {
     memoryDb._header.tail = {key:key, node:node};
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
-    memoryDb._nodes = nodes;
+		memoryDb._nodes = nodes;
   }
   else {
     nextIndex = nodes[node.nextKey].normalizedIndex;
@@ -433,7 +428,7 @@ function _addNode(memoryDb, key, node, nodePosition) {
     nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
-    memoryDb._nodes = nodes;
+		memoryDb._nodes = nodes;
   }
 	return memoryDb;
 }

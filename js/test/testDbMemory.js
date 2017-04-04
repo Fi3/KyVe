@@ -320,13 +320,14 @@ test('Db updateNode raise for value too long', assert => {
 });
 
 test('Db addNode returned value', assert => {
+	const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
     nextKey: 'ciay'
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)._nodes.ciat.nextPosition;
+  const actual = Db._addNode(memDb, 'grulli', newNode, newNodePosition)._nodes.ciat.nextPosition;
   const expected = 1000;
 
   assert.deepEqual(actual, expected,
@@ -335,13 +336,14 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value', assert => {
+	const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
     nextKey: 'ciay'
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)._nodes.grulli;
+  const actual = Db._addNode(memDb, 'grulli', newNode, newNodePosition)._nodes.grulli;
   const expected = newNode;
 
   assert.deepEqual(actual, expected,
@@ -350,13 +352,14 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value', assert => {
+	const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
     nextKey: 'ciay'
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)
+  const actual = Db._addNode(memDb, 'grulli', newNode, newNodePosition)
     ._nodes.ciay.normalizedIndex;
   const expected = 4;
 
@@ -366,13 +369,14 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value for head', assert => {
+	const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'grulli',
     nextKey: 'ciao',
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)
+  const actual = Db._addNode(memDb, 'grulli', newNode, newNodePosition)
     ._header.head;
   const expected = {key: 'grulli', node:newNode};
 
@@ -382,18 +386,36 @@ test('Db addNode returned value for head', assert => {
 });
 
 test('Db addNode returned value for tail', assert => {
+	const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'cias',
     nextKey: 'tail',
   }
   const newNodePosition = 1000;
-  const actual = Db._addNode(memoryDb, 'grulli', newNode, newNodePosition)
+  const actual = Db._addNode(memDb, 'grulli', newNode, newNodePosition)
     ._header.tail;
   const expected = {key: 'grulli', node:newNode};
 
   assert.deepEqual(actual, expected,
     'should add change memoryDb._header.tail');
+  assert.end();
+});
+
+test('Db addNode returned value for tail', assert => {
+	const memDb = R.clone(memoryDb);
+  const newNode = {
+    value: 'new value',
+    previousKey: 'cias',
+    nextKey: 'tail',
+  }
+  const newNodePosition = 1000;
+  const actual = Db._addNode(memDb, 'grulli', newNode, newNodePosition)
+    ._nodes.grulli;
+  const expected = newNode;
+
+  assert.deepEqual(actual, expected,
+    'should add the node to the db');
   assert.end();
 });
 

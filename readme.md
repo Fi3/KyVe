@@ -56,6 +56,6 @@ kyve read 0.0010263170000000001
 
 ### TODO
 
-1. if I set key `x` to `value1` than I can not set key `x` to `value2` if `value2` < `value1` [ref](https://github.com/Fi3/KyVe/blob/8d5ee4e5d2616b1bae988d861e9baee6377fed45/js/Db.js#L79)
+1. if I set key `x` to `value1` than I can not set key `x` to `value2` if `value2` < `value1` [ref](https://github.com/Fi3/KyVe/blob/master/js/Db.js#L79)
 2. when we change a value for key `x` if the new value is bigger we append a new node at the end of the stroedDb and we make an hole in the file we should have a function that remove the holes
 3. the goal of this db is to be fast in reading but we need better performance in writing

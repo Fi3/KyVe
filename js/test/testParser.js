@@ -286,10 +286,10 @@ test('Parser._addNextKeys return value', assert => {
 });
 
 test('Parser._prevActIndexes return value', assert => {
-	const actual = Parser._addPrevActIndexes([ 
-		  {previousKey:'pani'}
-		, {previousKey:'cane'}
-		, {previousKey:'lupi'}], fakeHash);
+  const actual = Parser._addPrevActIndexes([ 
+      {previousKey:'pani'}
+    , {previousKey:'cane'}
+    , {previousKey:'lupi'}], fakeHash);
   const expected = 
     [
       {previousActualIndex: 236, previousKey: 'pani'}
@@ -303,20 +303,20 @@ test('Parser._prevActIndexes return value', assert => {
 });
 
 test('Parser._getHeader return value', assert => {
-	const header = {head: 24, tail: 32};
-	const nodes =
-		{ cane : {position: 24, value: 'value1'}
-	  , cani : {position: 87, value: 'value2'}
-		, cana : {position: 32, value: 'value3'}
-		}
-	const actual = Parser._getHeader(header, nodes);
-	const expected = 
-		{ head: {node: nodes.cane, key: 'cane'}
-		, tail: {node: nodes.cana, key: 'cana'}
-		}
+  const header = {head: 24, tail: 32};
+  const nodes =
+    { cane : {position: 24, value: 'value1'}
+    , cani : {position: 87, value: 'value2'}
+    , cana : {position: 32, value: 'value3'}
+    }
+  const actual = Parser._getHeader(header, nodes);
+  const expected = 
+    { head: {node: nodes.cane, key: 'cane'}
+    , tail: {node: nodes.cana, key: 'cana'}
+    }
 
   assert.deepEqual(actual, expected,
-		'getHeader should return an object {head: {node, key}, tail{node, key}');
+    'getHeader should return an object {head: {node, key}, tail{node, key}');
   assert.end();
 });
 

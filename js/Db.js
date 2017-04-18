@@ -27,7 +27,7 @@ class Db {
   }
 
   setItem(key, value) {
-		this._memoryDb = _setItem(this, key, value);
+    this._memoryDb = _setItem(this, key, value);
     return this;
   }
 }
@@ -76,7 +76,7 @@ function _updateNode(Db, key, value, keyData) {
     return _addNode(Db, key, value, keyData);
   }
   else {
-		console.log('minore');
+    console.log('minore');
     Db._storedDb.updateNode(position, key, rlp.encode(value), rlp.encode(oldValue))
     return Db._memoryDb.updateNode(key, value)
   }
@@ -119,7 +119,7 @@ function _getFlag(collisions) {
 }
 
 function _newMemoryNode(Db, keyData, newPosition, value) {
-	const previousKey = Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex);
+  const previousKey = Db._memoryDb.prevKeyFromIndex(keyData.normalizedIndex);
   const newMemoryNode = {
     collisionFlag: _getFlag(keyData.collisions),
     nextPosition: keyData.nextNodePosition,

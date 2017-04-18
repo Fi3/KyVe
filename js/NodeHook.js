@@ -46,9 +46,9 @@ function _write(NodeHook, buffer, offset) {
   //
   // Write buffer  on file at offset
   //
-	if (isNaN(offset)) {
-		throw new Error;
-	}
+  if (isNaN(offset)) {
+    throw new Error;
+  }
   fs.writeSync(NodeHook._fileDescriptor, buffer, 0, buffer.length, offset);
   return buffer;
 }
@@ -64,17 +64,17 @@ function _length(NodeHook) {
 function _append(NodeHook, buffer, test) {
   //
   // Append buffer to StroedDb
-	// We open the use write instead of append so we can have just one file decriptor
-	// in r+ we do not need to append becaouse it will be write syncronously,
-	// all the operations that chang datas in KyVe are syncrounus
+  // We open the use write instead of append so we can have just one file decriptor
+  // in r+ we do not need to append becaouse it will be write syncronously,
+  // all the operations that chang datas in KyVe are syncrounus
   //
-	let len;
-	if (test === true) {
-		len = 100;
-	}
-	else {
-		len = _length(NodeHook);
-	}
+  let len;
+  if (test === true) {
+    len = 100;
+  }
+  else {
+    len = _length(NodeHook);
+  }
   fs.writeSync(NodeHook._fileDescriptor, buffer, 0, buffer.length, len);
   return buffer;
 }

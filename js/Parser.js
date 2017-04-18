@@ -8,9 +8,9 @@ function memoryDbFromStoredDb(storedDb, hashFunction) {
   //
   // Take a storedDb and return new MemoryDb()
   //
-	const header = _parseHeader(storedDb.slice(0, 24));//TODO should return header how defined ins the specs!!!!!!!!!!!!!
+  const header = _parseHeader(storedDb.slice(0, 24));//TODO should return header how defined ins the specs!!!!!!!!!!!!!
   const nodes = _toDict(_parseNodes(_splitData(storedDb.slice(24, storedDb.length)), hashFunction));
-	const wellFormattedHeader = _getHeader(header, nodes);
+  const wellFormattedHeader = _getHeader(header, nodes);
   return new MemoryDb(wellFormattedHeader, nodes, hashFunction);
 }
 
@@ -31,16 +31,16 @@ function _parseHeader(header) {
 }
 
 function _getHeader(header, nodes) {
-	//
-	// Take the byte position of head and tail and return a well formatted header
-	//
-	const head = R.filter( node => node.position === header.head, nodes);
-	const tail = R.filter( node => node.position === header.tail, nodes);
-	const wellFormattedHeader =
-		{ head: {node: head[Object.keys(head)[0]], key: Object.keys(head)[0]}
-		, tail: {node: tail[Object.keys(tail)[0]], key: Object.keys(tail)[0]}
-		}
-	return wellFormattedHeader;
+  //
+  // Take the byte position of head and tail and return a well formatted header
+  //
+  const head = R.filter( node => node.position === header.head, nodes);
+  const tail = R.filter( node => node.position === header.tail, nodes);
+  const wellFormattedHeader =
+    { head: {node: head[Object.keys(head)[0]], key: Object.keys(head)[0]}
+    , tail: {node: tail[Object.keys(tail)[0]], key: Object.keys(tail)[0]}
+    }
+  return wellFormattedHeader;
 }
 
 function _splitData(data, nodes = []) {
@@ -152,10 +152,10 @@ function _addPrevActIndexes(nodes, hashFunction) {
   // take an array of nodes and an hash fucntion and add the previous
   // actual indexes
   //
-	return nodes.map(node => {
-		node.previousActualIndex = hashFunction(node.previousKey);
-		return node;
-	});
+  return nodes.map(node => {
+    node.previousActualIndex = hashFunction(node.previousKey);
+    return node;
+  });
 }
 
 function _parseNode(node, keyLen) {

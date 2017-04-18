@@ -29,7 +29,7 @@ class MemoryDb {
 
   updateNode(key, value) {
     _updateNode(this, key, value);
-		return this;
+    return this;
   }
 
   prevKeyFromIndex(index) {
@@ -157,7 +157,7 @@ function _prevPositionForKeyNotInDb(memoryDb, key) {
   //
   // ...
   //
-	let previousNodePosition;
+  let previousNodePosition;
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
 
@@ -181,7 +181,7 @@ function _nextPositionForKeyNotInDb(memoryDb, key) {
   //
   // ...
   //
-	let nextNodePosition;
+  let nextNodePosition;
   const prevNode = _getPreviousNode(memoryDb, key);
   if (prevNode.collisionFlag === 1) {
 
@@ -280,10 +280,10 @@ function _getPreviousNode(memoryDb, key) {
   let prevNode;
 
   function _findPreviouNodeForKeyNotInDb(nodes, indexSearched) {
-		//
-		// iterate nodes and return when we find a key such that hash(key) is the biggest 
-		// of the ones that are smaller than indexSearched
-		//
+    //
+    // iterate nodes and return when we find a key such that hash(key) is the biggest 
+    // of the ones that are smaller than indexSearched
+    //
     for (let _key in nodes) {
       const actualIndex = hashFunction(_key);
 
@@ -402,8 +402,8 @@ function _addNode(memoryDb, key, node, nodePosition) {
   // add node to memoryDb._nodes
   // change nextPosition in previousNode with nodePosition
   //
-	let nodes = memoryDb._nodes;
-	let nextIndex;
+  let nodes = memoryDb._nodes;
+  let nextIndex;
 
   // When node is heade
   if (node.previousKey === key) {
@@ -413,14 +413,14 @@ function _addNode(memoryDb, key, node, nodePosition) {
     nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
-		memoryDb._nodes = nodes;
+    memoryDb._nodes = nodes;
   }
   // When node is tail
   else if (node.nextKey === 'tail') {
     memoryDb._header.tail = {key:key, node:node};
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
-		memoryDb._nodes = nodes;
+    memoryDb._nodes = nodes;
   }
   else {
     nextIndex = nodes[node.nextKey].normalizedIndex;
@@ -428,9 +428,9 @@ function _addNode(memoryDb, key, node, nodePosition) {
     nodes = getBiggerOfAndAddX(nextIndex - 1, 1, nodes, 'normalizedIndex');
     nodes[key] = node;
     nodes[node.previousKey].nextPosition = nodePosition;
-		memoryDb._nodes = nodes;
+    memoryDb._nodes = nodes;
   }
-	return memoryDb;
+  return memoryDb;
 }
 
 function getBiggerOfAndAddX(minumum, x, object, inspectedElement) {

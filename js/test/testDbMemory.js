@@ -320,7 +320,7 @@ test('Db updateNode raise for value too long', assert => {
 });
 
 test('Db addNode returned value', assert => {
-	const memDb = R.clone(memoryDb);
+  const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
@@ -336,7 +336,7 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value', assert => {
-	const memDb = R.clone(memoryDb);
+  const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
@@ -352,7 +352,7 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value', assert => {
-	const memDb = R.clone(memoryDb);
+  const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'ciat',
@@ -369,7 +369,7 @@ test('Db addNode returned value', assert => {
 });
 
 test('Db addNode returned value for head', assert => {
-	const memDb = R.clone(memoryDb);
+  const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'grulli',
@@ -386,7 +386,7 @@ test('Db addNode returned value for head', assert => {
 });
 
 test('Db addNode returned value for tail', assert => {
-	const memDb = R.clone(memoryDb);
+  const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'cias',
@@ -403,7 +403,7 @@ test('Db addNode returned value for tail', assert => {
 });
 
 test('Db addNode returned value for tail', assert => {
-	const memDb = R.clone(memoryDb);
+  const memDb = R.clone(memoryDb);
   const newNode = {
     value: 'new value',
     previousKey: 'cias',

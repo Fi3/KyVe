@@ -13,34 +13,54 @@ function genRandomVal() {
 const Db = db.createNewDb('./provabig', 'node');
 const plainObject = {};
 
-function plainObjectTest(db) {
+function plainObjectTest(db, iteration) {
 	let nanoSeconds = 0;
-	for (let x = 0; x < 11; x++){
+	let nanoSeconds1 = 0;
+	const keys = [];
+	for (let x = 0; x < iteration + 1; x++){
 	  const key = genRandomVal();
+		keys.push(key);
 	  const value = genRandomVal();
 	  const start = process.hrtime();
 	  plainObject[key] = value;
 	  const stop = process.hrtime();
 		nanoSeconds = nanoSeconds + (stop[1] - start[1]);
 	}
-	console.log((nanoSeconds/10)/1000000);
+	for (let x = 0; x < iteration + 1; x++){
+		const start = process.hrtime();
+		const value = db[keys[x]];
+		const delta = process.hrtime(start);
+		nanoSeconds1 = nanoSeconds1 + delta[1];
+	}
+	console.log('plain object write', (nanoSeconds/iteration)/1000000);
+	console.log('plain object read', (nanoSeconds1/iteration)/1000000);
 }
 
-function kyveTest(db) {
+function kyveTest(db, iteration) {
 	let nanoSeconds = 0;
-	for (let x = 0; x < 1001; x++){
+	let nanoSeconds1 = 0;
+	const keys = [];
+	for (let x = 0; x < iteration + 1; x++){
 		const key = genRandomVal();
+		keys.push(key);
 		const value = genRandomVal();
 		const start = process.hrtime();
 		db.setItem(key, value);
 		const delta = process.hrtime(start);
-		if (delta[1] < 0){
-			console.log(delta);
-		}
 		nanoSeconds = nanoSeconds + delta[1];
 	}
-	console.log((nanoSeconds/1000)/1000000);
+	let values = [];
+	for (let x = 0; x < iteration + 1; x++){
+		const start = process.hrtime();
+		const value = db.getItem(keys[x]);
+		const delta = process.hrtime(start);
+		nanoSeconds1 = nanoSeconds1 + delta[1];
+		values.push(value);
+	}
+	console.log('kyve write', (nanoSeconds/iteration)/1000000);
+	console.log('kyve read', (nanoSeconds1/iteration)/1000000);
 }
 
-plainObjectTest({});
-kyveTest(Db);
+
+plainObjectTest({}, 1000);
+kyveTest(Db, 1000);
